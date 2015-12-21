@@ -1,0 +1,121 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="./sapiens-linha-nota.html">
+
+<dom-module id="sapiens-composicao-avaliacao">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    
+      #bimestres{
+        @apply(--layout-horizontal);
+      }
+
+      paper-card{
+        @apply(--layout-flex);
+      }
+
+      table{
+        width: 100%;
+      }
+
+      .collapsible-button{
+        position: absolute;
+        top: 16px;
+        right: 16px;
+      }
+    </style>
+    
+    <section id="bimestres">    
+    
+      <paper-card heading="1º Bimestre">
+        <paper-icon-button
+          class="collapsible-button"
+          icon="hardware:keyboard-arrow-down"
+          title="mais primeiro bimestre"
+          on-tap="_togglePrimeiroBimestre">
+        </paper-icon-button>
+
+        <iron-collapse id="mais-primeiro-bimestre" opened>
+          <div class="card-content">
+            <table>          
+              <tbody id="notasPrimeiroBimestre">
+                <sapiens-linha-nota id="nota-1"></sapiens-linha-nota>
+              </tbody>             
+            </table>
+            <div id="media1Bimestre">Valor Máximo da Média Bimestral: <span>{{notaMaxima1Bimestre}}</span> </div>
+          </div>
+          
+          <div class="card-actions">
+            <paper-icon-button icon="add" title="add" on-tap="_adicionarLinha"></paper-icon-button>            
+          </div>  
+        </iron-collapse>      
+        
+      </paper-card>
+    </section>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-composicao-avaliacao',
+
+      properties: {
+        notas: {
+          type: Array,
+          value: [],
+          observer: '_linhaModificada'
+        },
+
+        notaMaxima1Bimestre: {
+          type: Number,
+          value: 0
+        }
+      },      
+
+      _togglePrimeiroBimestre: function(event) {
+        var more = this.$['mais-primeiro-bimestre'];
+        var iconButton = Polymer.dom(event).localTarget;
+
+        iconButton.icon = more.opened ? 'hardware:keyboard-arrow-down' : 'hardware:keyboard-arrow-up';
+
+        more.toggle();
+      },
+
+      _adicionarLinha: function(){
+        var linha = document.createElement('sapiens-linha-nota');
+        linha.id = 'nota-' + (this.notas.length + 1);
+        linha.lancarModificacoes = this._linhaModificada;
+        
+        Polymer.dom(this.$.notasPrimeiroBimestre).appendChild(linha);        
+        this.notas.push(linha);
+      },
+
+      _linhaModificada: function(l){
+        var self = document.querySelector('sapiens-composicao-avaliacao')
+        var linhas = document.querySelectorAll('sapiens-linha-nota');
+        var nota = 0;
+
+        if (self){
+          for (var key in linhas) {
+             if (linhas.hasOwnProperty(key)) {
+                var linha = linhas[key];
+                nota += linha.nota;
+             }
+          }
+
+          self.notaMaxima1Bimestre = nota;
+        }
+      },
+
+      ready: function(){
+        this.$['nota-1'].lancarModificacoes = this._linhaModificada;
+        this.notas.push(this.$['nota-1']);
+      }
+    });
+  })();
+  </script>
+</dom-module>

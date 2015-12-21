@@ -1,0 +1,23 @@
+<dom-module id="sapiens-pages">
+	<template>
+		<div class="content">
+		    <iron-pages attr-for-selected="data-route" selected="{{selected}}">
+				<content></content>
+			</iron-pages>
+		</div>
+	</template>
+
+	<script>
+		Polymer({
+			id: 'sapiens-pages',
+
+			properties: {
+				selected: {
+					type: String,
+					notify: true
+				}
+			}
+		});
+	</script>
+
+</dom-module>

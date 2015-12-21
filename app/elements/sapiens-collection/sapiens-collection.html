@@ -1,0 +1,32 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<dom-module id="sapiens-collection">
+	<template>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'sapiens-collection',
+			
+			properties: {
+				collection: {
+					type: String
+				},
+
+				data: {
+					type: Array,
+					notify: true
+				}
+			},
+
+			ready: function(){
+				var _this = this;
+
+				Tracker.autorun(function() {
+			    	_this.data = window[_this.collection].find({}).fetch();
+			    });	
+			}
+		})
+	</script>
+
+</dom-module>

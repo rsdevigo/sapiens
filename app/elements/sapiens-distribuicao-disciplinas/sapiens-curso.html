@@ -1,0 +1,163 @@
+<dom-module id="sapiens-curso">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card{
+        margin-bottom: 24px;
+        border-top: solid 3px var(--secondary-text-color);
+      }
+    </style>
+      
+    <section id="curso-selecionado">
+      <paper-card heading="Nova turma"> 
+        <div class="card-content">
+
+          <paper-input label="Nome de turma" value="{{turma.nome}}"></paper-input>
+
+          <paper-dropdown-menu label="Período" value="{{turma.periodo}}">
+            <paper-menu class="dropdown-content" id="periodo">
+              <paper-item>1º Semestre</paper-item>
+              <paper-item>2º Semestre</paper-item>
+              <paper-item>3º Semestre</paper-item>
+              <paper-item>4º Semestre</paper-item>
+              <paper-item>5º Semestre</paper-item>
+              <paper-item>6º Semestre</paper-item>
+              <paper-item>7º Semestre</paper-item>
+              <paper-item>8º Semestre</paper-item>
+              <paper-item>9º Semestre</paper-item>
+              <paper-item>10º Semestre</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-dropdown-menu label="Ano" value="{{turma.ano}}">
+            <paper-menu class="dropdown-content" id="ano">
+              <paper-item>2016/1</paper-item>
+              <paper-item>2016/2</paper-item>
+              <paper-item>2017/1</paper-item>
+              <paper-item>2017/2</paper-item>
+              <paper-item>2018/1</paper-item>
+              <paper-item>2018/2</paper-item>
+              <paper-item>2019/1</paper-item>
+              <paper-item>2019/2</paper-item>
+              <paper-item>2020/1</paper-item>
+              <paper-item>2020/2</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>      
+
+        </div> 
+
+        <div class="card-actions">
+          <paper-button on-tap="criarTurma">Criar</paper-button>
+        </div>      
+      </paper-card>
+        
+      <template is="dom-repeat" items="{{turmas}}" as="turma">        
+        <paper-card heading="{{turma.nome}}"> 
+          <div class="card-content">
+            <span>{{turma.periodo}}</span>
+            <span>{{turma.ano}}</span>
+          </div> 
+
+          <div class="card-actions">
+            <paper-icon-button on-tap="distribuir" icon="create"></paper-icon-button>
+            <paper-icon-button on-tap="removerTurma" icon="delete"></paper-icon-button>
+
+            <!-- TURMA PODERÁ SER FECHADA/CONCLUIDA -->
+          </div>      
+        </paper-card> 
+      </template> 
+    
+    </section>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-curso',
+
+      properties: {
+        turma:  {
+          type: Object,
+          value: {},
+          notify: true
+        }
+      },
+
+      criarTurma: function(evt){
+        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/');
+        var turmasRef = ref.child('turmas/' + this.curso.__firebaseKey__);
+
+        var turma = {
+          nome: this.turma.nome,
+          periodo: this.turma.periodo,
+          semestre: this.turma.periodo[0],
+          ano: this.turma.ano
+        }
+
+        turmasRef.push().set(turma);
+
+        this.turma = {};
+
+        this.$.periodo.selected = -1;
+        this.$.ano.selected = -1;
+      },
+
+      removerTurma: function(evt){
+        var urlBase = 'xhttps://blazing-inferno-2038.firebaseio.com/';
+        var ref = new Firebase(urlBase);        
+        var turmaKey = evt.model.__data__.turma.__firebaseKey__;
+        var cursoKey = this.curso.__firebaseKey__;
+
+        ref.child('cursos').child(cursoKey).once('value', function(snapshot){
+          var disciplinas = snapshot.val().matriz;
+
+          // remover distribuição de aula para esta turma
+          ref.child('distribuicao').child(turmaKey).once('value', function(snapshotDistribuicao){
+            if(snapshotDistribuicao.exists()){
+              // atualizar carga horária docente
+              var distribuicao = snapshotDistribuicao.val().toArray();
+
+              distribuicao.forEach(function(d){
+                var disciplina = disciplinas[d.disciplina];
+                var docente = d.docente;
+
+                ref.child('docentes').child(docente).once('value', function(snapshotDocente){
+                  if(snapshotDocente.exists()){                    
+                    var cargaDocente = snapshotDocente.val().carga;
+                    var cargaDisciplina = disciplina.aulas;
+
+                    snapshotDocente.ref().update({
+                      carga: cargaDocente - cargaDisciplina
+                    });
+                  }
+                });             
+              });
+
+              // remover o conjunto de distribuição de aulas da turma
+              snapshotDistribuicao.ref().remove();             
+            } 
+
+            // remover turma;
+            ref.child('turmas').child(cursoKey).child(turmaKey).remove();           
+          });          
+        });        
+      },
+
+      distribuir: function(evt){
+        this.domHost.proximo();
+        this.set('turma', evt.model.__data__.turma);
+
+        app.changeView({
+          title: this.turma.nome,
+          state: 'visiting'
+        });
+      }
+    });
+  })();
+  </script>
+</dom-module>

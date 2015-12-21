@@ -1,0 +1,190 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/firebase-element/firebase.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+
+<dom-module id="sapiens-list-view">
+	<template>		
+		<style>
+			paper-fab{
+				background-color: var(--app-primary-color);
+		        position: fixed;
+		        right: 24px;
+		        bottom: 24px;
+		        z-index: 1;
+
+        		-webkit-transition: all cubic-bezier(.74,.25,.91,.25) 0.5s;
+	    		-o-transition: all cubic-bezier(.74,.25,.91,.25) 0.5s;
+	    		transition: all cubic-bezier(.74,.25,.91,.25) 0.5s;
+		  	}
+
+			@keyframes zoom{
+			   	from {
+			      -webkit-transform: scale(1);
+			      -ms-transform: scale(1);
+			      -o-transform: scale(1);
+			      transform: scale(1);
+			   	}
+			   	to { 
+			      -webkit-transform: scale(1.1);
+			      -ms-transform: scale(1.1);
+			      -o-transform: scale(1.1);
+			      transform: scale(1.1);
+			   	}
+			}
+
+		  	paper-fab.evidence{
+				animation-name: zoom ;
+				animation-duration: 0.5s;
+			   	animation-timing-function: ease;
+			   	animation-iteration-count: infinite;
+			   	animation-direction: alternate;
+			   	animation-play-state: running;
+		    }
+
+		  	#content{
+		    	@apply(--layout-horizontal);
+		    	@apply(--layout-wrap);
+		    }
+
+		    .container{
+		    	@apply(--layout-vertical);
+		    	@apply(--layout-center-justified);
+		    	@apply(--layout-center);
+		    }
+
+		    .message{		    	
+		    	padding: 16px 0 16px 0;
+		    	text-align: center;
+					width: ~"calc(98.66% - 16px)";
+		    }
+
+		    sapiens-card{
+			   	@apply(--layout-flex);
+	      		margin: 16px;
+			  	min-width: 240px;			
+			}
+
+		</style>
+
+		<paper-fab class$="{{ evidence() }}" icon="icons:add" on-tap="_onAddClick" id="addButton">
+		</paper-fab>
+
+  		<!-- <sapiens-collection collection="{{collection}}" data="{{data}}">			
+  		</sapiens-collection> -->  		
+
+  		<firebase-collection
+	      id="collection"
+	      location="{{location}}"
+	      order-by-child="{{orderBy}}"
+	      data="{{collection}}">
+	    </firebase-collection>
+
+		<div id="page">  
+			<template is="dom-if" if="{{emptyCollection}}">
+				<paper-tooltip for="addButton" position="left" id="tip">Clique aqui para adicionar um novo item</paper-tooltip>
+			</template>
+    	
+			<template is="dom-if" if={{emptyCollection}}>
+				<div id="emptyMessage" class="container">
+					<div class="flex self-center message">Percebemos que você ainda não cadastrou nenhum item. Vamos criar um novo?</div>
+				</div>
+			</template>
+
+	  		<template is="dom-if" if={{!emptyCollection}}>			
+				<div id="content">
+					<template is="dom-if" if="{{isCardListView}}">
+						<template is="dom-repeat" items="[[data]]">
+							<sapiens-card
+								item-id="{{item._id}}" 
+								title="{{ get(item, titleProp) }}"
+								subtitle="{{ get(item, subtitleProp) }}"
+								content="{{ get(item, contentProp) }}"
+								edit-item="{{ item }}"
+								scope="{{_scope}}"
+								class="flex-child">
+							</sapiens-card>
+						</template>
+					</template>
+				</div>
+			</template> 
+		</div>	
+	</template>
+
+	<script>
+		Polymer({
+			is: 'sapiens-list-view',
+
+			behaviors: [Polymer.NeonAnimatableBehavior],
+
+			get: function(item, prop){
+				return item[prop];
+			},
+
+			properties: {
+				type: { type: String },
+				collection: { type: String },
+
+				model: { 
+					type: Object,
+					value: window[this.collection]
+				},
+
+				data: {
+					type: Array,
+					observer: '_dataChanged'
+				},				
+
+       			animationConfig: {
+		    		value: function(){
+		    			return {
+		    				'entry':[{
+		    					name: 'slide-from-left-animation',
+		    					node: this.$.page
+		    				}],		    				
+
+		    				'exit': [{
+		    					name: 'slide-left-animation',
+		    					node: this
+		    				}, {
+		    					name: 'fade-out-animation',
+		    					node: this.$.addButton
+		    				}]
+		    			}
+		    		}
+	    		}
+		  	},
+
+		    /* used to observe collection data changes */
+			_dataChanged: function(){
+				this.emptyCollection = !this.data.length > 0;				
+			},
+
+		    config: function(cfg){
+				for (key in cfg){
+					this[key] = cfg[key]
+				}
+			},
+
+			/* FAB buttons must be animated (evidence) when no data 
+			is found under the collection */
+		    evidence: function(){
+		   //  	if (!this.model.find().count() > 0){
+					// return "evidence";
+		   //  	}
+
+		   //  	return "normal";
+		   		// console.log(this.collection);
+		    },
+	    
+		    ready: function() {
+			  	this.model = window[this.collection];
+			   	this.emptyCollection = !this.collection.length > 0;
+			   	this.isCardListView = this.type === 'card';
+			    this.isTableListView = this.type === 'table';      	
+			}
+
+		});
+	</script>
+
+</dom-module>

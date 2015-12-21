@@ -1,0 +1,76 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="sapiens-carga-docente">
+  <template>
+    
+    <simple-material-table
+      title="Carga Horária Docente"
+      columns="[[columns]]"
+      table-data="[[tableData]]">
+    </simple-material-table>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-carga-docente',
+
+      properties: {
+        docentes: {
+          observer: '_docentesChanged'
+        }
+      },
+      
+      _docentesChanged: function(n, old){
+
+        var tableData = [];
+
+        this.docentes.forEach(function(docente){
+          tableData.push({
+            nome: docente['nome-completo'],
+            area: docente.area,
+            carga: docente.carga
+          });
+        });
+
+        this.tableData = tableData;
+      },
+
+      ready: function(){
+        
+        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+        var self = this;
+
+        ref.on('value', function(docentes){
+          self.docentes = docentes.val().toArray();
+        })
+
+        this.columns = [
+          {
+            title: 'Nome',
+            number: false,
+            column: 'nome',
+            hidden: false
+          },
+
+          {
+            title: 'Área',
+            number: false,
+            column: 'area',
+            hidden: false
+          },          
+
+          {
+            title: 'CH',
+            number: true,
+            column: 'carga',
+            hidden: false
+          }
+        ];
+      }
+    });
+  })();
+  </script>
+</dom-module>

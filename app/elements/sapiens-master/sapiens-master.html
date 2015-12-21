@@ -1,0 +1,252 @@
+<script src="sapiens-master.js"></script>
+
+<dom-module id="sapiens-master">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-button {
+        display: block;
+        margin: 24px 0;
+      }
+      
+      paper-button.colorful {
+        color: #4285f4;
+      }
+
+      paper-button[raised].colorful {
+        background: #4285f4;
+        color: #fff;
+      }
+    </style>
+
+    <template is="dom-if" if="{{user.master}}">
+
+      <paper-material class="page">
+        <h1>Vamos começar</h1>
+
+        <p>Para que seu <em>campus</em> possa começar a utilizar o Sapiens você deve inicar o procedimento de ciração da base de dados do sistema. Essa etapa é crucial, pois é nesta que define-se quais são os docentes autorizados a utilizar o sistema, quais são os cursos, disciplinas, matrizes e diversas outras entidades que irão compor o Sapiens.</p>
+      </paper-material>
+
+      <paper-material class="page">
+        <h1>1. Criação de base de dados</h1>
+
+        <p>Selecione uma planilha no Google Docs para criar novas coleções da dados no Sapiens</p>
+        <p>Caso não tenha o modelo de planilhas, acesse neste <a target="_blank" href="https://docs.google.com/spreadsheets/d/1s4RmLpAarIVMZXegTNejU1pGWUM_gtvBJeNVHgvRg88">link</a></p>
+
+        <paper-input value="{{sheetId}}" label="ID da planilha"></paper-input>
+
+        <template is="dom-if" if="{{sheetId}}">        
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="1" 
+            rows="{{rowsDocentes}}" 
+            tab="{{tabDocentes}}" 
+            published>
+          </google-sheets>
+
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="2" 
+            rows="{{rowsAreas}}" 
+            tab="{{tabAreas}}" 
+            published>
+          </google-sheets>
+
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="3" 
+            rows="{{rowsModalidades}}" 
+            tab="{{tabModalidades}}" 
+            published>
+          </google-sheets>
+
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="4" 
+            rows="{{rowsCursos}}" 
+            tab="{{tabCursos}}" 
+            published>
+          </google-sheets>
+
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="5" 
+            rows="{{rowsCargos}}" 
+            tab="{{tabCargos}}" 
+            published>
+          </google-sheets>
+
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="6" 
+            rows="{{rowsEscolaridades}}" 
+            tab="{{tabEscolaridades}}" 
+            published>
+          </google-sheets>
+
+          <div>Docentes: <span>{{rowsDocentes.length}}</span> registros</div>
+          <div>Áreas: <span>{{rowsAreas.length}}</span> registros</div>
+          <div>Modalidades: <span>{{rowsModalidades.length}}</span> registros</div>
+          <div>Cursos: <span>{{rowsCursos.length}}</span> registros</div>
+          <div>Cargos: <span>{{rowsCargos.length}}</span> registros</div>
+          <div>Escolaridades: <span>{{rowsEscolaridades.length}}</span> registros</div>
+        </template>
+        
+      </paper-material>
+
+      <paper-material class="page">
+        <h1>2. Definições de resposabilidades e funções</h1>
+
+        <p>Agora você deve selecionar o Diretor de Ensino, Pesquisa e Extensão do Câmpus. Ele terá permissão de acesso à interface administrativa do Sapiens. </p>
+
+        <paper-input-autocomplete label="Selecione o DIREN" value="{{diren}}" source="{{docentes}}" suggestions-in-overlay="true" search-property="nome-completo" class="flex" required></paper-input-autocomplete>
+
+      </paper-material>
+        
+      <paper-button raised class="colorful" on-tap="save"><iron-icon icon="save"></iron-icon>Salvar</paper-button>
+  
+    </template>
+    
+    
+
+  </template>
+  <script>
+  (function() {
+    'use strict';    
+
+    Polymer({
+      is: 'sapiens-master',
+
+      properties: {
+        active: {
+          type: Boolean,
+          notify: true  
+        },
+
+        rowsDocentes: { observer: '_rowsDocentesCompleted' },
+        rowsAreas: { observer: '_rowsAreasCompleted' },
+        rowsModalidades: { observer: '_rowsModalidadesCompleted' },
+        rowsCursos: { observer: '_rowsCursosCompleted' },
+        rowsCargos: { observer: '_rowsCargosCompleted' },
+        rowsEscolaridades: { observer: '_rowsEscolaridadesCompleted' },
+
+        data: {
+          type: Object,
+          value: {},
+          notify: true
+        },
+
+        docentes: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        diren: {
+          type: String
+        }
+      },
+
+      _rowsDocentesCompleted: function(n){
+        this.data.docentes = app.slugify(SapiensOpensheet.parse(n), 'email', function(email){
+          return email.split('@')[0].replace('.', '-');
+        });
+
+        var docentes = this.data.docentes;
+
+        this.docentes = Object.keys(docentes).map(function (key) {
+          docentes[key].key = key;
+
+          return docentes[key];
+        });
+      },
+
+      _rowsAreasCompleted: function(n){
+        this.data.areas = app.slugify(SapiensOpensheet.parse(n), 'nome');
+      },
+
+      _rowsModalidadesCompleted: function(n){
+        this.data.modalidades = app.slugify(SapiensOpensheet.parse(n), 'nome');
+      },
+
+      _rowsCursosCompleted: function(n){
+
+        this.data.cursos = app.slugify(SapiensOpensheet.parse(n), 'nome');      
+
+        /* TODO
+  
+            Pegar lista de disciplinas da matriz e adicionar 
+            no objeto matriz de cado curso
+        */
+
+        var cursos = this.data.cursos; 
+
+        Object.keys(cursos).forEach(function(key) {
+          var curso = cursos[key];
+
+          if (curso.matriz){
+            var self = this;
+            var sheet = document.createElement('google-sheets');              
+
+            sheet.key = curso.matriz;
+            sheet.published = true;  
+
+            sheet.addEventListener('google-sheet-data', function(e) {
+              curso.matriz = app.slugify(SapiensOpensheet.parse(this.rows), 'disciplina', function(nomeDisciplina, disciplina){
+                  return app.slug(nomeDisciplina) + '-' + disciplina.semestre;
+                }); 
+            });    
+          }
+        });
+      },
+
+      _rowsCargosCompleted: function(n){
+        this.data.cargos = app.slugify(SapiensOpensheet.parse(n), 'nome');
+      },
+
+      _rowsEscolaridadesCompleted: function(n){
+        this.data.escolaridades = app.slugify(SapiensOpensheet.parse(n), 'nome');
+      },
+
+      entrar: function(evt){
+        var self = this;
+
+        /* Comparar senha master com a senha na base de dados */
+        self.db.child('master').on('value', function(snapshot){          
+          if (self.senha === snapshot.val().secret){
+            /* Ativar o modo administrativo */
+            self.db.child('master/active').set(true);
+            app.master = true;
+          }else{
+            app.$.toast.text = 'Senha incorreta';
+            app.$.toast.show();
+          }
+        });        
+      },
+
+      ready: function(){
+        this.db = new Firebase('https://blazing-inferno-2038.firebaseio.com/');
+        this.app = app;
+
+        var self = this;
+
+        this.db.child('master').on('value', function(snapshot){
+          self.active = snapshot.val().active;
+          app.active = self.active;
+        });
+      },
+
+      save: function(){
+        /* Configurar DIREN */
+        this.data.docentes[this.diren.key].diren = true;
+
+        this.db.update(this.data);
+        this.data = [];
+      }
+    });
+  })();
+  </script>
+</dom-module>

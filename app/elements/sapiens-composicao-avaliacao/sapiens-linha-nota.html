@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="sapiens-linha-nota">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-flex);
+      }
+
+      tr{
+        @apply(--layout-horizontal);
+        width: 100%;
+      }
+
+      td{
+        @apply(--layout-flex);
+        margin: 10px;
+      }
+
+      .span-2{
+
+      }
+    </style>
+    
+    <tr>
+      <td><paper-input label="Sigla"></paper-input></td>
+      <td><paper-input label="Instrumento de avaliação"></paper-input></td>
+      <td><paper-input value="{{peso}}" label="Peso" type="number" min="1" max="10"></paper-input></td>
+      <td><paper-input value="{{maximo}}" label="Máximo" type="number" min="1" max="10"></paper-input></td>
+      <td><paper-icon-button icon="delete" title="delete" on-click="_remove"></paper-icon-button></td>
+    </tr>
+          
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-linha-nota',
+
+      properties: {
+        peso: {
+          type: Number,
+          observer: '_pesoMudou'
+        },
+
+        maximo: {
+          type: Number,
+          observer: '_maximoMudou'
+        },
+
+        nota: {
+          computed: 'notaCalculada(peso, maximo)'
+        }
+      },
+
+      _pesoMudou: function(n, o){
+        if (this.maximo){
+          this.lancarModificacoes(this);
+        }
+      },
+
+      _maximoMudou: function(n, o){
+        if (this.peso){
+          this.lancarModificacoes(this);
+        }
+      },
+
+      notaCalculada: function(peso, maximo){
+        return (peso / 10) * maximo;
+      },
+
+      _remove: function(e){
+        Polymer.dom.flush();
+        this.parentNode.removeChild(this);
+
+        this.lancarModificacoes();
+      }
+    });
+  })();
+  </script>
+</dom-module>

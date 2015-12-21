@@ -1,0 +1,113 @@
+<link rel="import" href="sapiens-lista-cursos.html">
+<link rel="import" href="sapiens-distribuicao-input.html">
+<link rel="import" href="sapiens-curso.html">
+<link rel="import" href="sapiens-turma.html">
+
+<dom-module id="sapiens-distribuicao-disciplinas">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      neon-animated-pages {
+        @apply(--layout-flex);
+      }
+
+    </style>
+      
+    <firebase-collection
+      id="cursosCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/cursos"
+      order-by-child="nome"
+      data="{{cursos}}">
+    </firebase-collection>
+
+    <firebase-collection
+      id="matrizCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/cursos/{{curso.__firebaseKey__}}/matriz"
+      order-by-child="semestre"
+      equal-to="{{turma.semestre}}"
+      data="{{matriz}}">
+    </firebase-collection>
+
+    <firebase-collection
+      id="turmasCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{curso.__firebaseKey__}}"
+      data="{{turmas}}">
+    </firebase-collection>
+
+    <neon-animated-pages 
+      id="paginas" 
+      selected="{{selecionada}}" 
+      entry-animation="[[entryAnimation]]" 
+      exit-animation="[[exitAnimation]]">
+
+      <neon-animatable>
+        <sapiens-lista-cursos 
+          cursos="{{cursos}}" 
+          matriz="{{matriz}}" 
+          curso="{{curso}}">
+        </sapiens-lista-cursos>
+      </neon-animatable>
+
+      <neon-animatable>
+        <sapiens-curso
+          turmas="{{turmas}}" 
+          curso="{{curso}}"
+          turma="{{turma}}">
+        </sapiens-curso>
+      </neon-animatable>
+
+      <neon-animatable>
+        <sapiens-turma 
+          turma="{{turma}}"
+          matriz="{{matriz}}"
+          curso="{{curso}}">
+        </sapiens-turma>
+      </neon-animatable>
+    </neon-animated-pages>   
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-distribuicao-disciplinas',
+
+      properties: {
+        selecionada: {
+          type: Number,
+          value: 0
+        }
+      },
+
+      anterior: function() {
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+
+        this.selecionada = parseInt(this.selecionada - 1);
+
+        if (this.selecionada == 0){
+          app.visiting = false;
+        }
+      },
+
+      proximo: function() {
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.selecionada = parseInt(this.selecionada + 1);
+      },
+
+      ready: function(){
+        var self = this;
+
+        app.backAction = function(){
+          self.anterior();
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

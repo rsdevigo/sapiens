@@ -1,0 +1,79 @@
+<dom-module id="sapiens-lista-cursos">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card{
+        margin-bottom: 24px;
+        border-top: solid 3px var(--secondary-text-color);
+      }
+    </style>
+      
+    <section id="lista-cursos">
+      <template is="dom-repeat" items="{{cursos}}" as="curso">
+        <paper-card heading="{{curso.nome}}"> 
+          <div class="card-content">
+            <p><strong>Descrição: </strong><span>{{curso.catalogo}}</span></p>
+            <p><strong>Duração: </strong><span>{{curso.duracao}}</span></p>
+          </div>
+
+          <div class="card-actions">
+            <paper-button on-tap="listar">Listar turmas</paper-button>          
+          </div>       
+        </paper-card>
+      </template>  
+    </section>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-lista-cursos',
+
+      properties: {
+        curso: {
+          type: Object,
+          observer: '_cursoChanged',
+          notify: true
+        },
+
+        matriz: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      _cursoChanged: function(curso){
+        // this.matriz = curso.matriz.toArray();
+
+        if(curso.duracao.indexOf('semestre') >= 0){ // curso semestral
+          var semestres = parseInt(curso.duracao.split(' ')[0]);
+          this.curso.semestres = [];
+          
+          for (var i = 1; i <= semestres; i+=1){
+            this.curso.semestres.push(i);
+          }          
+        }
+        
+      },
+
+      listar: function(evt){
+        this.curso = evt.model.__data__.curso;
+        var paginas = document.querySelector('#paginas');
+
+        this.domHost.proximo();
+
+        app.changeView({
+          title: this.curso.nome,
+          state: 'visiting'
+        });
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
