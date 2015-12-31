@@ -10,7 +10,7 @@
         border-top: solid 3px var(--secondary-text-color);
       }
     </style>
-      
+
     <section id="lista-cursos">
       <template is="dom-repeat" items="{{cursos}}" as="curso">
         <paper-card heading="{{curso.nome}}"> 
@@ -48,7 +48,7 @@
       },
 
       _cursoChanged: function(curso){
-        // this.matriz = curso.matriz.toArray();
+        this.matriz = curso.matriz.toArray();
 
         if(curso.duracao.indexOf('semestre') >= 0){ // curso semestral
           var semestres = parseInt(curso.duracao.split(' ')[0]);
@@ -57,8 +57,7 @@
           for (var i = 1; i <= semestres; i+=1){
             this.curso.semestres.push(i);
           }          
-        }
-        
+        }        
       },
 
       listar: function(evt){
@@ -69,7 +68,8 @@
 
         app.changeView({
           title: this.curso.nome,
-          state: 'visiting'
+          state: 'visiting',
+          route: 'turmas'
         });
       }
 

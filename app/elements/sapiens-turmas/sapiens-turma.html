@@ -1,3 +1,5 @@
+<link rel="import" href="sapiens-disciplina-adicional.html">
+
 <dom-module id="sapiens-turma">
   <template>
     <style>
@@ -44,12 +46,15 @@
 
     </style>
 
-    <firebase-collection
-      id="docentesCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/docentes"
-      order-by-child="nome"
-      data="{{docentes}}">
-    </firebase-collection>
+    <firebase-document
+      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{curso.__firebaseKey__}}/{{turma.__firebaseKey__}}/disciplinas"
+      data="{{disciplinas}}">
+    </firebase-document>
+
+    <firebase-document
+      location="https://blazing-inferno-2038.firebaseio.com/teste"
+      data="{{teste}}">
+    </firebase-document>
 
     <paper-tabs selected="{{selected}}" noink>
       <paper-tab>Distribuição</paper-tab>
@@ -60,23 +65,36 @@
     <h2>Periodo: <span>{{turma.periodo}}</span></h2>
 
     <iron-pages selected="{{selected}}">
+      <!-- Lista de disciplinas para atribuição docente -->
       <section id="turma">
-        <template is="dom-repeat" items="{{matriz}}" as="disciplina">
-          <paper-card heading="{{disciplina.disciplina}}" class="disciplina"> 
-            <div class="card-content">
-              <div>
-                <sapiens-distribuicao-input
-                  index="{{index}}"
-                  disciplina="{{disciplina}}"
-                  turma="{{turma}}"
-                  docentes="{{docentes}}">
-                </sapiens-distribuicao-input>              
-              </div>            
-            </div>    
-          </paper-card> 
-        </template>
+        <div id="turmas-container">
+          <template is="dom-repeat" items="{{disciplinas}}" as="disciplina">
+            <paper-card heading="{{disciplina.disciplina}}" class="disciplina"> 
+              <div class="card-content">
+                <div>
+                  <sapiens-distribuicao-input
+                    index="{{index}}"
+                    disciplina="{{disciplina}}"
+                    turma="{{turma}}"
+                    docentes="{{docentes}}">
+                  </sapiens-distribuicao-input>              
+                </div>            
+              </div>    
+            </paper-card>
+          </template>
+        </div>
+
+        <paper-fab class="fab" icon="add" on-tap="_modal" data-dialog="modal"></paper-fab>
+        
+        <!-- Modal para adição de novas disciplinas para esta turma -->
+        <sapiens-disciplina-adicional 
+          id="displinaAdicional"
+          matriz="{{matriz}}"
+          disciplinas="{{disciplinas}}">
+        </sapiens-disciplina-adicional>       
       </section>
 
+      <!-- Montagem de horário da turma -->
       <section id="horario">
         <template is="dom-repeat" items="{{semana}}" as="diaSemana">
           <paper-card heading="{{diaSemana}}" class="horario">
@@ -107,12 +125,20 @@
     'use strict';
 
     Polymer({
+      _t: function(t){
+        console.log(t);
+      },
+
       is: 'sapiens-turma',
 
       properties: {
         selected: {
           type: Number,
           value: 0
+        },
+
+        t:{
+          observer: '_t'
         },
 
         turma: {
@@ -199,6 +225,20 @@
               }         
             });          
           });  
+        }
+      },
+
+      _modal: function(evt){
+        this.$.displinaAdicional.querySelector('#modal').open();
+      },
+
+      ready: function(){
+        if (this.curso && this.turma){
+          var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/turmas/' + this.curso.__firebaseKey__ + '/' + this.turma.__firebaseKey__);
+
+          ref.on('child_added', function(snapshotDocente){
+            console.log(snapshot.val());
+          })
         }
       }
     });

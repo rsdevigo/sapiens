@@ -44,7 +44,9 @@
         var self = this;
 
         ref.on('value', function(docentes){
-          self.docentes = docentes.val().toArray();
+          if (docentes.exists()){
+            self.docentes = docentes.val().toArray();
+          }
         })
 
         this.columns = [

@@ -1,4 +1,5 @@
-<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="sapiens-create-view">
 	<template>
@@ -14,35 +15,40 @@
 			properties: {
 				model: { type: Object },
 
+				collection: { 
+					type: Object, 
+					notify: true 
+				},
+
 				entityObj: { 
 					type: Object, 
 					notify: true 
 				},
 
-	    	animationConfig: {
-	    		value: function(){
-	    			return {
-	    				'entry': [{
-	    					name: 'slide-from-right-animation',
-	    					node: this
-	    				},{
-	    					name: 'fade-in-animation',
-	    					node: this
-	    				}],
+		    	animationConfig: {
+		    		value: function(){
+		    			return {
+		    				'entry': [{
+		    					name: 'slide-from-right-animation',
+		    					node: this
+		    				},{
+		    					name: 'fade-in-animation',
+		    					node: this
+		    				}],
 
-	    				'exit': [{
-	    					name: 'slide-right-animation',
-	    					node: this
-	    				}, {
-	    					name: 'fade-out-animation',
-	    					node: this
-	    				}]
-	    			}
-	    		}
-	    	}
-		  },
+		    				'exit': [{
+		    					name: 'slide-right-animation',
+		    					node: this
+		    				}, {
+		    					name: 'fade-out-animation',
+		    					node: this
+		    				}]
+		    			}
+		    		}
+		    	}
+		  	},
 
-	    listeners: {
+		    listeners: {
 				'iron-form-submit': '_handleSubmit'
 			},
 
@@ -52,31 +58,41 @@
 				}
 			},
 
-	    save: function(evt){
-	    	document.querySelector('.sapiens-form').submit();
-	    },		
+		    save: function(evt){
+		    	document.querySelector('.sapiens-form').submit();
+		    },		
 
 			_handleSubmit: function(evt){
 				evt.preventDefault();
 
-				var editing = document.querySelector('sapiens-app').state === 'editing';
+				this.set('entityObj.created-at', new Date().toString());
 
-				if(!editing){
-					this.entityObj.createdAt = new Date();
-					this.model.insert(this.entityObj);
-				}else{
-					var query = { _id: this.entityObj._id };
-					var update = this.entityObj;
+				if (this.entityObj.index >= 0){ // update
+					var index = this.entityObj.index;
+					
+					this.set('collection.' + index, this.entityObj);		
+				}else{ // create
+					if (!this.collection){
+			          this.collection = [];				        
+			        }
 
-					this.model.update(query, update);
+			        this.push('collection', this.entityObj);				        
 				}
-
-				this.clearForm();
-				this._scope.back();
+				
+				this.entityObj = {};
+				app.back();
 			},
 
 			clearForm: function(){
 				this.entityObj = {};
+			},
+
+			ready: function(){
+				var _this = this;
+
+				app.saveAction = function(){
+					_this.save();	
+				}
 			}
 		});
 	</script>

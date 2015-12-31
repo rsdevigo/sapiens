@@ -1,7 +1,9 @@
-<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
 
-<link rel="import" href="../bower_components/firebase-element/firebase.html">
-<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../sapiens-card/sapiens-card.html">
+<link rel="import" href="sapiens-create-view.html">
 
 <dom-module id="sapiens-list-view">
 	<template>		
@@ -67,41 +69,25 @@
 
 		</style>
 
-		<paper-fab class$="{{ evidence() }}" icon="icons:add" on-tap="_onAddClick" id="addButton">
+		<paper-fab class$="{{evidence}}" icon="icons:add" on-tap="_onAddClick" id="addButton">
 		</paper-fab>
 
-  		<!-- <sapiens-collection collection="{{collection}}" data="{{data}}">			
-  		</sapiens-collection> -->  		
-
-  		<firebase-collection
-	      id="collection"
-	      location="{{location}}"
-	      order-by-child="{{orderBy}}"
-	      data="{{collection}}">
-	    </firebase-collection>
 
 		<div id="page">  
-			<template is="dom-if" if="{{emptyCollection}}">
-				<paper-tooltip for="addButton" position="left" id="tip">Clique aqui para adicionar um novo item</paper-tooltip>
-			</template>
-    	
-			<template is="dom-if" if={{emptyCollection}}>
-				<div id="emptyMessage" class="container">
-					<div class="flex self-center message">Percebemos que você ainda não cadastrou nenhum item. Vamos criar um novo?</div>
-				</div>
-			</template>
+			<div id="emptyMessage" class="container" hidden$="{{!emptyCollection}}">
+				<div class="flex self-center message">Percebemos que você ainda não cadastrou nenhum item. Vamos criar um novo?</div>
+			</div>
 
 	  		<template is="dom-if" if={{!emptyCollection}}>			
 				<div id="content">
 					<template is="dom-if" if="{{isCardListView}}">
-						<template is="dom-repeat" items="[[data]]">
+						<template is="dom-repeat" items="{{collection}}">
 							<sapiens-card
-								item-id="{{item._id}}" 
-								title="{{ get(item, titleProp) }}"
-								subtitle="{{ get(item, subtitleProp) }}"
-								content="{{ get(item, contentProp) }}"
-								edit-item="{{ item }}"
-								scope="{{_scope}}"
+								title="[[ get(item, titleProp) ]]"
+								subtitle="[[ get(item, subtitleProp) ]]"
+								content="[[ get(item, contentProp) ]]"
+								edit-item="[[ getItem(item, index)]]"
+								scope="[[_scope]]"
 								class="flex-child">
 							</sapiens-card>
 						</template>
@@ -121,19 +107,20 @@
 				return item[prop];
 			},
 
+			getItem: function(item, index){
+				item.index = index;
+
+				return item;
+			},
+
 			properties: {
 				type: { type: String },
-				collection: { type: String },
-
-				model: { 
+				
+				collection: { 
 					type: Object,
-					value: window[this.collection]
+					notify: true,
+					observer: '_collectionChanged'
 				},
-
-				data: {
-					type: Array,
-					observer: '_dataChanged'
-				},				
 
        			animationConfig: {
 		    		value: function(){
@@ -155,33 +142,27 @@
 	    		}
 		  	},
 
-		    /* used to observe collection data changes */
-			_dataChanged: function(){
-				this.emptyCollection = !this.data.length > 0;				
-			},
-
+		  	_collectionChanged: function(collection){
+		  		if (collection){
+			  		if(collection.length > 0){
+			  			this.emptyCollection = false;
+			  			this.set('evidence', 'normal');
+			  		}
+			  	}else{
+			  		this.emptyCollection = true;
+			  		this.set('evidence', 'evidence');
+			  	}
+		  	},
+		 
 		    config: function(cfg){
 				for (key in cfg){
 					this[key] = cfg[key]
 				}
 			},
-
-			/* FAB buttons must be animated (evidence) when no data 
-			is found under the collection */
-		    evidence: function(){
-		   //  	if (!this.model.find().count() > 0){
-					// return "evidence";
-		   //  	}
-
-		   //  	return "normal";
-		   		// console.log(this.collection);
-		    },
 	    
 		    ready: function() {
-			  	this.model = window[this.collection];
-			   	this.emptyCollection = !this.collection.length > 0;
-			   	this.isCardListView = this.type === 'card';
-			    this.isTableListView = this.type === 'table';      	
+			  	this.isCardListView = this.type === 'card';
+			    this.isTableListView = this.type === 'table';
 			}
 
 		});

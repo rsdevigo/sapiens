@@ -1,10 +1,8 @@
-<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="sapiens-card">
 	<template>
 		<style>
-			
-
 		    .title {
 	      		margin-bottom: 16px;	      	
 		    }
@@ -35,7 +33,7 @@
 					<div class="title">
 		          		<div class="medium">[[title]]</div>
 		          		<div class="small">[[subtitle]]</div>
-		        	</div>								
+		        	</div>									
 				</div>
 
 				<div class="card-content">
@@ -43,11 +41,8 @@
 				</div>	
 
 				<div class="card-actions horizontal layout">
-			        <paper-icon-button icon="create" title="Editar" on-tap="editAction"></paper-icon-button>        
-
-			        <span class="flex"></span>
-
-					<paper-icon-button icon="expand-more" title="Mais"></paper-icon-button>
+			        <paper-icon-button icon="create" title="Editar" on-tap="editAction"></paper-icon-button> 
+			        <paper-icon-button icon="delete" title="Remover" on-tap="removeAction"></paper-icon-button>       
 			    </div>	    		
 			</paper-card>
 		</div>
@@ -59,6 +54,10 @@
 
 			editAction: function(){
 				this.scope.edit(this.editItem);
+			},
+
+			removeAction: function(){
+				this.scope.remove(this.editItem);
 			},
 
 			properties: {

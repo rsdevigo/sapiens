@@ -87,12 +87,21 @@
             published>
           </google-sheets>
 
+          <google-sheets 
+            key="{{sheetId}}" 
+            tab-id="7" 
+            rows="{{rowsEixos}}" 
+            tab="{{tabEixos}}" 
+            published>
+          </google-sheets>
+
           <div>Docentes: <span>{{rowsDocentes.length}}</span> registros</div>
           <div>Áreas: <span>{{rowsAreas.length}}</span> registros</div>
           <div>Modalidades: <span>{{rowsModalidades.length}}</span> registros</div>
           <div>Cursos: <span>{{rowsCursos.length}}</span> registros</div>
           <div>Cargos: <span>{{rowsCargos.length}}</span> registros</div>
           <div>Escolaridades: <span>{{rowsEscolaridades.length}}</span> registros</div>
+          <div>Eixos: <span>{{rowsEixos.length}}</span> registros</div>
         </template>
         
       </paper-material>
@@ -108,9 +117,7 @@
         
       <paper-button raised class="colorful" on-tap="save"><iron-icon icon="save"></iron-icon>Salvar</paper-button>
   
-    </template>
-    
-    
+    </template>   
 
   </template>
   <script>
@@ -132,6 +139,7 @@
         rowsCursos: { observer: '_rowsCursosCompleted' },
         rowsCargos: { observer: '_rowsCargosCompleted' },
         rowsEscolaridades: { observer: '_rowsEscolaridadesCompleted' },
+        rowsEixos: { observer: '_rowsEixosCompleted' },
 
         data: {
           type: Object,
@@ -209,6 +217,10 @@
 
       _rowsEscolaridadesCompleted: function(n){
         this.data.escolaridades = app.slugify(SapiensOpensheet.parse(n), 'nome');
+      },
+
+      _rowsEixosCompleted: function(n){
+        this.data.eixos = app.slugify(SapiensOpensheet.parse(n), 'nome');
       },
 
       entrar: function(evt){

@@ -1,0 +1,84 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="sapiens-novo-projeto">
+  <template>
+    <style>
+      paper-dialog{
+        @apply(--layout-vertical);
+        width: 80%;
+      }
+    </style>
+
+    <paper-dialog id="modal" modal>
+      <h1>Novo projeto</h1>
+
+      <paper-input label="Nome do projeto" value="{{projeto.nome-projeto}}"></paper-input>
+      <paper-textarea 
+        label="Resumo do projeto" 
+        value="{{projeto.descricao}}" 
+        char-counter 
+        maxlength="500">
+      </paper-textarea>
+
+      <paper-dropdown-menu label="Categoria" value="{{projeto.categoria}}">
+        <paper-menu class="dropdown-content" id="periodo"> 
+          <paper-item>Ensino</paper-item>
+          <paper-item>Pesquisa</paper-item>
+          <paper-item>Extensão</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+
+      <paper-input label="Carga horária semanal" type="number" value="{{projeto.carga}}">
+        <div suffix>horas</div>
+      </paper-input>
+          
+      <div class="buttons">
+        <paper-button dialog-confirm on-tap="_cancelar">Cancelar</paper-button>
+        <paper-button dialog-confirm on-tap="_salvar" autofocus>Salvar</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-novo-projeto',
+
+      properties: {
+        projeto: {
+          type: Object,
+          notify: true,
+          value: {}
+        },
+
+        projetos: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      _salvar: function(evt){
+        if (!this.projetos){
+          this.set('projetos', { '0': this.projeto });
+        }else{
+          this.push('projetos', this.projeto);
+        }
+        
+        this.projeto = {};
+      }
+    });
+  })();
+  </script>
+</dom-module>

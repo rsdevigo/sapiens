@@ -37,11 +37,17 @@
           notify: true
         },
 
+        disciplina: {
+          type: Object,
+          notify: true
+        },
+
         turma: {
           observer: '_turmaChanged'
         }   
       },
 
+      /* Chamado quando o usuário seleciona uma turma para edição */
       _turmaChanged: function(turma){
         if (turma.__firebaseKey__){
 
@@ -50,7 +56,7 @@
 
           ref.child('distribuicao/' + this.turma.__firebaseKey__)
             .orderByChild('disciplina')
-            .equalTo(this.disciplina.__firebaseKey__)
+            .equalTo(this.disciplina.key)
             .on('value', function(snapshot){
 
               if(snapshot.exists()){
@@ -74,7 +80,7 @@
 
         var urlBase = 'https://blazing-inferno-2038.firebaseio.com/distribuicao/';
         var ref = new Firebase(urlBase + this.turma.__firebaseKey__);
-        var distKey = this.disciplina.__firebaseKey__;
+        var distKey = this.disciplina.key;
         var self = this;
 
         if (!this.docente.isEmpty()){
@@ -103,7 +109,7 @@
 
                 ref.push().set({
                   docente: docente.__firebaseKey__,
-                  disciplina: self.disciplina.__firebaseKey__
+                  disciplina: self.disciplina.key
                 });
 
                 // atualizar carga horária docente

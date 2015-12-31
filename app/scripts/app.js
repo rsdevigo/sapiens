@@ -53,6 +53,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   });
 
+  Array.prototype.reduce = function(callback, initialValue) {
+    var len = this.length;
+    var index = 1; // index começa em 1
+    var accumulatedValue = this[0]; // valor acumulado é o 1o valor
+    // se for passado valor inicial, mudamos as coisas
+    if ( initialValue ) {
+      index = 0; // começa em 0
+      accumulatedValue = initialValue; // acumulado = valor inicial
+    }
+    while(index < len) {
+      accumulatedValue = callback(accumulatedValue, this[index], index, this );
+      index++;
+    }
+    return accumulatedValue;
+  };
+
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
     // set app.baseURL to '/your-pathname/' if running from folder in production
@@ -106,6 +122,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     this.activeTitle = view.title;    
     this.activeViewElement = view.activeViewElement;
+
+    var parent = document.querySelector('[data-route="' + view.route + '"]');
+    var viewNode = Polymer.dom(parent).querySelector('.view');
+
+    app.route = view.route;    
+    app.backAction = viewNode.backAction;
 
     if (!app[view.state]===app[app.state]){
       app[view.state] = true; //new state 
@@ -208,46 +230,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var userEmail = auth.detail.user.google.email;    
     var displayName = auth.detail.user.google.displayName;    
     var key = userEmail.split('@')[0].replace('.', '-');
-    var user = {};
+    
+    var usuario = {
+      name: displayName,
+      email: userEmail
+    };
 
-    ref.child('users').child(key).once('value', function(snapshot){  
+    ref.child('users').child(key).once('value', function(snapshot){
       if (!snapshot.exists()){ // usuário não existe na base de dados
-
-        user = {
-          name: displayName,
-          email: userEmail
-        };
 
         // verificar se usuário é administrador
         ref.child('administradores').orderByChild('email').equalTo(userEmail).once('value', function(snapshot){
           if(snapshot.exists()){
-            user.master = true;
+            usuario.master = true;
           }
 
           ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshotDocentes) {
             var key = userEmail.split('@')[0].replace('.', '-');
 
             if (snapshotDocentes.exists()){              
-              var docente = snapshotDocentes.val()[key];
+              var docente = snapshotDocentes.val()[key];              
 
-              user.diren = docente.diren || false;
-              user.docente = true; 
+              usuario.diren = docente.diren || false;
+              usuario.docente = true; 
+              usuario.key = key;
 
-              app.atualizarUsuario(auth, user);
+              app.atualizarUsuario(auth, usuario);              
             }else{
-              user.docente = false; 
-              user.diren = false; 
+              usuario.docente = false; 
+              usuario.diren = false; 
             }
 
-            ref.child('users').child(key).set(user); 
+            ref.child('users').child(key).set(usuario); 
           });
         });             
       }
       
-      user = snapshot.val();
-      app.atualizarUsuario(auth, user);
+      usuario = snapshot.val();
+      app.atualizarUsuario(auth, usuario);
 
-      
       ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
         if (!snapshot.exists()) {
           if(!user.master){

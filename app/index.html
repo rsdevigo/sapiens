@@ -82,6 +82,11 @@
               <span>Meus planos de ensino</span>
             </a>
 
+            <a data-route="projetos" href="/projetos" hidden$="{{!user.docente}}">
+              <iron-icon icon="info"></iron-icon>
+              <span>Meus projetos</span>
+            </a>
+
             <a data-route="atividades" href="/atividades" hidden$="{{!user.docente}}">
               <iron-icon icon="info"></iron-icon>
               <span>Minhas atividades</span>
@@ -97,9 +102,9 @@
                   <span>Cadastros</span>
                 </a>
 
-                <a data-route="distribuicao-disciplinas" href="/diren/distribuicao">
+                <a data-route="turmas" href="/diren/turmas">
                   <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Distribuição de Disciplinas</span>
+                  <span>Turmas</span>
                 </a> 
 
                 <a data-route="carga-docente" href="/diren/cargadocente">
@@ -137,14 +142,30 @@
         <paper-toolbar id="mainToolbar">
           <paper-icon-button id="paperToggle" icon="menu" hidden="{{viewing}}" paper-drawer-toggle></paper-icon-button>
 
-          <paper-icon-button hidden="{{!visiting}}" icon="arrow-back" on-tap="back"></paper-icon-button> 
+          <paper-icon-button 
+            hidden="{{!visiting}}" 
+            icon="arrow-back" 
+            on-tap="back">
+          </paper-icon-button> 
+
+          <paper-icon-button 
+            hidden="{{!editing}}" 
+            icon="arrow-back" 
+            on-tap="back">
+          </paper-icon-button> 
+
+          <paper-icon-button 
+            hidden="{{!creating}}" 
+            icon="arrow-back" 
+            on-tap="back">
+          </paper-icon-button> 
+
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
           <paper-icon-button hidden="{{!normal}}" icon="search"></paper-icon-button>
           <paper-icon-button hidden="{{!creating}}" icon="save" on-tap="saveAction"></paper-icon-button>
           <paper-icon-button hidden="{{!editing}}" icon="save" on-tap="saveAction"></paper-icon-button>
-
           <paper-icon-button hidden="{{!viewing}}" icon="create" on-tap="editAction"></paper-icon-button>
           <paper-icon-button hidden="{{!viewing}}" icon="delete" on-tap="deleteAction"></paper-icon-button>
           <!-- END Toolbar icons -->
@@ -173,34 +194,42 @@
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="master">              
-              <sapiens-master user="{{user}}"></sapiens-master>
+              <sapiens-master class="view" user="{{user}}"></sapiens-master>
             </section>
 
             <section data-route="home">
-              <sapiens-home user="{{user}}"></sapiens-home>
+              <sapiens-home class="view" user="{{user}}"></sapiens-home>
             </section>
 
             <section data-route="login">              
-              <sapiens-login></sapiens-login>
+              <sapiens-login class="view"></sapiens-login>
             </section>     
 
             <!-- DOCENTE -->
             
             <section data-route="disciplinas">
-              <sapiens-disciplinas></sapiens-disciplinas>
+              <sapiens-disciplinas class="view" user="{{user}}"></sapiens-disciplinas>
             </section>
 
             <section data-route="planos">
-              <sapiens-planos></sapiens-planos>
+              <sapiens-planos class="view"></sapiens-planos>
+            </section>
+
+            <section data-route="projetos">
+              <sapiens-projetos class="view" user="{{user}}"></sapiens-projetos>
+            </section>
+
+            <section data-route="atividades">
+              <sapiens-atividades class="view"></sapiens-atividades>
             </section>
 
             <!-- DIREN -->
-            <section data-route="distribuicao-disciplinas">
-              <sapiens-distribuicao-disciplinas user="{{user}}"></sapiens-distribuicao-disciplinas>
+            <section data-route="turmas">
+              <sapiens-turmas class="view" user="{{user}}"></sapiens-turmas>
             </section> 
 
             <section data-route="carga-docente">
-              <sapiens-carga-docente></sapiens-carga-docente>
+              <sapiens-carga-docente class="view"></sapiens-carga-docente>
             </section>             
 
             <section data-route="user-info">

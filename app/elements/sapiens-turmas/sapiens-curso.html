@@ -12,6 +12,7 @@
     </style>
       
     <section id="curso-selecionado">
+      <!-- Criação de novas turmas -->
       <paper-card heading="Nova turma"> 
         <div class="card-content">
 
@@ -45,8 +46,7 @@
               <paper-item>2020/1</paper-item>
               <paper-item>2020/2</paper-item>
             </paper-menu>
-          </paper-dropdown-menu>      
-
+          </paper-dropdown-menu>
         </div> 
 
         <div class="card-actions">
@@ -54,6 +54,7 @@
         </div>      
       </paper-card>
         
+      <!-- Lista de turmas criadas -->
       <template is="dom-repeat" items="{{turmas}}" as="turma">        
         <paper-card heading="{{turma.nome}}"> 
           <div class="card-content">
@@ -84,19 +85,30 @@
         turma:  {
           type: Object,
           value: {},
-          notify: true
+          notify: true,
+          observer: '_turmaChanged'
         }
+      },
+
+      _turmaChanged: function(turma){
+        
       },
 
       criarTurma: function(evt){
         var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/');
         var turmasRef = ref.child('turmas/' + this.curso.__firebaseKey__);
+        var semestre = this.turma.periodo[0];
+        var disciplinas =  this.matriz.filter(function(disciplina){
+            return disciplina.semestre == semestre
+        });
 
         var turma = {
           nome: this.turma.nome,
           periodo: this.turma.periodo,
-          semestre: this.turma.periodo[0],
-          ano: this.turma.ano
+          semestre: semestre,
+          ano: this.turma.ano,
+          disciplinas: disciplinas,
+          curso: this.curso.__firebaseKey__; 
         }
 
         turmasRef.push().set(turma);
@@ -154,7 +166,8 @@
 
         app.changeView({
           title: this.turma.nome,
-          state: 'visiting'
+          state: 'visiting',
+          route: 'turmas'
         });
       }
     });

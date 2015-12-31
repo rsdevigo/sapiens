@@ -1,42 +1,26 @@
+<link rel="import" href="sapiens-turmas-data.html">
 <link rel="import" href="sapiens-lista-cursos.html">
 <link rel="import" href="sapiens-distribuicao-input.html">
 <link rel="import" href="sapiens-curso.html">
 <link rel="import" href="sapiens-turma.html">
 
-<dom-module id="sapiens-distribuicao-disciplinas">
+<dom-module id="sapiens-turmas">
   <template>
     <style>
-      :host {
-        display: block;
+      neon-animated-pages{
+        @apply(--layout-flex);        
       }
-
-      neon-animated-pages {
-        @apply(--layout-flex);
-      }
-
     </style>
+
+    <sapiens-turmas-data
+      cursos="{{cursos}}"
+      curso="{{curso}}"
+      matriz="{{matriz}}"
+      turma="{{turma}}"
+      turmas="{{turmas}}"
+      docentes="{{docentes}}">
+    </sapiens-turmas-data>
       
-    <firebase-collection
-      id="cursosCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/cursos"
-      order-by-child="nome"
-      data="{{cursos}}">
-    </firebase-collection>
-
-    <firebase-collection
-      id="matrizCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/cursos/{{curso.__firebaseKey__}}/matriz"
-      order-by-child="semestre"
-      equal-to="{{turma.semestre}}"
-      data="{{matriz}}">
-    </firebase-collection>
-
-    <firebase-collection
-      id="turmasCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{curso.__firebaseKey__}}"
-      data="{{turmas}}">
-    </firebase-collection>
-
     <neon-animated-pages 
       id="paginas" 
       selected="{{selecionada}}" 
@@ -44,6 +28,7 @@
       exit-animation="[[exitAnimation]]">
 
       <neon-animatable>
+        <!-- Seleção do curso desejado -->
         <sapiens-lista-cursos 
           cursos="{{cursos}}" 
           matriz="{{matriz}}" 
@@ -52,20 +37,25 @@
       </neon-animatable>
 
       <neon-animatable>
+        <!-- Mostrar as turmas do curso desejado -->
         <sapiens-curso
           turmas="{{turmas}}" 
           curso="{{curso}}"
-          turma="{{turma}}">
+          turma="{{turma}}"
+          matriz="{{matriz}}">
         </sapiens-curso>
       </neon-animatable>
 
       <neon-animatable>
+        <!--  Mostrar turma selecionada -->
         <sapiens-turma 
           turma="{{turma}}"
           matriz="{{matriz}}"
-          curso="{{curso}}">
+          curso="{{curso}}"
+          docentes="{{docentes}}">
         </sapiens-turma>
       </neon-animatable>
+
     </neon-animated-pages>   
 
   </template>
@@ -74,7 +64,7 @@
     'use strict';
 
     Polymer({
-      is: 'sapiens-distribuicao-disciplinas',
+      is: 'sapiens-turmas',
 
       properties: {
         selecionada: {
@@ -83,13 +73,15 @@
         }
       },
 
-      anterior: function() {
-        this.entryAnimation = 'slide-from-left-animation';
-        this.exitAnimation = 'slide-right-animation';
+      backAction: function() {
+        var _this = document.querySelector('sapiens-turmas');
 
-        this.selecionada = parseInt(this.selecionada - 1);
+        _this.entryAnimation = 'slide-from-left-animation';
+        _this.exitAnimation = 'slide-right-animation';
 
-        if (this.selecionada == 0){
+        _this.set('selecionada', parseInt(_this.selecionada - 1));
+
+        if (_this.selecionada == 0){
           app.visiting = false;
         }
       },
@@ -98,15 +90,8 @@
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
         this.selecionada = parseInt(this.selecionada + 1);
-      },
-
-      ready: function(){
-        var self = this;
-
-        app.backAction = function(){
-          self.anterior();
-        }
       }
+
     });
   })();
   </script>

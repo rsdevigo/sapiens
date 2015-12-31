@@ -1,0 +1,67 @@
+<dom-module id="sapiens-turmas-data">
+  <template>
+    
+    <firebase-collection
+      id="cursosCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/cursos"
+      order-by-child="nome"
+      data="{{cursos}}">
+    </firebase-collection>
+
+    <firebase-collection
+      id="matrizCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/cursos/{{curso.__firebaseKey__}}/matriz"
+      order-by-child="semestre"
+      data="{{matriz}}">
+    </firebase-collection>
+
+    <firebase-collection
+      id="turmasCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{curso.__firebaseKey__}}"
+      data="{{turmas}}">
+    </firebase-collection> 
+
+    <firebase-collection
+      id="docentesCollection"
+      location="https://blazing-inferno-2038.firebaseio.com/docentes"
+      order-by-child="nome"
+      data="{{docentes}}">
+    </firebase-collection>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-turmas-data',
+
+      properties: {
+        turmas: {
+          type: Array,
+          notify: true
+        },
+
+        cursos: {
+          type: Array,
+          notify: true
+        }, 
+
+        cursos: {
+          type: Object,
+          notify: true
+        },
+
+        matriz: {
+          type: Array,
+          notify: true
+        },
+
+        docentes: {
+          type: Array,
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

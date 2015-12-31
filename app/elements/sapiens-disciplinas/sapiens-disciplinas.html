@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="sapiens-disciplinas-data.html">
 
 <dom-module id="sapiens-disciplinas">
   <template>
@@ -16,10 +17,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+
+      paper-card{
+          @apply(--layout-flex);
+          margin: 16px;   
+      }
     </style>
+
+    <sapiens-disciplinas-data user="{{user}}" disciplinas-docente="{{disciplinasDocente}}"></sapiens-disciplinas-data>
     
-    <section class="page">
-      <h1>Disciplinas</h1>
+    <section>
+      <template is="dom-repeat" items="[[disciplinasDocente]]" as="disciplina">
+        <paper-card heading="{{disciplina.disciplina}}">
+          <div class="card-content">
+            <p><strong>Carga horária semanal: </strong> <span>{{disciplina.aulas}}</span></p>
+            <p><strong>Ementa: </strong> <span>{{disciplina.ementa}}</span></p>
+          </div>
+
+          <div class="card-actions">
+            <paper-button>Plano de Ensino</paper-button>
+          </div>
+        </paper-card>
+      </template>
+      
     </section>
     
   </template>
@@ -31,6 +51,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'sapiens-disciplinas',
 
       properties: {
+        user: {
+          type: Object,
+          notify: true
+        },
+
+        disciplinasDocente: {
+          type: Array,
+          notify: true,
+          value: []
+        }
       }
     });
   })();

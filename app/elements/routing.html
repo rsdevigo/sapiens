@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (app.user) {
         next();
       } else {
-        app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistemas';
+        app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
         app.$.toast.show();
         page.redirect('/login');        
       }  
@@ -82,30 +82,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/disciplinas', loggedIn, scrollToTop, function() {
-      app.route = 'disciplinas';
+      app.changeView({
+          title: 'Minhas disciplinas',
+          state: 'normal',
+          route: 'disciplinas'
+      });
     });
 
     page('/planos', scrollToTop, function() {
-      app.route = 'planos';
+      app.changeView({
+          title: 'Meus planos de ensino',
+          state: 'normal',
+          route: 'planos'
+      });
+    });
+
+    page('/projetos', scrollToTop, function() {
+      app.changeView({
+          title: 'Meus projetos',
+          state: 'normal',
+          route: 'projetos'
+      });
     });
 
     page('/atividades', scrollToTop, function() {
-      app.route = 'atividades';
+      app.changeView({
+          title: 'Minhas atividades',
+          state: 'normal',
+          route: 'atividades'
+      });
     });
 
-    page('/diren/distribuicao', scrollToTop, function() {
-      app.activeTitle = title('Distribuição de disciplinas');
-      app.route = 'distribuicao-disciplinas';
+    page('/diren/turmas', scrollToTop, function() {
+      app.changeView({
+          title: 'Turmas',
+          state: 'normal',
+          route: 'turmas'
+      });
     });  
 
     page('/diren/cargadocente', scrollToTop, function() {
-      app.activeTitle = title('Carga horária docente');
-      app.route = 'carga-docente';
+      app.changeView({
+          title: 'Carga horária docente',
+          state: 'normal',
+          route: 'carga-docente'
+      });
     });    
    
     // 404
     page('*', function() {
-      app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';
+      app.$.toast.text = 'Não podemos encontrar: ' + window.location.href  + '. Você será redirecionado para sua página Home';
       app.$.toast.show();
       page.redirect(app.baseUrl);
     });

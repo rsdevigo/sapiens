@@ -1,18 +1,31 @@
-<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="sapiens-crud-data.html">
 <link rel="import" href="sapiens-create-view.html">
 <link rel="import" href="sapiens-list-view.html">
 
 <dom-module id="sapiens-crud">
 	<template>
-		<neon-animated-pages id="viewPage" selected="[[selected]]" class="vertical layout">
-			
-			<sapiens-list-view type="{{listStyle}}" id="list" collection="{{collection}}">				
+		<sapiens-crud-data 
+			location="{{location}}"
+			collection="{{collection}}">
+		</sapiens-crud-data>
+
+		<neon-animated-pages id="viewPage" selected="[[selected]]" class="vertical layout">			
+			<sapiens-list-view 
+				type="{{listStyle}}" 
+				id="list" 
+				collection="{{collection}}"
+				title-prop="{{titleProp}}"
+        		subtitle-prop="{{subtitleProp}}"
+        		content-prop="{{contentProp}}">
 			</sapiens-list-view>	
 
-			<sapiens-create-view id="create" entity-obj="{{entityObj}}">
+			<sapiens-create-view 
+				id="create" 
+				entity-obj="{{entityObj}}"
+				collection="{{collection}}">
 				<content select=".sapiens-form"></content>
-			</sapiens-create-view>		
-			
+			</sapiens-create-view>			
 		</neon-animated-pages>
 	</template>
 
@@ -21,16 +34,33 @@
 			is: 'sapiens-crud',
 
 			properties: {
-				collection: { type: Object },
-				
 				listHeader: { type: String },
 				editHeader: { type: String },
 				listStyle: { type: String},
 				createHeader: {type: String},
 
-				titleProp: {type: String},
-				subtitleProp: {type: String},
-				contentProp: {type: String},			
+				titleProp: {
+					type: String, 
+					notify: true
+				},
+
+				subtitleProp: {
+					type: String, 
+					notify: true
+				},
+
+				contentProp: {
+					type: String, 
+					notify: true
+				},
+
+
+				location: {type: String},
+
+				collection: { 
+					type: Object, 
+					notify: true
+				},			
 
 				entityObj: { 
 					type: Object, 
@@ -40,6 +70,11 @@
 				selected: {
 			      	type: Number,
 			      	value: 0
+			    },
+
+			    backAction: {
+			    	type: Function,
+			    	notify: true
 			    }
 			},
 
@@ -47,66 +82,61 @@
 				this.selected = 1;
 				this.entityObj = entityObj;
 
-				this.app.changeView({
+				app.changeView({
 			      	title: this.editHeader,
 			     	state: 'editing',
-			    	activeViewElement: this.$.create
+			     	route: 'projetos'
 				});
 			},
 
+			remove: function(entityObj){
+				this.splice('collection', entityObj.index, 1);
+			},
+
 			back: function(){
-    		this.selected = 0;
+	    		document.querySelector('sapiens-crud').set('selected', 0);	    		
+	    		
+	    		app.changeView({
+			      	title: this.listHeader,
+				    state: 'normal',
+				    route: 'projetos'
+			    });
+    		},
 
-    		this.app.changeView({
-	      	title: this.listHeader,
-		     	state: 'normal',
-		    	activeViewElement: this.$.list
-		    });
-    	},
-
-    	cardConfig: function(cfg){
-    		this.$.list.titleProp = cfg.titleProp;
-    		this.$.list.subtitleProp = cfg.subtitleProp;
-    		this.$.list.contentProp = cfg.contentProp;
-    	},
+	    	cardConfig: function(cfg){
+	    		this.$.list.titleProp = cfg.titleProp;
+	    		this.$.list.subtitleProp = cfg.subtitleProp;
+	    		this.$.list.contentProp = cfg.contentProp;
+	    	},
 	    
-	    ready: function() {
-	    	this.app = document.querySelector('sapiens-app');
-	      	var _this = this;
+		    ready: function() {
+		    	var _this = this;
 
-		    var cfg = { 
-		    	_app: this.app, 
-		    	_scope: this,
-		    	model: window[this.collection]
-		   	}
+			    var cfg = { 
+			    	_app: app, 
+			    	_scope: this,
+			    	model: window[this.collection]
+			   	}
 
-		   	this.scope = this.$.viewPage;
-		    
-		   	this.$.create.config(cfg);
-		   	this.$.list.config(cfg);
+			   	this.scope = this.$.viewPage;
+			    
+			   	this.$.create.config(cfg);
+			   	this.$.list.config(cfg);
 
-		   	app.backAction = function(evt) {
-		        _this.selected = 0;
-		       	
-		       	app.changeView({
-		      		title: _this.listHeader,
-		      		state: 'normal',
-		      		activeViewElement: _this.$.list
-		      	});
-		    };
+			   	this.backAction = this.back;
 
-		    this.$.list._onAddClick = function(evt){
-	      		_this.selected = 1;
-	      		_this.entityObj = {};
+			    this.$.list._onAddClick = function(evt){
+		      		_this.selected = 1;
+		      		_this.entityObj = {};
 
-		      	app.changeView({
-		      		title: _this.createHeader,
-		      		state: 'creating',
-		      		activeViewElement: _this.$.create
-		      	});		      	
-	    	};
-		  }
-		})
+			      	app.changeView({
+			      		title: _this.createHeader,
+			      		state: 'creating',
+			      		route: 'projetos'
+			      	});		      	
+		    	};
+			}
+		});
 	</script>
 
 </dom-module>
