@@ -61,7 +61,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     page('/', function() {
       if(app.user){
-        app.route = 'home'
+        app.changeView({
+          title: 'Sapiens',
+          state: 'normal',
+          route: 'home',
+        });
       }else{
         app.route = 'login';
       }      
@@ -85,24 +89,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.changeView({
           title: 'Minhas disciplinas',
           state: 'normal',
-          route: 'disciplinas'
+          route: 'disciplinas',
+          viewElement: 'sapiens-disciplinas' // saveAction
       });
-    });
 
-    page('/planos', scrollToTop, function() {
-      app.changeView({
-          title: 'Meus planos de ensino',
-          state: 'normal',
-          route: 'planos'
-      });
+      document.querySelector('sapiens-disciplinas').selecionada = 0;
     });
 
     page('/projetos', scrollToTop, function() {
       app.changeView({
           title: 'Meus projetos',
           state: 'normal',
-          route: 'projetos'
-      });
+          route: 'projetos',
+          viewElement: 'sapiens-projetos' // saveAtion
+      });      
     });
 
     page('/atividades', scrollToTop, function() {
@@ -119,6 +119,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           state: 'normal',
           route: 'turmas'
       });
+
+      document.querySelector('sapiens-turmas').set('selecionada', 0);
     });  
 
     page('/diren/cargadocente', scrollToTop, function() {

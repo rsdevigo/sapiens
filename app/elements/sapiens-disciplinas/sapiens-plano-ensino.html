@@ -1,0 +1,504 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="sapiens-modelo-plano.html">
+<link rel="import" href="sapiens-composicao-avaliacao/sapiens-composicao-avaliacao.html">
+
+<dom-module id="sapiens-plano-ensino">
+  <template>
+    <style>
+      paper-card{
+        margin-bottom: 16px;
+      }
+
+      neon-animated-pages section{
+        padding: 16px;
+      }
+
+      neon-animated-pages section paper-card{
+        width: 100%;
+      }
+
+      .limite{
+        color: #FF4081;
+      }
+
+      table{
+        padding: 0px;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        background-color: rgb(255, 255, 255);
+      }
+
+      table thead {
+        padding-bottom: 3px;
+      }
+
+      table tbody tr {
+        position: relative;
+        height: 48px;
+        -webkit-transition-duration: 0.28s;
+        transition-duration: 0.28s;
+        -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transition-property: background-color;
+        transition-property: background-color;
+      }
+
+      table tbody tr.is-selected {
+        background-color: #e0e0e0;
+      }
+
+  /*    table tr:nth-child(even){
+        background: #FEFEFE;
+      }*/
+
+      table td,
+      table th {
+        padding: 0 18px 0 18px;
+        text-align: left;
+      }
+
+      table td:first-of-type,
+      table th:first-of-type {
+        padding-left: 26px;
+      }
+
+      table td:last-of-type,
+      table th:last-of-type {
+        padding-right: 26px;
+      }
+
+      table td {
+        position: relative;
+        /*vertical-align: top;*/
+        height: 48px;
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        padding-top: 12px;
+        box-sizing: border-box;
+      }
+
+      table td .mdl-data-table__select {
+        /*vertical-align: top;*/
+        position: absolute;
+        left: 24px;
+      }
+
+      table th.mdl-data-table__sort{
+        color: rgba(0, 0, 0, 0.87);
+      }
+
+      table th {
+        position: relative;
+        vertical-align: bottom;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 24px;
+        letter-spacing: 0;
+        color: rgba(0, 0, 0, 0.54);
+        height: 48px;
+        font-size: 12px;
+        padding-bottom: 8px;
+        box-sizing: border-box;
+
+        width: 40px;
+      }
+
+      table th .mdl-data-table__select {
+        position: relative;
+      }
+
+      .mdl-data-table__select {
+        width: 16px;
+      }
+
+      table td.mdl-data-table__cell--non-numeric {
+        text-align: left;
+      }
+
+      table th.mdl-data-table__cell--non-numeric {
+        text-align: left;
+      }
+
+      .numero-aulas{
+        width: 50px;
+      }
+
+      .header{
+        @apply(--layout-horizontal);
+        background: #FFFFFF;
+        padding: 26px;
+      }
+
+      .header .table-title{        
+        font-size: 20px;
+        font-weight: 400;
+        margin: 0;        
+      }
+
+      .header paper-icon-button{
+        top: -8px;
+        right: -8px;
+      }
+    </style>
+
+    <sapiens-modelo-plano id="plano" plano="{{plano}}"></sapiens-modelo-plano>
+
+    <paper-tabs selected="{{secao}}" scrollable>
+      <paper-tab>Descrição</paper-tab>
+      <paper-tab>Ementa</paper-tab>
+      <paper-tab>Referências</paper-tab>
+      <paper-tab>Objetivos</paper-tab>
+      <paper-tab>Avaliação</paper-tab>
+      <paper-tab>Recuperação</paper-tab>
+      <paper-tab>Metodologia</paper-tab>
+    </paper-tabs>
+
+    <neon-animated-pages selected="{{secao}}" class="vertical layout">
+      <section id="descricao">
+        <paper-card heading="Descrição">
+          <div class="card-content">
+            <div><strong>Disciplina: </strong><span>{{plano.disciplina.disciplina}}</span></div> 
+            <div><strong>Carga Horária Semanal: </strong><span>{{plano.disciplina.aulas}}</span></div>
+            <div class$="{{limite}}">
+              <strong>Carga Horária Total: </strong>
+              <span>{{plano.aulas}}/
+              <span>{{cargaTotal(plano.disciplina.aulas)}}</span>
+            </div> 
+            <div><strong>Número de Semanas: </strong><span>{{semanas}}</span></div>   
+            <div><strong>Turma: </strong><span>{{plano.disciplina.turma.nome}}</span></div>   
+            <div><strong>Ano: </strong><span>{{plano.disciplina.turma.ano}}</span></div> 
+            <div><strong>Semestre: </strong><span>{{plano.disciplina.turma.semestre}}</span>º semestre</div>     
+            <div><strong>Período: </strong><span>{{plano.disciplina.turma.periodo}}</span></div>     
+          </div>
+        </paper-card>                        
+      </section>
+
+      <section id="ementa">
+        <paper-card heading="Ementa">
+          <div class="card-content">
+            <div>{{plano.disciplina.ementa}}</span></div> 
+          </div>
+        </paper-card>        
+      </section>
+
+      <section id="referencias">
+        <paper-card heading="Bibliografia Básica">
+          <div class="card-content">
+            <template is="dom-repeat" items="[[_bibliografia(plano.disciplina.bibliografia-basica)]]">
+              <div class="item-bibliografia">{{item}}</div>  
+            </template>
+          </div>
+        </paper-card> 
+
+        <paper-card heading="Bibliografia Complementar">
+          <div class="card-content">
+            <template is="dom-repeat" items="[[_bibliografia(plano.disciplina.bibliografia-complementar)]]">
+              <div class="item-bibliografia">{{item}}</div>   
+            </template>
+          </div>
+        </paper-card>  
+      </section>
+
+      <section id="objetivos">
+        <div class="layout vertical">
+          <paper-card heading="Objetivo Geral da Unidade Curricular" class="flex">
+            <div class="card-content">
+              <paper-textarea 
+                label="Objetivo Geral"
+                value="{{plano.objetivo-geral}}"
+                no-label-float>
+              </paper-textarea>
+            </div>
+          </paper-card>
+
+          <paper-card heading="Objetivos Específicos da Unidade Curricular" class="flex">
+            <div class="card-content">
+              <paper-textarea 
+                label="Objetivos Específicos"
+                value="{{plano.objetivos-especificos}}"
+                no-label-float>
+              </paper-textarea>
+            </div>
+          </paper-card>     
+        </div>
+      </section>
+
+      <section id="avaliacao">
+        <p>Utilize essa seção para detalhar as avaliações que deseja aplicar no decorrer da disciplina. As avaliação são divididas em dois bimestres e, recomenda-se, que sejam aplicadas, em cada bimestre, ao menos duas avaliações distintas. Caso achar necessário, deixe observações com relação às avaliações planejadas.</p>
+
+        <sapiens-composicao-avaliacao 
+          avaliacoes-primeiro-bimestre="{{plano.avaliacoes-primeiro-bimestre}}"
+          avaliacoes-segundo-bimestre="{{plano.avaliacoes-segundo-bimestre}}"
+          observacoes-primeiro-bimestre="{{plano.observacoes-primeiro-bimestre}}"
+          observacoes-segundo-bimestre="{{plano.observacoes-segundo-bimestre}}"
+          instrumentos="{{instrumentosAvaliacao.instrumentos}}">
+        </sapiens-composicao-avaliacao>  
+      </section>
+
+      <section id="recuperacao">
+        <div class="layout vertical">
+          <paper-card heading="Recuperação da Aprendizagem" class="flex">
+            <div class="card-content">
+              <paper-textarea 
+                label="Estratégias de Recuperação"
+                value="{{plano.recuperacao}}"
+                no-label-float>
+              </paper-textarea>
+            </div>
+          </paper-card>  
+        </div> 
+      </section>
+
+      <section id="Metodologia">
+        <iron-ajax
+          auto
+          url="data/tecnicas-ensino.json"
+          handle-as="json"
+          last-response="{{tecnicasEnsino}}"
+          debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax
+          auto
+          url="data/recursos-ensino.json"
+          handle-as="json"
+          last-response="{{recursosEnsino}}"
+          debounce-duration="300">
+        </iron-ajax>
+
+        <iron-ajax
+          auto
+          url="data/instrumentos-avaliacao.json"
+          handle-as="json"
+          last-response="{{instrumentosAvaliacao}}"
+          debounce-duration="300">
+        </iron-ajax>
+
+        <h1>Quantitativo de aulas
+          <span class$="{{limite}}">              
+            (<span>{{plano.aulas}}</span>/<span>{{cargaTotal(plano.disciplina.aulas)}}</span>)
+          </span>
+        </h1>
+        <p>Indique a quantidade de aulas práticas e teóricas que deseja ministrar nesta disciplina.</p>
+
+        <paper-card>                  
+          <div class="card-content">
+            <div>
+              <paper-input 
+                type="number" 
+                min="0" 
+                max="200" 
+                label="Quantidade de aulas práticas" 
+                value="{{plano.praticas}}"
+                on-input="_aulasChanged">
+              </paper-input>
+            </div>
+
+            <div>
+              <paper-input 
+                type="number" 
+                min="0" 
+                max="200" 
+                label="Quantidade de aulas teóricas" 
+                value="{{plano.teoricas}}"
+                on-input="_aulasChanged">
+              </paper-input>
+            </div>
+          </div>
+        </paper-card>
+
+        <h1>Metodologia aplicada</h1>
+        <p>A seguir, indique as técnicas, recursos de ensino e instrumentos de avaliação utilizados em cada um dos tópicos de ensino listados. O Sapiens lista para você cada um dos tópicos contidos na ementa da disciplina. Lembre-se que você pode inserir novos tópicos de ensino.</p>
+
+        <paper-material elevation="1">
+          <div class="header layout horizontal">
+            <h1 class="table-title">Detalhamento da proposta de trabalho</h1>
+            <span class="flex"></span>
+            <div class="controls">
+              <paper-icon-button icon="add"></paper-icon-button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Conteúdo</th>
+                <th class="numero-aulas">N<sup>o</sup> aulas</th>
+                <th>Técnicas de Ensino</th>
+                <th>Recursos de Ensino</th>
+                <th>Instrumentos de Avaliação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template is="dom-repeat" items="{{ementas}}">
+                <tr>
+                  <td>{{item}}</td>
+                  <td class="numero-aulas">
+                    <paper-input 
+                      type="number" 
+                      min="0"
+                      value="{{qtdAulas(plano.topicos.*, index, 'aulas')}}"
+                      on-input="qtdAulasListener"
+                      data-index$="{{index}}"
+                      data-teste$="teste">
+                    </paper-input>
+                  </td>
+                  <td>
+                    <sapiens-multiple-input 
+                      selected-items="[[metodologia(plano.topicos.*, index, 'tecnicasEnsino')]]" 
+                      items="{{tecnicasEnsino.tecnicas}}" small>
+                    </sapiens-multiple-input>
+                  </td>
+                  <td>
+                    <sapiens-multiple-input 
+                      selected-items="[[metodologia(plano.topicos.*, index, 'recursosEnsino')]]" 
+                      items="{{recursosEnsino.recursos}}" small>
+                    </sapiens-multiple-input>
+                  </td>
+                  <td>
+                    <sapiens-multiple-input 
+                      selected-items="[[metodologia(plano.topicos.*, index, 'instrumentosAvaliacao')]]" 
+                      items="{{instrumentosAvaliacao.instrumentos}}" small>
+                    </sapiens-multiple-input>
+                  </td>
+                </tr>              
+              </template>
+            </tbody>
+          </table>
+        </paper-material>                  
+      </section>      
+    </neon-animated-pages>    
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-plano-ensino',
+
+      properties: {
+        plano: {
+          type: Object,
+          notify: true,
+          observer: '_planoChanged'
+        },
+
+        avaliacoes: {
+          type: Object,
+          notify: true
+        },
+
+        secao: {
+          type: Number,
+          value: 0
+        },
+
+        semanas: {
+          type: Number,
+          value: 20
+        }, 
+
+        instrumentosAvaliacao: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      _avaliacoesChanged: function(avaliacoes){
+        this.set('plano.avaliacoes', avaliacoes);
+      },
+
+      observers: [
+        '_aulasPraticasChanged(plano.praticas)',
+        '_aulasTeoricasChanged(plano.teoricas)',
+        '_avaliacoesChanged(avaliacoes.*)'
+      ],
+
+      metodologia: function(topicos, index, tecnica){
+        if (this.plano.topicos){
+          return this.plano.topicos[index][tecnica];
+        }
+      },
+
+      _aulasPraticasChanged: function(change){
+        this.set('plano.aulas', (~~this.plano.praticas + ~~this.plano.teoricas));
+      },
+
+      _aulasTeoricasChanged: function(change){
+        this.set('plano.aulas', (~~this.plano.praticas + ~~this.plano.teoricas));
+      },
+
+      _planoChanged: function(plano){
+        if(!this.plano.praticas && !this.plano.teoricas){
+          this.set('plano.praticas', 0);
+          this.set('plano.teoricas', 0);
+        }
+
+        var ementas = this.plano.disciplina.ementa.split(';');
+        var self = this;
+
+        this.set('plano.topicos', []);
+        
+        ementas.forEach(function(topico){
+          self.push('plano.topicos', {
+            topico: topico,
+            tecnicasEnsino: [],
+            recursosEnsino: [],
+            instrumentosAvaliacao: [],
+            aulas: 0
+          });
+        });
+
+        this.set('ementas', ementas);
+      },
+
+      _aulasChanged: function(evt){
+        var qtdAulas = ~~this.plano.praticas + ~~this.plano.teoricas;
+
+        if (qtdAulas > this.cargaTotal(this.plano.disciplina.aulas)){
+          app.$.toast.text = 'Atenção! Número de aulas acima do permitido nesta disciplina';
+          app.$.toast.show();
+
+          this.limite = 'limite'
+        }else{
+          this.limite = 'normal'
+        }
+      },
+
+      _bibliografia: function(bibliografia){
+        return bibliografia.split('\n');
+      },
+
+      cargaTotal: function(carga){
+        return ~~carga * this.semanas;
+      },
+
+      qtdAulas: function(topicos, index, aulas){
+        if (this.plano.topicos){
+          return this.plano.topicos[index][aulas];
+        }
+      },
+
+      qtdAulasListener: function(e){
+        var index = Polymer.dom(e.target).node.domHost['data-index'];        
+        this.set('plano.topicos.' + index + '.aulas', e.target.value);
+      },
+
+      view: function(){
+        document.querySelector('sapiens-modelo-plano').view();
+      }
+    });
+  })();
+  </script>
+</dom-module>

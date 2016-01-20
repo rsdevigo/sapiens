@@ -75,6 +75,11 @@
 			    backAction: {
 			    	type: Function,
 			    	notify: true
+			    },
+
+			    saveAction: {
+			    	type: Function,
+			    	notify: true
 			    }
 			},
 
@@ -124,6 +129,7 @@
 			   	this.$.list.config(cfg);
 
 			   	this.backAction = this.back;
+			   	this.saveAction = this.$.create.saveAction;
 
 			    this.$.list._onAddClick = function(evt){
 		      		_this.selected = 1;

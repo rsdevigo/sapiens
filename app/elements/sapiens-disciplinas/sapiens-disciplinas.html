@@ -10,37 +10,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="sapiens-disciplinas-data.html">
+<link rel="import" href="sapiens-disciplinas-docente.html">
+<link rel="import" href="sapiens-plano-ensino.html">
 
 <dom-module id="sapiens-disciplinas">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-
-      paper-card{
-          @apply(--layout-flex);
-          margin: 16px;   
-      }
-    </style>
-
     <sapiens-disciplinas-data user="{{user}}" disciplinas-docente="{{disciplinasDocente}}"></sapiens-disciplinas-data>
-    
-    <section>
-      <template is="dom-repeat" items="[[disciplinasDocente]]" as="disciplina">
-        <paper-card heading="{{disciplina.disciplina}}">
-          <div class="card-content">
-            <p><strong>Carga horária semanal: </strong> <span>{{disciplina.aulas}}</span></p>
-            <p><strong>Ementa: </strong> <span>{{disciplina.ementa}}</span></p>
-          </div>
 
-          <div class="card-actions">
-            <paper-button>Plano de Ensino</paper-button>
-          </div>
-        </paper-card>
-      </template>
-      
-    </section>
+    <neon-animated-pages 
+      id="paginas-disciplinas" 
+      selected="{{selecionada}}" 
+      entry-animation="[[entryAnimation]]" 
+      exit-animation="[[exitAnimation]]">
+
+      <neon-animatable>
+        <!-- Lista as disciplinas do docente -->
+        <sapiens-disciplinas-docente 
+          disciplinas-docente="{{disciplinasDocente}}"
+          plano="{{plano}}">
+        </sapiens-disciplinas-docente>
+      </neon-animatable>
+
+      <neon-animatable>
+        <!-- Mostra o plano de ensino selecionado na lista de disciplinas -->
+        <sapiens-plano-ensino
+          id="plano"
+          disciplina="{{disciplina}}"
+          plano="{{plano}}">
+        </sapiens-plano-ensino>
+      </neon-animatable>
+
+    </neon-animated-pages> 
     
   </template>
   <script>
@@ -51,17 +51,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'sapiens-disciplinas',
 
       properties: {
-        user: {
-          type: Object,
-          notify: true
+        selecionada: {
+          type: Number,
+          value: 0
         },
 
-        disciplinasDocente: {
-          type: Array,
-          notify: true,
-          value: []
+        plano: {
+          type: Object,
+          notify: true
+        }     
+      },
+
+      backAction: function() {
+        var _this = document.querySelector('sapiens-disciplinas');
+
+        _this.entryAnimation = 'slide-from-left-animation';
+        _this.exitAnimation = 'slide-right-animation';
+
+        _this.set('selecionada', parseInt(_this.selecionada - 1));
+
+        if (_this.selecionada == 0){
+          app.visiting = false;
         }
+      },
+
+      proximo: function() {
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.selecionada = parseInt(this.selecionada + 1);
+
+        var disciplina = this.plano.disciplina.disciplina;
+
+        app.changeView({
+          title: disciplina,
+          state: 'editandoPlanoEnsino',
+          route: 'disciplinas'
+        });
+
+        app.visualizarPlano = document.querySelector('sapiens-plano-ensino').view;
+      },
+
+      saveAction: function(){
+        alert();
       }
+
     });
   })();
   </script>

@@ -55,57 +55,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var self = this;
  
         ref.once('value', function(snapshotDistribuicao){
-          var distribuicao = snapshotDistribuicao.val().toArray();
-          var disciplinasArray = [];
-          var disciplinasDocente = [];          
-          
-          // verificar distribuicao do docente
-          // e armazenas código das disciplinas
-          // distribuídas para um docente
-          distribuicao.forEach(function(turma){
-            var turmaKey = turma.key;            
+          if(snapshotDistribuicao.exists()){
+            var distribuicao = snapshotDistribuicao.val().toArray();
+            var disciplinasArray = [];
+            var disciplinasDocente = [];          
+            
+            // verificar distribuicao do docente
+            // e armazenas código das disciplinas
+            // distribuídas para um docente
+            distribuicao.forEach(function(turma){
+              var turmaKey = turma.key;            
 
-            // remover a chave para utilizar a função toArray 
-            delete turma.key;
+              // remover a chave para utilizar a função toArray 
+              delete turma.key;
 
-            var disciplinas = turma.toArray();           
+              var disciplinas = turma.toArray();           
 
-            disciplinas.forEach(function(disciplina){
-              if (disciplina.docente === docente){
-                refTurmas.child(turmaKey).once('value', function(snapshotTurma){
-                  disciplinasArray.push({
-                    key: disciplina.disciplina,
-                    // turma: snapshotTurma.val()
-                  }); 
+              disciplinas.forEach(function(disciplina){
+                if (disciplina.docente === docente){
+                  refTurmas.child(turmaKey).once('value', function(snapshotTurma){
+                    disciplinasArray.push({
+                      key: disciplina.disciplina,
+                      turma: snapshotTurma.val()
+                    }); 
+                  });              
+                }
+              });
+            });
+
+            // buscar disciplinas na coleção de cursos
+            // através do código armazenado
+            refCursos.once('value', function(snapshotCursos){
+              var cursos = snapshotCursos.val().toArray();
+
+              cursos.forEach(function(curso){
+                disciplinasArray.forEach(function(disciplina){
+                  refCursos.child(curso.key + '/matriz/' + disciplina.key).once('value', function(snapshotDisciplina){
+                    if(snapshotDisciplina.exists()){
+                      var d = snapshotDisciplina.val()
+                      
+                      d.curso = curso;
+                      d.turma = disciplina.turma
+
+                      self.push('disciplinasDocente', d);
+                    }
+                  });
                 });              
-              }
+              });
             });
-          });
-
-          // buscar disciplinas na coleção de cursos
-          // através do código armazenado
-          refCursos.once('value', function(snapshotCursos){
-            var cursos = snapshotCursos.val().toArray();
-
-            cursos.forEach(function(curso){
-              disciplinasArray.forEach(function(disciplina){
-                refCursos.child(curso.key + '/matriz/' + disciplina.key).once('value', function(snapshotDisciplina){
-                  if(snapshotDisciplina.exists()){
-                    var d = snapshotDisciplina.val()
-                    
-                    d.curso = curso;
-                    d.turma = disciplina.turma
-
-                    self.push('disciplinasDocente', d);
-                  }
-                });
-              });              
-            });
-
-          });
+          }
         });
       }
-
     });
   })();
   </script>

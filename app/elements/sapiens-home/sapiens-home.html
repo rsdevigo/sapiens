@@ -17,11 +17,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    <paper-material class="page" elevation="1">
-      <h1>Home</h1>
 
-      <p>Seja bem vindo, <span>{{user.google.displayName}}</span></p>
+    <paper-material elevation="1" class="page">
+      <h1>Seja bem vindo</h1>
+      
+      <p>Olá, <span>{{user.google.displayName}}</span>. Seja bem vindo ao Sapiens.</p>
+      <p>Até o presente momento, podemos lhe oferecer os seguinte módulos: </p>
+    
+      <ol>
+        <li><strong>Minhas disciplinas</strong>: este módulo o possibilita conhecer e explorar as disciplinas que lhe foram atrubuídas, bem como manter os seus <strong>planos de ensino</strong>;</li>
+        <li><strong>Projetos:</strong> permite a criação e manutenção de <strong>projetos de ensino, pesquisa e extensão</strong>;</li>
+        <li><strong>Minhas atividades:</strong> você poderá manter um <strong>plano de atividades</strong>  semestral de acordo com suas disciplinas, projetos e demais atividades planejadas.</li>
+      </ol>
+
+      <p>Logo iremos disponibilizar novos módulos para auxiliá-lo em suas atividades pedagógicas.</p>
     </paper-material>
+
+    <paper-material elevation="1" class="page">  
+      <h1>Ajuda com o Sapiens</h1>
+
+      <p>Em breve, iremos disponibilizar vídeos tutoriais para auxiliá-lo a melhor utilizar esta ferramenta.</p>
+    </paper-material>
+    
   </template>
   <script>
   (function() {

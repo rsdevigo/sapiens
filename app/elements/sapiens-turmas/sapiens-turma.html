@@ -47,7 +47,7 @@
     </style>
 
     <firebase-document
-      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{curso.__firebaseKey__}}/{{turma.__firebaseKey__}}/disciplinas"
+      location="https://blazing-inferno-2038.firebaseio.com/turmas/{{turma.__firebaseKey__}}/disciplinas"
       data="{{disciplinas}}">
     </firebase-document>
 
@@ -203,7 +203,7 @@
           var turmaKey = turma.__firebaseKey__;
           var cursoKey = this.curso.__firebaseKey__;
           var self = this;
-          
+
           ref.child('cursos').child(cursoKey).once('value', function(snapshot){
             var disciplinas = snapshot.val().matriz;
 

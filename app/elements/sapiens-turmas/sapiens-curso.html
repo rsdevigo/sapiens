@@ -11,15 +11,15 @@
       }
     </style>
       
-    <section id="curso-selecionado">
+    <section id="curso-selecionado" class="layout horizontal">
       <!-- Criação de novas turmas -->
-      <paper-card heading="Nova turma"> 
+      <paper-card heading="Nova turma" class="flex">  
         <div class="card-content">
 
           <paper-input label="Nome de turma" value="{{turma.nome}}"></paper-input>
 
-          <paper-dropdown-menu label="Período" value="{{turma.periodo}}">
-            <paper-menu class="dropdown-content" id="periodo">
+          <paper-dropdown-menu label="Semestre" value="{{turma.semestre}}">
+            <paper-menu class="dropdown-content" id="semestre">
               <paper-item>1º Semestre</paper-item>
               <paper-item>2º Semestre</paper-item>
               <paper-item>3º Semestre</paper-item>
@@ -30,6 +30,14 @@
               <paper-item>8º Semestre</paper-item>
               <paper-item>9º Semestre</paper-item>
               <paper-item>10º Semestre</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
+
+          <paper-dropdown-menu label="Período" value="{{turma.periodo}}">
+            <paper-menu class="dropdown-content" id="periodo">
+              <paper-item>Matutino</paper-item>
+              <paper-item>Vespertino</paper-item>
+              <paper-item>Noturno</paper-item>
             </paper-menu>
           </paper-dropdown-menu>
 
@@ -55,21 +63,25 @@
       </paper-card>
         
       <!-- Lista de turmas criadas -->
-      <template is="dom-repeat" items="{{turmas}}" as="turma">        
-        <paper-card heading="{{turma.nome}}"> 
-          <div class="card-content">
-            <span>{{turma.periodo}}</span>
-            <span>{{turma.ano}}</span>
-          </div> 
+      <div id="lista-cursos" class="flex">
+        <template is="dom-repeat" items="{{turmas}}" as="turma">
+          
+          <paper-card heading="{{turma.nome}}"> 
+            <div class="card-content">
+              <p><strong>Semestre: </strong><span>{{turma.semestre}}</span></p>
+              <p><strong>Período: </strong><span>{{turma.periodo}}</span></p>
+              <p><strong>Ano: </strong><span>{{turma.ano}}</span></p>
+            </div> 
 
-          <div class="card-actions">
-            <paper-icon-button on-tap="distribuir" icon="create"></paper-icon-button>
-            <paper-icon-button on-tap="removerTurma" icon="delete"></paper-icon-button>
+            <div class="card-actions">
+              <paper-icon-button on-tap="distribuir" icon="create"></paper-icon-button>
+              <paper-icon-button on-tap="removerTurma" icon="delete"></paper-icon-button>
 
-            <!-- TURMA PODERÁ SER FECHADA/CONCLUIDA -->
-          </div>      
-        </paper-card> 
-      </template> 
+              <!-- TURMA PODERÁ SER FECHADA/CONCLUIDA -->
+            </div>      
+          </paper-card> 
+        </template> 
+      </div>        
     
     </section>
 
@@ -95,9 +107,8 @@
       },
 
       criarTurma: function(evt){
-        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/');
-        var turmasRef = ref.child('turmas/' + this.curso.__firebaseKey__);
-        var semestre = this.turma.periodo[0];
+        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/turmas');
+        var semestre = this.turma.semestre[0];
         var disciplinas =  this.matriz.filter(function(disciplina){
             return disciplina.semestre == semestre
         });
@@ -108,13 +119,14 @@
           semestre: semestre,
           ano: this.turma.ano,
           disciplinas: disciplinas,
-          curso: this.curso.__firebaseKey__; 
+          curso: this.curso.__firebaseKey__
         }
 
-        turmasRef.push().set(turma);
+        ref.push().set(turma);
 
-        this.turma = {};
+        this.set('turma', {});
 
+        this.$.semestre.selected = -1;
         this.$.periodo.selected = -1;
         this.$.ano.selected = -1;
       },
@@ -155,7 +167,7 @@
             } 
 
             // remover turma;
-            ref.child('turmas').child(cursoKey).child(turmaKey).remove();           
+            ref.child('turmas').child(turmaKey).remove();           
           });          
         });        
       },

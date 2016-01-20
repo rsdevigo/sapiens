@@ -1,0 +1,126 @@
+<dom-module id="sapiens-linha-nota">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-flex);
+      }
+
+      .delete{
+        top: 20px;
+      }
+
+      .linha > :not(:last-child){
+        margin-right: 16px;
+      }
+
+      .flex3child {
+        @apply(--layout-flex-3);
+      }
+
+
+    </style>
+    
+    <div class="layout horizontal flex linha">
+      <paper-input label="Sigla" value="{{sigla}}" char-counter maxlength="7" class="flex flex3child"></paper-input>
+      <paper-dropdown-menu label="Instrumento de Avaliação" value="{{instrumento}}" class="flex flex3child">
+        <paper-menu class="dropdown-content">
+          <template is="dom-repeat" items="{{instrumentos}}">
+            <paper-item>{{item}}</paper-item>  
+          </template>            
+        </paper-menu>
+      </paper-dropdown-menu>
+      <paper-input value="{{peso}}" label="Peso" type="number" min="1" max="10" class="flex"></paper-input>
+      <paper-input value="{{maximo}}" label="Valor máximo" type="number" min="1" max="10" class="flex"></paper-input>
+      <paper-icon-button icon="delete" title="delete" on-click="_remove" class="delete"></paper-icon-button>
+    </div>
+          
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-linha-nota',
+
+      properties: {
+        peso: {
+          type: Number,
+          notify: true,
+          observer: '_pesoMudou'
+        },
+
+        maximo: {
+          type: Number,
+          notify: true,
+          observer: '_maximoMudou'
+        },
+
+        instrumento: {
+          type: String,
+          notify: true
+        },
+
+        sigla: {
+          type: String,
+          notify: true
+        },
+
+        bimestre: {
+          type: String,
+          notify: true
+        },
+
+        nota: {
+          computed: 'notaCalculada(peso, maximo)'
+        },
+
+        avaliacao: {
+          computed: 'computarAvaliacao(sigla, instrumento, peso, maximo, bimestre)'
+        },
+
+        instrumentos: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+      },
+
+      _pesoMudou: function(n, o){
+        if (this.maximo){
+          this.domHost.atualizarNotas();
+        }
+      },
+
+      _maximoMudou: function(n, o){
+        if (this.peso){
+          this.domHost.atualizarNotas();
+        }
+      },
+
+      notaCalculada: function(peso, maximo){
+        return (peso / 10) * maximo;
+      },
+
+      computarAvaliacao: function(sigla, instrumento, peso, maximo, bimestre){
+        return {
+          sigla: sigla,
+          instrumento: instrumento,
+          peso: ~~peso,
+          maximo: ~~maximo,
+          bimestre: bimestre
+        }
+      },
+
+      _remove: function(e){                
+        var el = 'avaliacoes' + this.bimestre + 'Bim';
+        var index = this.index
+
+        this.domHost.splice(el, index, 1);
+        this.domHost.atualizarNotas();
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

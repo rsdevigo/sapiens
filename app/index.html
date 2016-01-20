@@ -37,7 +37,7 @@
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js" async></script>
   <!-- endbuild -->
 
   <!-- will be replaced with elements/elements.vulcanized.html -->
@@ -73,22 +73,17 @@
 
           <template is="dom-if" if="{{active}}">
             <a data-route="disciplinas" href="/disciplinas" hidden$="{{!user.docente}}">
-              <iron-icon icon="info"></iron-icon>
+              <iron-icon icon="book"></iron-icon>
               <span>Minhas disciplinas</span>
             </a>
 
-            <a data-route="planos" href="/planos" hidden$="{{!user.docente}}">
-              <iron-icon icon="info"></iron-icon>
-              <span>Meus planos de ensino</span>
-            </a>
-
             <a data-route="projetos" href="/projetos" hidden$="{{!user.docente}}">
-              <iron-icon icon="info"></iron-icon>
+              <iron-icon icon="extension"></iron-icon>
               <span>Meus projetos</span>
             </a>
 
             <a data-route="atividades" href="/atividades" hidden$="{{!user.docente}}">
-              <iron-icon icon="info"></iron-icon>
+              <iron-icon icon="event"></iron-icon>
               <span>Minhas atividades</span>
             </a>
 
@@ -160,6 +155,12 @@
             on-tap="back">
           </paper-icon-button> 
 
+          <paper-icon-button 
+            hidden="{{!editandoPlanoEnsino}}" 
+            icon="arrow-back" 
+            on-tap="back">
+          </paper-icon-button> 
+
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
@@ -168,6 +169,18 @@
           <paper-icon-button hidden="{{!editing}}" icon="save" on-tap="saveAction"></paper-icon-button>
           <paper-icon-button hidden="{{!viewing}}" icon="create" on-tap="editAction"></paper-icon-button>
           <paper-icon-button hidden="{{!viewing}}" icon="delete" on-tap="deleteAction"></paper-icon-button>
+
+          <!-- Action: Plano de Ensino -->
+          <paper-icon-button id="salvar-plano" hidden="{{!editandoPlanoEnsino}}" icon="save" on-tap="saveAction"></paper-icon-button>
+          <paper-tooltip for="salvar-plano" position="bottom">Salvar plano</paper-tooltip>
+
+          <paper-icon-button id="visualizar-plano" hidden="{{!editandoPlanoEnsino}}" icon="open-in-new" on-tap="visualizarPlano"></paper-icon-button>
+          <paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
+
+          <paper-icon-button id="enviar-plano" hidden="{{!editandoPlanoEnsino}}" icon="send" on-tap="enviarPlano"></paper-icon-button>
+          <paper-tooltip for="enviar-plano" position="bottom">Enviar plano à chefia imediata</paper-tooltip>
+          
+
           <!-- END Toolbar icons -->
 
           <paper-menu-button horizontal-align="right">
@@ -191,55 +204,55 @@
 
         <!-- Main Content -->
         <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+          <neon-animated-pages 
+            attr-for-selected="data-route" 
+            selected="{{route}}"
+            entry-animation="fade-in-animation" 
+            exit-animation="fade-out-animation">
 
-            <section data-route="master">              
+            <neon-animatable data-route="master">              
               <sapiens-master class="view" user="{{user}}"></sapiens-master>
-            </section>
+            </neon-animatable>
 
-            <section data-route="home">
+            <neon-animatable data-route="home">
               <sapiens-home class="view" user="{{user}}"></sapiens-home>
-            </section>
+            </neon-animatable>
 
-            <section data-route="login">              
+            <neon-animatable data-route="login">              
               <sapiens-login class="view"></sapiens-login>
-            </section>     
+            </neon-animatable>     
 
             <!-- DOCENTE -->
             
-            <section data-route="disciplinas">
+            <neon-animatable data-route="disciplinas">
               <sapiens-disciplinas class="view" user="{{user}}"></sapiens-disciplinas>
-            </section>
+            </neon-animatable>
 
-            <section data-route="planos">
-              <sapiens-planos class="view"></sapiens-planos>
-            </section>
-
-            <section data-route="projetos">
+            <neon-animatable data-route="projetos">
               <sapiens-projetos class="view" user="{{user}}"></sapiens-projetos>
-            </section>
+            </neon-animatable>
 
-            <section data-route="atividades">
+            <neon-animatable data-route="atividades">
               <sapiens-atividades class="view"></sapiens-atividades>
-            </section>
+            </neon-animatable>
 
             <!-- DIREN -->
-            <section data-route="turmas">
+            <neon-animatable data-route="turmas">
               <sapiens-turmas class="view" user="{{user}}"></sapiens-turmas>
-            </section> 
+            </neon-animatable> 
 
-            <section data-route="carga-docente">
+            <neon-animatable data-route="carga-docente">
               <sapiens-carga-docente class="view"></sapiens-carga-docente>
-            </section>             
+            </neon-animatable>             
 
-            <section data-route="user-info">
+            <neon-animatable data-route="user-info">
               <paper-material elevation="1">
                 <h2 class="page-title">User: {{params.name}}</h2>
                 <div>This is {{params.name}}'s section</div>
               </paper-material>
-            </section>
+            </neon-animatable>
 
-          </iron-pages>
+          </neon-animated-pages>
         </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>

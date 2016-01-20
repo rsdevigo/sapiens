@@ -1,0 +1,82 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="sapiens-disciplinas-docente">
+  <template>
+    <style>
+      paper-card{
+          @apply(--layout-flex);
+          margin: 16px;   
+      }
+
+      .title {
+            margin-bottom: 16px;          
+        }
+
+      .title .medium {
+        font-size: 24px;
+        font-weight: 500;
+        padding-bottom: 0px;
+      }
+
+      .title .small {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    </style>
+
+    <template is="dom-repeat" items="[[disciplinasDocente]]" as="disciplina">
+      <paper-card>
+        <div class="card-content">
+          <div class="title">
+                  <div class="medium">{{disciplina.disciplina}}</div>
+                  <div class="smal">{{disciplina.curso.nome}} - <span>{{disciplina.turma.nome}}</span></div>
+              </div>                  
+        </div>
+        <div class="card-content">
+          <p><strong>Carga horária semanal: </strong> <span>{{disciplina.aulas}}</span></p>
+          <p><strong>Ementa: </strong> <span>{{disciplina.ementa}}</span></p>
+        </div>
+
+        <div class="card-actions">
+          <paper-button on-tap="selecionarPlano">Plano de Ensino</paper-button>
+        </div>
+      </paper-card>
+    </template>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'sapiens-disciplinas-docente',
+
+      properties: {
+        user: {
+          type: Object,
+          notify: true
+        },
+
+        disciplinasDocente: {
+          type: Array,
+          notify: true,
+          value: []
+        },
+
+        plano: {
+          type: Object,
+          notify: true
+        }
+      },
+
+      selecionarPlano: function(evt){
+        this.set('plano', {
+          disciplina: evt.model.get('disciplina')
+        });
+
+        this.domHost.proximo();
+      }
+    });
+  })();
+  </script>
+</dom-module>

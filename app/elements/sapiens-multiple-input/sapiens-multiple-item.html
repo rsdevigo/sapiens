@@ -10,31 +10,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="sapiens-planos">
+<dom-module id="sapiens-multiple-item">
   <template>
     <style>
       :host {
         display: block;
       }
-    </style>
-    <h1>Meus planos de ensino</h1>
 
-    <sapiens-composicao-avaliacao></sapiens-composicao-avaliacao>
+      .item::after{
+        content: "";
+        display: block;
+        clear: both;
+      }
+
+      .item{
+        float: left;
+        margin: 3px;
+      }
+
+      paper-material{
+        padding-left: 10px;
+      }
+    </style>
     
+    <div class="item">
+      <paper-material elevation="1">
+        <span>{{value}}</span>
+        <paper-icon-button icon="clear" on-tap="remove"></paper-icon-button>
+      </paper-material>
+    </div>    
+
   </template>
   <script>
   (function() {
     'use strict';
 
     Polymer({
-      is: 'sapiens-planos',
+      is: 'sapiens-multiple-item',
 
       properties: {
-        foo: {
-          type: String,
-          value: 'sapiens-planos',
+        items: {
+          type: Array,
           notify: true
         }
+      },
+
+      remove: function(evt){
+        this.domHost.remove(this.value);
       }
     });
   })();

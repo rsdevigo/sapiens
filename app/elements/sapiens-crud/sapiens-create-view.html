@@ -58,7 +58,7 @@
 				}
 			},
 
-		    save: function(evt){
+		    saveAction: function(evt){
 		    	document.querySelector('.sapiens-form').submit();
 		    },		
 
@@ -85,14 +85,6 @@
 
 			clearForm: function(){
 				this.entityObj = {};
-			},
-
-			ready: function(){
-				var _this = this;
-
-				app.saveAction = function(){
-					_this.save();	
-				}
 			}
 		});
 	</script>

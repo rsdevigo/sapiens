@@ -63,8 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     height: 64px;
   }
 
-  
-
   /* Keep header */
 
   paper-scroll-header-panel {
@@ -98,12 +96,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   ::shadow paper-material.page {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
     border-radius: 2px;
     height: 100%;
     padding: 16px 0 16px 0;
-    width: calc(98.66% - 16px);
-    margin: 16px auto;
+    width: 100%;
+    margin: 16px;
     background: white;
+    width: calc(100% - 32px);
   }
 
   paper-menu iron-icon {
@@ -183,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     ::shadow paper-material.page {
       --menu-container-display: none;
-      width: calc(97.33% - 32px);
+      /*width: calc(97.33% - 32px);*/
       padding-left: 16px;
       padding-right: 16px;
     }
@@ -203,8 +206,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   @media (min-width: 601px) {
 
     ::shadow paper-material.page {
-      width: calc(98% - 46px);
-      margin-bottom: 32px;
+      /*width: calc(98% - 46px);*/
       padding-left: 30px;
       padding-right: 30px;
     }
@@ -213,7 +215,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       border-right: 1px solid rgba(0, 0, 0, 0.14);
     }
 
-    iron-pages.pages {
+    neon-animated-pages.pages {
       padding: 48px 62px;
     }
 

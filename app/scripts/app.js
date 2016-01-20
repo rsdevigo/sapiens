@@ -32,6 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.creating = false;
   app.editing = false;
   app.visiting = false;
+  app.editandoPlanoEnsino = false;
 
   Object.defineProperty(Object.prototype, 'toArray', {
     value: function() {
@@ -134,7 +135,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app[app.state] = false; // last state
       app.state = view.state; // update state  
     }    
+
+    /* Sempre que houver um viewElement, haverá um saveAction*/
+    if (view.viewElement){
+      var el = document.querySelector(view.viewElement);
     
+      if (el.saveAction){
+        app.saveAction = el.saveAction;      
+      }  
+    }      
   };
 
   app.slug = function slug(str) {
@@ -195,32 +204,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   app.logout = function() {
     app.$.firebaseLogin.logout();
-    app.route = 'login';
-    app.master = false;
-    app.docente = false;
+
+    app.set('route', 'login');
+    app.set('master', false);
+    app.set('docente', false);
   };
 
-  app.atualizarUsuario = function(auth, user){
+  app.atualizarUsuario = function(auth){
     // usuário foi cadastrado
     // atualizar objeto app.user
 
-    if (!user){
-      user = {};
+    if (!app.usuario){
+      app.usuario = {};
     }
 
     for (var key in auth.detail.user){
       if (auth.detail.user.hasOwnProperty(key)) {
-        user[key] = auth.detail.user[key];
+        app.usuario[key] = auth.detail.user[key];
       }
     }
 
-    app.user = user
+    app.set('user', app.usuario);
 
     if(app.active){
-      app.route = 'home';
+      app.set('route', 'home');
     }else{
-      if(user.master){
-        app.route = 'master';
+      if(app.user.master){
+        app.set('route', 'master');
       }
     }     
   }
@@ -231,18 +241,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var displayName = auth.detail.user.google.displayName;    
     var key = userEmail.split('@')[0].replace('.', '-');
     
-    var usuario = {
+    app.set('usuario', {
       name: displayName,
       email: userEmail
-    };
+    });
 
-    ref.child('users').child(key).once('value', function(snapshot){
-      if (!snapshot.exists()){ // usuário não existe na base de dados
+    ref.child('users').child(key).once('value', function(snapshotUsers){
+      if (!snapshotUsers.exists()){ // usuário não existe na base de dados
 
         // verificar se usuário é administrador
-        ref.child('administradores').orderByChild('email').equalTo(userEmail).once('value', function(snapshot){
-          if(snapshot.exists()){
-            usuario.master = true;
+        ref.child('administradores').orderByChild('email').equalTo(userEmail).once('value', function(snapshotAdministradores){
+          if(snapshotAdministradores.exists()){
+            app.set('usuario.master', true);
+            app.set('user.master', true);
           }
 
           ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshotDocentes) {
@@ -251,27 +262,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (snapshotDocentes.exists()){              
               var docente = snapshotDocentes.val()[key];              
 
-              usuario.diren = docente.diren || false;
-              usuario.docente = true; 
-              usuario.key = key;
+              app.set('usuario.diren', docente.diren || false);
+              app.set('usuario.docente', true); 
+              app.set('usuario.key', key);
+              app.set('usuario.nome', docente['nome-completo']);
 
-              app.atualizarUsuario(auth, usuario);              
+              app.atualizarUsuario(auth, app.usuario);              
             }else{
-              usuario.docente = false; 
-              usuario.diren = false; 
+              app.set('usuario.docente', false); 
+              app.set('usuario.diren', false); 
             }
 
-            ref.child('users').child(key).set(usuario); 
+            ref.child('users').child(key).set(app.usuario);
+
+            app.set('user.docente', app.usuario.docente);
+            app.set('user.diren', app.usuario.diren); 
           });
         });             
       }
       
-      usuario = snapshot.val();
-      app.atualizarUsuario(auth, usuario);
+      app.set('usuario', snapshotUsers.val());
+      app.atualizarUsuario(auth, app.usuario);
 
       ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
         if (!snapshot.exists()) {
-          if(!user.master){
+          if(!app.user.master){
             app.$.firebaseLogin.logout();
 
             app.$.toast.text = 'Usuário não autorizado. Entre em contato com o administrador do Sapiens';
