@@ -8,6 +8,9 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+
 <style is="custom-style">
 
   /*
@@ -55,6 +58,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   /* General styles */
 
+  html{
+    background: #fafafa;
+  }
+  
+  body {
+    @apply(--layout-fullbleed);
+    @apply(--layout-vertical);
+  }
+
   #drawerToolbar {
     color: var(--secondary-text-color);
     background-color: var(--drawer-menu-color);
@@ -71,6 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     right: 0;
     bottom: 0;
     left: 0;
+    height: 100%;
   }
 
   paper-toolbar .title {
@@ -89,6 +102,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     @apply(--layout-flex);
   }
 
+  paper-menu {
+    --paper-menu-selected-item: {
+      color: var(--primary-color);
+    }
+
+    --paper-menu-focused-item-after: {
+      background: var(--primary-color);
+    }
+  }
+
+  .space {
+    @apply(--layout-flex);
+  }
   /* End keep header*/
 
   paper-scroll-header-panel {
@@ -133,9 +159,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     padding: 0 16px;
   }
 
-  paper-toolbar.tall .app-name {
-    font-size: 40px;
-    font-weight: 300;
+  paper-toolbar .app-name {
+    line-height: 64px;
     /* Required for main area's paper-scroll-header-panel custom condensing transformation */
     -webkit-transform-origin: left center;
     transform-origin: left center;

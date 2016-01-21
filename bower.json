@@ -1,5 +1,5 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "sapiens",
   "private": true,
   "dependencies": {
     "iron-elements": "PolymerElements/iron-elements#^1.0.0",
@@ -8,7 +8,6 @@
     "paper-elements": "PolymerElements/paper-elements#^1.0.1",
     "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
     "polymer": "Polymer/polymer#^1.2.0",
-    "paper-menu": "PolymerElements/paper-menu#4fecb43601",
     "firebase-element": "GoogleWebComponents/firebase-element#~1.0.8",
     "firebase": "~2.3.2",
     "google-sheets": "GoogleWebComponents/google-sheets#~1.0.5",
@@ -18,10 +17,7 @@
     "simple-material-table": "wintersandroid/material-table#~0.5.0"
   },
   "devDependencies": {
-    "web-component-tester": "*"
+    "web-component-tester": "^4.0.0"
   },
-  "ignore": [],
-  "resolutions": {
-    "paper-menu": "4fecb43601"
-  }
+  "ignore": []
 }

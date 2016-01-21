@@ -49,7 +49,7 @@
 
 </head>
 
-<body class="fullbleed layout vertical">
+<body unresolved>
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
@@ -161,7 +161,7 @@
             on-tap="back">
           </paper-icon-button> 
 
-          <span class="flex"></span>
+          <span class="space"></span>
 
           <!-- Toolbar icons -->
           <paper-icon-button hidden="{{!normal}}" icon="search"></paper-icon-button>
@@ -280,8 +280,9 @@
 
   </template>
 
-  <script src="bower_components/firebase/firebase.js"></script>
+  
   <!-- build:js scripts/app.js -->
+  <script src="bower_components/firebase/firebase.js"></script>
   <script src="scripts/app.js"></script>
   <!-- endbuild-->
 </body>
