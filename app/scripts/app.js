@@ -19,7 +19,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   /* Configurações*/
 
+  // Sets app default base URL
   app.baseUrl = '/';
+
   app.master = false;
   app.docente = false;
   app.activeTitle = 'Sapiens'; 
@@ -54,21 +56,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   });
 
-  Array.prototype.reduce = function(callback, initialValue) {
-    var len = this.length;
-    var index = 1; // index começa em 1
-    var accumulatedValue = this[0]; // valor acumulado é o 1o valor
-    // se for passado valor inicial, mudamos as coisas
-    if ( initialValue ) {
-      index = 0; // começa em 0
-      accumulatedValue = initialValue; // acumulado = valor inicial
-    }
-    while(index < len) {
-      accumulatedValue = callback(accumulatedValue, this[index], index, this );
-      index++;
-    }
-    return accumulatedValue;
-  };
+  // Array.prototype.reduce = function(callback, initialValue) {
+  //   var len = this.length;
+  //   var index = 1; // index começa em 1
+  //   var accumulatedValue = this[0]; // valor acumulado é o 1o valor
+  //   // se for passado valor inicial, mudamos as coisas
+  //   if ( initialValue ) {
+  //     index = 0; // começa em 0
+  //     accumulatedValue = initialValue; // acumulado = valor inicial
+  //   }
+  //   while(index < len) {
+  //     accumulatedValue = callback(accumulatedValue, this[index], index, this );
+  //     index++;
+  //   }
+  //   return accumulatedValue;
+  // };
 
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
@@ -92,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     ref.child('master').on('value', function(snapshot){
       if(snapshot.exists()){
-        app.active = snapshot.val().active;
+        app.set('active', snapshot.val().active);
       }
     });
   });
@@ -117,33 +119,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   app.changeView = function(view){
-    //save last title and state
-    app.lastTitle.push(app.activeTitle);
-    app.lastState.push(app.state);
+    if (!app.user){
+      app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
+      app.$.toast.show(); 
+      app.lastUrl = window.location.hash;
+      page.redirect('/login'); 
+    }else{
+      //save last title and state
+      app.lastTitle.push(app.activeTitle);
+      app.lastState.push(app.state);
 
-    this.activeTitle = view.title;    
-    this.activeViewElement = view.activeViewElement;
+      this.activeTitle = view.title;    
+      this.activeViewElement = view.activeViewElement;
 
-    var parent = document.querySelector('[data-route="' + view.route + '"]');
-    var viewNode = Polymer.dom(parent).querySelector('.view');
+      var parent = document.querySelector('[data-route="' + view.route + '"]');
+      var viewNode = Polymer.dom(parent).querySelector('.view');
 
-    app.route = view.route;    
-    app.backAction = viewNode.backAction;
+      app.set('route', view.route);    
+      app.set('backAction', viewNode.backAction);
 
-    if (!app[view.state]===app[app.state]){
-      app[view.state] = true; //new state 
-      app[app.state] = false; // last state
-      app.state = view.state; // update state  
-    }    
+      if (!app[view.state]===app[app.state]){
+        app[view.state] = true; //new state 
+        app[app.state] = false; // last state
+        app.state = view.state; // update state  
+      }    
 
-    /* Sempre que houver um viewElement, haverá um saveAction*/
-    if (view.viewElement){
-      var el = document.querySelector(view.viewElement);
-    
-      if (el.saveAction){
-        app.saveAction = el.saveAction;      
-      }  
-    }      
+      /* Sempre que houver um viewElement, haverá um saveAction*/
+      if (view.viewElement){
+        var el = document.querySelector(view.viewElement);
+      
+        if (el.saveAction){
+          app.saveAction = el.saveAction;      
+        }  
+      } 
+    }
+
+         
   };
 
   app.slug = function slug(str) {
@@ -199,7 +210,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   app.login = function() {
     app.$.firebaseLogin.login({scope: 'email'});
-
   };
 
   app.logout = function() {
@@ -215,7 +225,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // atualizar objeto app.user
 
     if (!app.usuario){
-      app.usuario = {};
+      app.set('usuario', {});
     }
 
     for (var key in auth.detail.user){
@@ -227,10 +237,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.set('user', app.usuario);
 
     if(app.active){
-      app.set('route', 'home');
+      // app.set('route', 'home');
+      if(app.lastUrl){
+        page.redirect(app.lastUrl);
+      }else{
+        page.redirect(window.location.hash);  
+      }      
     }else{
       if(app.user.master){
-        app.set('route', 'master');
+        // app.set('route', 'master');
       }
     }     
   }
@@ -248,7 +263,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     ref.child('users').child(key).once('value', function(snapshotUsers){
       if (!snapshotUsers.exists()){ // usuário não existe na base de dados
-
         // verificar se usuário é administrador
         ref.child('administradores').orderByChild('email').equalTo(userEmail).once('value', function(snapshotAdministradores){
           if(snapshotAdministradores.exists()){
@@ -293,7 +307,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.$.toast.show();
             page.redirect(app.baseUrl);
           }else{
-            page.route = 'master'; 
+            app.set('route', 'master'); 
           }
         }
       });       

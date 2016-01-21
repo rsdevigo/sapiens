@@ -112,9 +112,18 @@
         }
       },
 
-      _remove: function(e){                
-        var el = 'avaliacoes' + this.bimestre + 'Bim';
-        var index = this.index
+      _remove: function(e){  
+        var el = 'avaliacoes';
+
+        if(this.bimestre === 1){
+          el += 'PrimeiroBimestre';
+        }else{
+          if(this.bimestre === 2){
+            el += 'SegundoBimestre';
+          }  
+        }       
+
+        var index = this.index;
 
         this.domHost.splice(el, index, 1);
         this.domHost.atualizarNotas();

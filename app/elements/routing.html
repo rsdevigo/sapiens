@@ -42,22 +42,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }  
     }
 
-    function title(text){
-      return text;
-    }
-
     // Routes
     page('*', scrollToTop, closeDrawer, function(ctx, next) {
       next();
     }); 
 
-    page('/*', function(ctx, next) {
-      if (!app.active){
-        app.route = 'master'
-      }else{
-        next();
-      }
-    });
+    // page('/*', function(ctx, next) {
+    //   if (!app.active){
+    //     // app.route = 'master'
+    //   }else{
+    //     next();
+    //   }
+    // });
 
     page('/', function() {
       if(app.user){
@@ -85,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'login';
     });
 
-    page('/disciplinas', loggedIn, scrollToTop, function() {
+    page('/disciplinas', scrollToTop, function() {
       app.changeView({
           title: 'Minhas disciplinas',
           state: 'normal',

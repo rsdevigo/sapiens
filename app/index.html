@@ -65,14 +65,14 @@
         </paper-toolbar>
 
         <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
           <a data-route="home" href="{{baseUrl}}">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
 
           <template is="dom-if" if="{{active}}">
-            <a data-route="disciplinas" href="/disciplinas" hidden$="{{!user.docente}}">
+            <a data-route="disciplinas" href="{{baseUrl}}disciplinas" hidden$="{{!user.docente}}">
               <iron-icon icon="book"></iron-icon>
               <span>Minhas disciplinas</span>
             </a>
