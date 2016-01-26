@@ -282,6 +282,11 @@ gulp.task('serve', ['styles', 'elements'], function() {
     }
   });
 
+  gulp.src(['app/scripts/app.js'])
+    .pipe(replace('__FIREBASE__URL__', firebaseUrl.development))
+    .pipe(rename('app.development.js'))
+    .pipe(gulp.dest('app/scripts'));
+
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
