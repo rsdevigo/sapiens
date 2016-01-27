@@ -230,16 +230,6 @@
 
       _modal: function(evt){
         this.$.displinaAdicional.querySelector('#modal').open();
-      },
-
-      ready: function(){
-        if (this.curso && this.turma){
-          var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/turmas/' + this.curso.__firebaseKey__ + '/' + this.turma.__firebaseKey__);
-
-          ref.on('child_added', function(snapshotDocente){
-            console.log(snapshot.val());
-          })
-        }
       }
     });
   })();

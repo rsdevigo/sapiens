@@ -394,6 +394,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_planoChanged'
         },
 
+        disciplina: {
+          type: Object,
+          notify: true
+        },
+
         avaliacoes: {
           type: Object,
           notify: true
@@ -426,9 +431,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       metodologia: function(topicos, index, tecnica){
-        if (this.plano.topicos){
-          return this.plano.topicos[index][tecnica];
-        }
+        return this.plano.topicos[index][tecnica];        
       },
 
       _aulasPraticasChanged: function(change){
@@ -440,27 +443,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _planoChanged: function(plano){
-        if(!this.plano.praticas && !this.plano.teoricas){
-          this.set('plano.praticas', 0);
-          this.set('plano.teoricas', 0);
+        if (!plano.isEmpty()){
+          var self = this;
+          
+          /* Objeto com os tópicos de metodologia devem estar completos
+          * para que o dataBind funcione corretamente 
+          */
+          if(!plano.topicos){
+            this.set('plano.topicos', []);
+          }
+
+          var ementas = plano.disciplina.ementa.split(';');
+
+          ementas.forEach(function(topico, index){
+            if(!plano.topicos[index]){
+              plano.topicos[index] = {};
+            }
+            
+            plano.topicos[index].topico = topico;              
+            plano.topicos[index].aulas = plano.topicos[index].aulas || 0;              
+            plano.topicos[index].tecnicasEnsino = plano.topicos[index].tecnicasEnsino || [];              
+            plano.topicos[index].recursosEnsino = plano.topicos[index].recursosEnsino || [];              
+            plano.topicos[index].instrumentosAvaliacao = plano.topicos[index].instrumentosAvaliacao || [];    
+          });   
+
+          self.set('plano.topicos' + plano.topicos);
+
+          if(!this.plano.praticas && !this.plano.teoricas){
+            this.set('plano.praticas', 0);
+            this.set('plano.teoricas', 0);
+          }
+
+          var ementas = this.plano.disciplina.ementa.split(';');
+          var self = this;
+
+          this.set('ementas', ementas);
         }
-
-        var ementas = this.plano.disciplina.ementa.split(';');
-        var self = this;
-
-        this.set('plano.topicos', []);
-        
-        ementas.forEach(function(topico){
-          self.push('plano.topicos', {
-            topico: topico,
-            tecnicasEnsino: [],
-            recursosEnsino: [],
-            instrumentosAvaliacao: [],
-            aulas: 0
-          });
-        });
-
-        this.set('ementas', ementas);
       },
 
       _aulasChanged: function(evt){
@@ -477,7 +495,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _bibliografia: function(bibliografia){
-        return bibliografia.split('\n');
+        if (bibliografia){
+         return bibliografia.split('\n');
+        }
       },
 
       cargaTotal: function(carga){
@@ -485,9 +505,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       qtdAulas: function(topicos, index, aulas){
-        if (this.plano.topicos){
-          return this.plano.topicos[index][aulas];
-        }
+        return this.plano.topicos[index][aulas];
       },
 
       qtdAulasListener: function(e){

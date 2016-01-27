@@ -36,6 +36,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.visiting = false;
   app.editandoPlanoEnsino = false;
 
+  Object.defineProperty(Object.prototype, 'clone', {
+    value: function() {
+      var cloned = JSON.parse(JSON.stringify(this));
+
+      return cloned;
+    }
+  });
+
   Object.defineProperty(Object.prototype, 'toArray', {
     value: function() {
       var self = this;
@@ -151,7 +159,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (el.saveAction){
           app.saveAction = el.saveAction;      
         }  
-      } 
+      }
+
+      app.scrollPageToTop(); 
     }
 
          

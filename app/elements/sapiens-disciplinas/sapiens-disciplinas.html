@@ -15,7 +15,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="sapiens-disciplinas">
   <template>
-    <sapiens-disciplinas-data user="{{user}}" disciplinas-docente="{{disciplinasDocente}}"></sapiens-disciplinas-data>
+    <sapiens-disciplinas-data 
+      user="{{user}}" 
+      planos="{{planos}}"
+      disciplinas-docente="{{disciplinasDocente}}">
+    </sapiens-disciplinas-data>
 
     <neon-animated-pages 
       id="paginas-disciplinas" 
@@ -27,6 +31,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Lista as disciplinas do docente -->
         <sapiens-disciplinas-docente 
           disciplinas-docente="{{disciplinasDocente}}"
+          disciplina="{{disciplina}}"
+          planos="{{planos}}"
           plano="{{plano}}">
         </sapiens-disciplinas-docente>
       </neon-animatable>
@@ -59,7 +65,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         plano: {
           type: Object,
           notify: true
-        }     
+        },
+
+        planos: {
+          type: Array,
+          notify: true
+        }       
       },
 
       backAction: function() {
@@ -92,7 +103,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       saveAction: function(){
-        alert();
+        var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
+        var plano = document.querySelector('sapiens-disciplinas').plano.clone();
+
+        plano.curso = plano.disciplina.curso.key;
+        plano.turma = plano.disciplina.turma.key;
+        plano.disciplina = plano.disciplina.key;
+        plano.aulas = plano.aulas;
+        plano.praticas = plano.praticas;
+        plano.teoricas = plano.teoricas;
+        plano.topicos = plano.topicos;
+        plano.docente = app.user.key;
+  
+        if (plano.__firebaseKey__){
+          refPlanos.child(plano.__firebaseKey__).update(plano);
+        }else{
+          refPlanos.push(plano);
+        }        
+
+        app.$.toast.text = 'Plano de Ensino salvo!';
+        app.$.toast.show();
       }
 
     });

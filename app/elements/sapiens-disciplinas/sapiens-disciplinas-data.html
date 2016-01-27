@@ -12,8 +12,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="sapiens-disciplinas-data">
   <template>
-    
-    
+    <firebase-collection
+      order-by-child="docente"
+      equal-to="{{user.key}}"
+      location="https://blazing-inferno-2038.firebaseio.com/planos"
+      data="{{planos}}">
+    </firebase-collection>
   </template>
   <script>
   (function() {
@@ -35,6 +39,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         disciplinasDocente: {
+          type: Array,
+          notify: true,
+          value: []
+        },
+
+        planos: {
           type: Array,
           notify: true,
           value: []
@@ -76,7 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   refTurmas.child(turmaKey).once('value', function(snapshotTurma){
                     disciplinasArray.push({
                       key: disciplina.disciplina,
-                      turma: snapshotTurma.val()
+                      turma: snapshotTurma.val(),
+                      turmaKey: turmaKey
                     }); 
                   });              
                 }
@@ -95,7 +106,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       var d = snapshotDisciplina.val()
                       
                       d.curso = curso;
-                      d.turma = disciplina.turma
+                      d.turma = disciplina.turma;
+                      d.turma.key = disciplina.turmaKey;
+                      d.key = disciplina.key;                  
 
                       self.push('disciplinasDocente', d);
                     }

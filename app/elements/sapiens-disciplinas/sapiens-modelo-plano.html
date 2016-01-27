@@ -43,111 +43,113 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _planoChanged: function(plano){
-        /* Modelo do plano disponível em
-         * https://docs.google.com/document/d/1VoIOjzUOtIbc4VYpYMeCg4S19l8SOlcTMdAG1DbtBjU/
-         */
+        if(!plano.isEmpty()){
 
-        /* Definição cabeçalho, rodapé e margens */
-        var cabecalho = this.imagens.cabecalho;
-        var rodape = this.imagens.rodape;
+          /* Modelo do plano disponível em
+           * https://docs.google.com/document/d/1VoIOjzUOtIbc4VYpYMeCg4S19l8SOlcTMdAG1DbtBjU/
+           */
 
-        this.docDefinition.pageMargins = [80, 160, 40, 120];
+          /* Definição cabeçalho, rodapé e margens */
+          var cabecalho = this.imagens.cabecalho;
+          var rodape = this.imagens.rodape;
 
-        this.docDefinition.styles ={
-          section: {
-             alignment: 'center', 
-             bold: true,
-             fillColor: '#e3e3e3'
-          },
+          this.docDefinition.pageMargins = [80, 160, 40, 120];
 
-          sectionTitle: {
+          this.docDefinition.styles ={
+            section: {
+               alignment: 'center', 
+               bold: true,
+               fillColor: '#e3e3e3'
+            },
+
+            sectionTitle: {
+               alignment: 'left', 
+               bold: true,
+               fillColor: '#e3e3e3'
+            },
+
+            sectionTitleNoBg: {          
              alignment: 'left', 
-             bold: true,
-             fillColor: '#e3e3e3'
-          },
-
-          sectionTitleNoBg: {          
-           alignment: 'left', 
-           bold: true
+             bold: true
+            }
           }
+
+          this.docDefinition.header = function() {
+            return {
+              columns: [
+                { 
+                  image: cabecalho,
+                  margin: [80, 20, 0, 0],
+                  width: 480         
+                }
+              ]
+            }
+          };
+
+          this.docDefinition.footer = function() {
+            return {
+              columns: [
+                { 
+                  image: rodape,
+                  margin: [77, 50, 0, 80],
+                  width: 480          
+                }
+              ]
+            }
+          };
+
+          this.docDefinition.content = [];
+
+          /* Definição do conteúdo do plano de ensino */
+
+          /* Título */
+          this.docDefinition.content.push({ 
+            text: 'PLANO DE ENSINO', 
+            fontSize: 14,
+            bold: true,
+            margin: [0, -20, 0, 20],
+            alignment: 'center' 
+          });
+
+          /* Seção 01 - Identificação */
+          this.docDefinition.content.push({text: 'IDENTIFICAÇÃO'});
+
+          /* Seção 02 - Ementa */
+          this.docDefinition.content.push({    
+            fontSize: 10, 
+            margin: [0, 0, 0, 20],                       
+            table: {
+              widths: [ 40, 280, 125],
+              body: [
+                [ { text: '02', style: 'section' }, { text: 'EMENTA', colSpan: 2, style: 'sectionTitle'}, {} ],
+                [ { text: plano.disciplina.ementa, colSpan: 3, alignment: 'justify'}, '', '' ]              
+              ] 
+            }
+          });
+
+          this.docDefinition.content.push({text: 'objetivo-geral'});
+          this.docDefinition.content.push({text: 'objetivos-especificos'});
+          this.docDefinition.content.push({text: 'avaliacao'});
+          this.docDefinition.content.push({text: 'recuperacao'});
+
+          /* Seção 07 - Bibliografia */
+          var bibliografiaBody = [
+            [ { text: '07', style: 'section' }, { text: 'REFERÊNCIAS', colSpan: 2, style: 'sectionTitle'}, {} ],
+            [{text: "BIBLIOGRAFIA BÁSICA", bold: true, colSpan: 3}, {}, {}],
+            [{text: plano.disciplina['bibliografia-basica'], colSpan: 3}, {}, {}],
+            [{text: "BIBLIOGRAFIA COMPLEMENTAR", bold: true, colSpan: 3}, {}, {}],
+            [{text: plano.disciplina['bibliografia-complementar'], colSpan: 3}, {}, {}]
+          ];
+          
+          this.docDefinition.content.push({    
+            fontSize: 10, 
+            margin: [0, 0, 0, 20],                       
+            table: {
+              widths: [ 40, 280, 125],
+              body: bibliografiaBody 
+            }
+          });
         }
-
-        this.docDefinition.header = function() {
-          return {
-            columns: [
-              { 
-                image: cabecalho,
-                margin: [80, 20, 0, 0],
-                width: 480         
-              }
-            ]
-          }
-        };
-
-        this.docDefinition.footer = function() {
-          return {
-            columns: [
-              { 
-                image: rodape,
-                margin: [77, 50, 0, 80],
-                width: 480          
-              }
-            ]
-          }
-        };
-
-        this.docDefinition.content = [];
-
-        /* Definição do conteúdo do plano de ensino */
-
-        /* Título */
-        this.docDefinition.content.push({ 
-          text: 'PLANO DE ENSINO', 
-          fontSize: 14,
-          bold: true,
-          margin: [0, -20, 0, 20],
-          alignment: 'center' 
-        });
-
-        /* Seção 01 - Identificação */
-        this.docDefinition.content.push({text: 'IDENTIFICAÇÃO'});
-
-        /* Seção 02 - Ementa */
-        this.docDefinition.content.push({    
-          fontSize: 10, 
-          margin: [0, 0, 0, 20],                       
-          table: {
-            widths: [ 40, 280, 125],
-            body: [
-              [ { text: '02', style: 'section' }, { text: 'EMENTA', colSpan: 2, style: 'sectionTitle'}, {} ],
-              [ { text: plano.disciplina.ementa, colSpan: 3, alignment: 'justify'}, '', '' ]              
-            ] 
-          }
-        });
-
-        this.docDefinition.content.push({text: 'objetivo-geral'});
-        this.docDefinition.content.push({text: 'objetivos-especificos'});
-        this.docDefinition.content.push({text: 'avaliacao'});
-        this.docDefinition.content.push({text: 'recuperacao'});
-
-        /* Seção 07 - Bibliografia */
-        var bibliografiaBody = [
-          [ { text: '07', style: 'section' }, { text: 'REFERÊNCIAS', colSpan: 2, style: 'sectionTitle'}, {} ],
-          [{text: "BIBLIOGRAFIA BÁSICA", bold: true, colSpan: 3}, {}, {}],
-          [{text: plano.disciplina['bibliografia-basica'], colSpan: 3}, {}, {}],
-          [{text: "BIBLIOGRAFIA COMPLEMENTAR", bold: true, colSpan: 3}, {}, {}],
-          [{text: plano.disciplina['bibliografia-complementar'], colSpan: 3}, {}, {}]
-        ];
-        
-        this.docDefinition.content.push({    
-          fontSize: 10, 
-          margin: [0, 0, 0, 20],                       
-          table: {
-            widths: [ 40, 280, 125],
-            body: bibliografiaBody 
-          }
-        });
-
       },
 
       prepare: function(){
@@ -315,12 +317,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ];
 
         topicos.forEach(function(topico){
+          console.log(topico);
+          
           topicosBody.push([
             { text: topico.aulas, alignment: 'center' },
             { text: topico.topico },
-            { text: topico.tecnicasEnsino.join(';') },   
-            { text: topico.recursosEnsino.join(';') },
-            { text: topico.instrumentosAvaliacao.join('; ') }                      
+            { text: topico.tecnicasEnsino.join(';') || ''},   
+            { text: topico.recursosEnsino.join(';') || '' },
+            { text: topico.instrumentosAvaliacao.join('; ') || '' }                      
           ]);          
         });
 

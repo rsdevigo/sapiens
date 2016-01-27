@@ -28,9 +28,9 @@
       <paper-card>
         <div class="card-content">
           <div class="title">
-                  <div class="medium">{{disciplina.disciplina}}</div>
-                  <div class="smal">{{disciplina.curso.nome}} - <span>{{disciplina.turma.nome}}</span></div>
-              </div>                  
+              <div class="medium">{{disciplina.disciplina}}</div>
+              <div class="smal">{{disciplina.curso.nome}} - <span>{{disciplina.turma.nome}}</span></div>
+          </div>                  
         </div>
         <div class="card-content">
           <p><strong>Carga horária semanal: </strong> <span>{{disciplina.aulas}}</span></p>
@@ -66,13 +66,30 @@
         plano: {
           type: Object,
           notify: true
+        },
+
+        disciplina: {
+          type: Object,
+          notify: true
         }
       },
 
       selecionarPlano: function(evt){
-        this.set('plano', {
-          disciplina: evt.model.get('disciplina')
+        var disciplina = evt.model.get('disciplina');
+        var planoEncontrado = {};
+
+        this.set('disciplina', disciplina);
+        this.set('plano', {});
+
+        this.planos.forEach(function(plano){
+          if (plano.curso === disciplina.curso.key && plano.disciplina === disciplina.key && plano.turma === disciplina.turma.key){                    
+            planoEncontrado = plano.clone();
+            return;
+          }
         });
+        
+        planoEncontrado.disciplina = disciplina;
+        this.set('plano', planoEncontrado);       
 
         this.domHost.proximo();
       }
