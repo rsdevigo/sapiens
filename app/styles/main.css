@@ -24,6 +24,28 @@ body {
   -webkit-transform: translateZ(0);      
 }
 
+/* LOADING */ 
+
+#loading{
+    background: rgba(255,255,255,0.85);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999; 
+    transform: translateZ(0);
+}
+
+#loading img {    
+    height: 240px;    
+    left: calc(50% - 125px);
+    margin: auto;
+    position: absolute;
+    top: calc(50% - 125px);
+    transform: translateZ(0);
+    width: 240px;
+}
 
 @media print{
   @page {
