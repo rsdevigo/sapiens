@@ -68,6 +68,11 @@
           notify: true
         },
 
+        planos: {
+          type: Array,
+          notify: true
+        },
+
         disciplina: {
           type: Object,
           notify: true
@@ -77,20 +82,44 @@
       selecionarPlano: function(evt){
         var disciplina = evt.model.get('disciplina');
         var planoEncontrado = {};
+        
+        /* Seleciona a primeira aba do plano de ensino */
+        this.domHost.$.plano.secao = 0;
 
-        this.set('disciplina', disciplina);
         this.set('plano', {});
 
-        this.planos.forEach(function(plano){
-          if (plano.curso === disciplina.curso.key && plano.disciplina === disciplina.key && plano.turma === disciplina.turma.key){                    
-            planoEncontrado = plano.clone();
+        this.planos.forEach(function(p){
+          if (p.curso === disciplina.curso.key && 
+              p.disciplina === disciplina.key && 
+              p.turma === disciplina.turma.key){     
+          
+            planoEncontrado = p.clone();
+
             return;
           }
         });
-        
-        planoEncontrado.disciplina = disciplina;
-        this.set('plano', planoEncontrado);       
 
+        if(planoEncontrado.isEmpty()){
+          planoEncontrado.topicos = [];
+        }
+
+        planoEncontrado.disciplina = disciplina;
+
+        var ementas = planoEncontrado.disciplina.ementa.split(';');
+
+        ementas.forEach(function(topico, index){
+          if(!planoEncontrado.topicos[index]){
+            planoEncontrado.topicos[index] = {};
+          }
+          
+          planoEncontrado.topicos[index].topico = topico;              
+          planoEncontrado.topicos[index].aulas = planoEncontrado.topicos[index].aulas || 0;              
+          planoEncontrado.topicos[index].tecnicasEnsino = planoEncontrado.topicos[index].tecnicasEnsino || [];              
+          planoEncontrado.topicos[index].recursosEnsino = planoEncontrado.topicos[index].recursosEnsino || [];              
+          planoEncontrado.topicos[index].instrumentosAvaliacao = planoEncontrado.topicos[index].instrumentosAvaliacao || [];
+        });   
+
+        this.set('plano', planoEncontrado);
         this.domHost.proximo();
       }
     });

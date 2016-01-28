@@ -33,7 +33,7 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
   <!-- build:css styles/main.css -->
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css" async>
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
@@ -45,14 +45,24 @@
   <!-- endreplace-->
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
-  <style is="custom-style" include="shared-styles"></style>
+  <style is="custom-style" include="shared-styles" async></style>
 
 </head>
 
 <body unresolved>
   <span id="browser-sync-binding"></span>
-  <template is="dom-bind" id="app">
 
+  <div id="loading">
+    <div class="showbox">
+      <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <template is="dom-bind" id="app">
     <firebase-auth id="firebaseLogin" user="{{user}}" status-known="{{statusKnown}}" location="https://blazing-inferno-2038.firebaseio.com/" provider="google" on-login="loginHandler" on-error="errorHandler"></firebase-auth>
 
     <paper-drawer-panel id="paperDrawerPanel">
@@ -202,13 +212,16 @@
 
         </paper-toolbar>
 
-        <!-- Main Content -->
+        <!-- Main Content -->       
+
         <div class="content">
           <neon-animated-pages 
             attr-for-selected="data-route" 
             selected="{{route}}"
             entry-animation="fade-in-animation" 
             exit-animation="fade-out-animation">
+
+            
 
             <neon-animatable data-route="master">              
               <sapiens-master class="view" user="{{user}}"></sapiens-master>

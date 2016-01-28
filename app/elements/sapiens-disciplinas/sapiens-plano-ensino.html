@@ -239,6 +239,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p>Utilize essa seção para detalhar as avaliações que deseja aplicar no decorrer da disciplina. As avaliação são divididas em dois bimestres e, recomenda-se, que sejam aplicadas, em cada bimestre, ao menos duas avaliações distintas. Caso achar necessário, deixe observações com relação às avaliações planejadas.</p>
 
         <sapiens-composicao-avaliacao 
+          id="avaliacoes"
           avaliacoes-primeiro-bimestre="{{plano.avaliacoes-primeiro-bimestre}}"
           avaliacoes-segundo-bimestre="{{plano.avaliacoes-segundo-bimestre}}"
           observacoes-primeiro-bimestre="{{plano.observacoes-primeiro-bimestre}}"
@@ -325,7 +326,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-material elevation="1">
           <div class="header layout horizontal">
             <h1 class="table-title">Detalhamento da proposta de trabalho</h1>
-            <span class="flex"></span>
+            <span class="spacer"></span>
             <div class="controls">
               <paper-icon-button icon="add"></paper-icon-button>
             </div>
@@ -431,7 +432,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       metodologia: function(topicos, index, tecnica){
-        return this.plano.topicos[index][tecnica];        
+        return this.plano.topicos[index][tecnica];                 
+      },
+
+      qtdAulas: function(topicos, index, aulas){
+        return this.plano.topicos[index][aulas];       
       },
 
       _aulasPraticasChanged: function(change){
@@ -446,38 +451,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!plano.isEmpty()){
           var self = this;
           
-          /* Objeto com os tópicos de metodologia devem estar completos
-          * para que o dataBind funcione corretamente 
-          */
-          if(!plano.topicos){
-            this.set('plano.topicos', []);
-          }
-
-          var ementas = plano.disciplina.ementa.split(';');
-
-          ementas.forEach(function(topico, index){
-            if(!plano.topicos[index]){
-              plano.topicos[index] = {};
-            }
-            
-            plano.topicos[index].topico = topico;              
-            plano.topicos[index].aulas = plano.topicos[index].aulas || 0;              
-            plano.topicos[index].tecnicasEnsino = plano.topicos[index].tecnicasEnsino || [];              
-            plano.topicos[index].recursosEnsino = plano.topicos[index].recursosEnsino || [];              
-            plano.topicos[index].instrumentosAvaliacao = plano.topicos[index].instrumentosAvaliacao || [];    
-          });   
-
-          self.set('plano.topicos' + plano.topicos);
-
           if(!this.plano.praticas && !this.plano.teoricas){
-            this.set('plano.praticas', 0);
-            this.set('plano.teoricas', 0);
+            plano.praticas = 0;
+            plano.teoricas =0
           }
 
           var ementas = this.plano.disciplina.ementa.split(';');
           var self = this;
 
           this.set('ementas', ementas);
+
+          this.$.avaliacoes.atualizarNotas();
         }
       },
 
@@ -502,10 +486,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       cargaTotal: function(carga){
         return ~~carga * this.semanas;
-      },
-
-      qtdAulas: function(topicos, index, aulas){
-        return this.plano.topicos[index][aulas];
       },
 
       qtdAulasListener: function(e){

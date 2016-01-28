@@ -10,6 +10,10 @@
         top: 20px;
       }
 
+      .linha{
+        @apply(--layout-horizontal);
+      }
+
       .linha > :not(:last-child){
         margin-right: 16px;
       }
@@ -18,20 +22,26 @@
         @apply(--layout-flex-3);
       }
 
+      .flex2child {
+        @apply(--layout-flex-2);
+      }
 
     </style>
     
     <div class="layout horizontal flex linha">
-      <paper-input label="Sigla" value="{{sigla}}" char-counter maxlength="7" class="flex flex3child"></paper-input>
-      <paper-dropdown-menu label="Instrumento de Avaliação" value="{{instrumento}}" class="flex flex3child">
-        <paper-menu class="dropdown-content">
+      <paper-input label="Sigla" value="{{sigla}}" char-counter maxlength="7" class="flex flex2child"></paper-input>
+      <paper-dropdown-menu 
+        label="Instrumento de Avaliação" 
+        class="flex flex2child" 
+        value="{{instrumento}}">
+        <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{instrumento}}" >
           <template is="dom-repeat" items="{{instrumentos}}">
-            <paper-item>{{item}}</paper-item>  
+            <paper-item value="{{item}}">{{item}}</paper-item>  
           </template>            
         </paper-menu>
       </paper-dropdown-menu>
       <paper-input value="{{peso}}" label="Peso" type="number" min="1" max="10" class="flex"></paper-input>
-      <paper-input value="{{maximo}}" label="Valor máximo" type="number" min="1" max="10" class="flex"></paper-input>
+      <paper-input value="{{maximo}}" label="Valor" type="number" min="1" max="10" class="flex"></paper-input>
       <paper-icon-button icon="delete" title="delete" on-click="_remove" class="delete"></paper-icon-button>
     </div>
           
@@ -87,13 +97,13 @@
       },
 
       _pesoMudou: function(n, o){
-        if (this.maximo){
+        if (this.maximo && this.domHost){
           this.domHost.atualizarNotas();
         }
       },
 
       _maximoMudou: function(n, o){
-        if (this.peso){
+        if (this.peso && this.domHost){
           this.domHost.atualizarNotas();
         }
       },

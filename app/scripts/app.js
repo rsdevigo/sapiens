@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.lastTitle = [];
   app.lastState = [];
   app.state = 'normal'; 
+  app.loading = true;
   
   app.normal = true;
   app.viewing = false;
@@ -97,7 +98,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function() {
     // console.log('Our app is ready to rock!');
-
     var ref = new Firebase("https://blazing-inferno-2038.firebaseio.com");    
 
     ref.child('master').on('value', function(snapshot){
@@ -105,6 +105,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.set('active', snapshot.val().active);
       }
     });
+  });
+
+  app.showLoading = function(){
+    document.querySelector('#loading').style.display = 'block';
+  }
+
+  app.hideLoading = function(){
+    document.querySelector('#loading').style.display = 'none';
+  }
+
+  HTMLImports.whenReady(function () {
+    app.hideLoading();
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
@@ -124,12 +136,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     if (typeof app.backAction === 'function'){
       app.backAction();
     }
+
+    app.scrollPageToTop();
   }
 
   app.changeView = function(view){
+    app.showLoading();
+
     if (!app.user){
-      app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
-      app.$.toast.show(); 
+      // app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
+      // app.$.toast.show(); 
       app.lastUrl = window.location.hash;
       page.redirect('/login'); 
     }else{
@@ -162,9 +178,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       app.scrollPageToTop(); 
-    }
-
-         
+      app.hideLoading();
+    }         
   };
 
   app.slug = function slug(str) {
@@ -251,13 +266,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if(app.lastUrl){
         page.redirect(app.lastUrl);
       }else{
-        page.redirect(window.location.hash);  
+        page.redirect(window.location.hash);
       }      
-    }else{
-      if(app.user.master){
-        // app.set('route', 'master');
-      }
-    }     
+
+      app.hideLoading();
+    }
   }
 
   app.loginHandler = function(auth) {
@@ -313,14 +326,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if(!app.user.master){
             app.$.firebaseLogin.logout();
 
-            app.$.toast.text = 'Usuário não autorizado. Entre em contato com o administrador do Sapiens';
-            app.$.toast.show();
+            // app.$.toast.text = 'Usuário não autorizado. Entre em contato com o administrador do Sapiens';
+            // app.$.toast.show();
             page.redirect(app.baseUrl);
+            app.hideLoading();
           }else{
-            app.set('route', 'master'); 
+            app.changeView({
+              title: 'Sapiens',
+              state: 'normal',
+              route: 'master',
+            });
           }
         }
-      });       
+      });
     });  
          
   };

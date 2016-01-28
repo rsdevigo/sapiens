@@ -13,8 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var replace = require('gulp-replace');
-var htmlreplace = require('gulp-html-replace');
-var rename = require("gulp-rename");
+var crisper = require('gulp-crisper');
 var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
@@ -27,6 +26,7 @@ var historyApiFallback = require('connect-history-api-fallback');
 var packageJson = require('./package.json');
 var crypto = require('crypto');
 var ensureFiles = require('./tasks/ensure-files.js');
+
 
 // var ghPages = require('gulp-gh-pages');
 
@@ -214,6 +214,7 @@ gulp.task('vulcanize', function() {
       inlineCss: true,
       inlineScripts: true
     }))
+    .pipe(crisper()) // for CSP
     .pipe(gulp.dest(dist('elements')))
     .pipe($.size({title: 'vulcanize'}));
 });
