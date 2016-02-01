@@ -31,32 +31,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       edit-header="Editar projeto"
       entity-obj="{{projeto}}"
       back-action="{{backAction}}"
-      save-action="{{saveAction}}">
-
+      save-action="{{saveAction}}">      
+      
       <form class="sapiens-form" is="iron-form">
-        <paper-input label="Nome do projeto" value="{{projeto.nome-projeto}}"></paper-input>
-        <paper-textarea 
-          label="Resumo do projeto" 
-          value="{{projeto.descricao}}" 
-          char-counter 
-          maxlength="500">
-        </paper-textarea>
+        <div class="page">
+          <paper-input label="Nome do projeto" value="{{projeto.nome-projeto}}"></paper-input>
+          <paper-textarea 
+            label="Resumo do projeto" 
+            value="{{projeto.descricao}}" 
+            char-counter 
+            maxlength="500">
+          </paper-textarea>
 
-        <paper-dropdown-menu label="Categoria" value="{{projeto.categoria}}">
-          <paper-menu 
-            class="dropdown-content" 
-            id="periodo" 
-            attr-for-selected="value" 
-            selected="{{projeto.categoria}}"> 
-            <paper-item value="Ensino">Ensino</paper-item>
-            <paper-item value="Pesquisa">Pesquisa</paper-item>
-            <paper-item value="Extensão">Extensão</paper-item>
-          </paper-menu>
-        </paper-dropdown-menu>
+          <paper-dropdown-menu label="Categoria" value="{{projeto.categoria}}">
+            <paper-menu 
+              class="dropdown-content" 
+              id="periodo" 
+              attr-for-selected="value" 
+              selected="{{projeto.categoria}}"> 
+              <paper-item value="Ensino">Ensino</paper-item>
+              <paper-item value="Pesquisa">Pesquisa</paper-item>
+              <paper-item value="Extensão">Extensão</paper-item>
+            </paper-menu>
+          </paper-dropdown-menu>
 
-        <paper-input label="Carga horária semanal" type="number" value="{{projeto.carga}}">
-          <div suffix>horas</div>
-        </paper-input>
+          <paper-input label="Carga horária semanal" type="number" value="{{projeto.carga}}">
+            <div suffix>horas</div>
+          </paper-input>
+        </div>
       </form>
 
     </sapiens-crud>

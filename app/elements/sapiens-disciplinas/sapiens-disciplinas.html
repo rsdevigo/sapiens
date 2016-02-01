@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       entry-animation="[[entryAnimation]]" 
       exit-animation="[[exitAnimation]]">
 
-      <neon-animatable>
+      <neon-animatable class="page">
         <!-- Lista as disciplinas do docente -->
         <sapiens-disciplinas-docente 
           disciplinas-docente="{{disciplinasDocente}}"
@@ -103,26 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       saveAction: function(){
-        var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
-        var plano = document.querySelector('sapiens-disciplinas').plano.clone();
-
-        plano.curso = plano.disciplina.curso.key;
-        plano.turma = plano.disciplina.turma.key;
-        plano.disciplina = plano.disciplina.key;
-        plano.aulas = plano.aulas;
-        plano.praticas = plano.praticas;
-        plano.teoricas = plano.teoricas;
-        plano.topicos = plano.topicos;
-        plano.docente = app.user.key;
-  
-        if (plano.__firebaseKey__){
-          refPlanos.child(plano.__firebaseKey__).update(plano);
-        }else{
-          refPlanos.push(plano);
-        }        
-
-        app.$.toast.text = 'Plano de Ensino salvo!';
-        app.$.toast.show();
+        document.querySelector('sapiens-plano-ensino').save();
       }
 
     });

@@ -298,6 +298,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         /* Seção 08 - Metodologia  */
         var topicos = this.plano.topicos;
+
         var topicosBody = [
           [ 
             { text: '08', style: 'section' }, 
@@ -320,9 +321,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           topicosBody.push([
             { text: topico.aulas, alignment: 'center' },
             { text: topico.topico },
-            { text: topico.tecnicasEnsino.join(';') || ''},   
-            { text: topico.recursosEnsino.join(';') || '' },
-            { text: topico.instrumentosAvaliacao.join('; ') || '' }                      
+            { text: topico.tecnicasEnsino ? topico.tecnicasEnsino.join(';') : ''},   
+            { text: topico.recursosEnsino ? topico.recursosEnsino.join(';') : '' },
+            { text: topico.instrumentosAvaliacao ? topico.instrumentosAvaliacao.join('; ') : '' }                      
           ]);          
         });
 
@@ -335,7 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         };
 
-        /* ASSINATURA */
+        /* ASSINATURA E APROVAÇÃO */
         this.docDefinition.content[9] = { 
           text: '__________________________________________', 
           margin: [0, 60, 0, 0],
@@ -349,6 +350,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ], 
           alignment: 'center' 
         };
+
+        this.docDefinition.content[11] = {    
+          fontSize: 10, 
+          margin: [0, 60, 0, 0], 
+          table: {
+            widths: [ 70, 235, 35, 100],
+            body: [
+              [ 
+                { text: 'Revisado por', bold: true }, '', 
+                { text: 'Data', bold: true }, 
+                { text: '____/____/________', alignment: 'center' }
+              ],
+              [ 
+                { text: 'Aprovado por', bold: true }, '', 
+                { text: 'Data', bold: true }, 
+                { text: '____/____/________', alignment: 'center' }
+              ] 
+            ]
+          }
+        };
+
 
       },
 

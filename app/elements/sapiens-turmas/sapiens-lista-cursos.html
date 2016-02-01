@@ -6,12 +6,11 @@
       }
 
       paper-card{
-        margin-bottom: 24px;
-        border-top: solid 3px var(--secondary-text-color);
+        margin-bottom: 16px;
       }
     </style>
 
-    <section id="lista-cursos">
+    <section id="lista-cursos" class="page">
       <template is="dom-repeat" items="{{cursos}}" as="curso">
         <paper-card heading="{{curso.nome}}"> 
           <div class="card-content">

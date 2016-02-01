@@ -1,16 +1,18 @@
 {
 	"recursos": [
-		"Quadro branco / canetão",
-		"Projetor multimídia",
-		"Lousa Digital",
-		"Flip-Chart",
-		"TV, DVD",
-		"Laboratório",
-		"Material impresso (apostila, textos)",
-		"Livro didático",
 		"Ficha avaliativa",
 		"Filme",
+		"Flip-Chart",
+		"Laboratório",
+		"Livro didático",
+		"Lousa Digital",
 		"Material concreto específico",
+		"Material impresso (apostila, textos)",
+		"Projetor multimídia",
+		"Quadro branco / canetão",		
+		"Smartphone",
+		"Tablet",
+		"TV e mídias digitais",		
 		"Outro"
 	]
 }

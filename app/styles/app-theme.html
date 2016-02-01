@@ -77,6 +77,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   /* Keep header */
 
+  paper-subheader{
+    border-top: solid 1px rgba(0,0,0,0.1) ;
+  }
+
+  .menu-trigger{
+    cursor: pointer;
+  }
+
   paper-scroll-header-panel {
     position: absolute;
     top: 0;
@@ -98,7 +106,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     --paper-icon-button-ink-color: white;
   }
 
-  .spacer {
+  .spacer,
+  ::shadow .spacer{
     @apply(--layout-flex);
   }
 
@@ -157,6 +166,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     line-height: 24px;
     min-height: 48px;
     padding: 0 16px;
+  }
+
+  paper-submenu a{
+    padding-left: 48px;
   }
 
   paper-toolbar .app-name {

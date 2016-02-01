@@ -11,7 +11,7 @@
         @apply(--layout-flex);
         
         margin-bottom: 16px;
-        width: 220px;
+        max-width: 220px;
 
         --paper-card-header-text: { 
           font-size: 16px; 
@@ -43,6 +43,20 @@
         line-height: 1rem;
         top: -0.4rem;
       }
+        
+      .title{ margin: 32px 0; }
+
+      .title h2,
+      .title h4{ margin: 0; }
+
+      .title h2{
+        color: #0288D1;
+      }
+
+      .title h4{ 
+        color: rgba(51, 51, 51, 0.75);
+        font-weight: 400; 
+      }
 
     </style>
 
@@ -51,74 +65,72 @@
       data="{{disciplinas}}">
     </firebase-document>
 
-    <firebase-document
-      location="https://blazing-inferno-2038.firebaseio.com/teste"
-      data="{{teste}}">
-    </firebase-document>
-
     <paper-tabs selected="{{selected}}" noink>
       <paper-tab>Distribuição</paper-tab>
       <paper-tab>Horário</paper-tab>
     </paper-tabs>
 
-    <h1>Turma: <span>{{turma.nome}}</span></h1>
-    <h2>Periodo: <span>{{turma.periodo}}</span></h2>
+    <div class="page">
+      <div class="title">
+        <h2>Turma: <span>{{turma.nome}}</span></h2>
+        <h4>Periodo: <span>{{turma.periodo}}</span></h4>
+      </div>
 
-    <iron-pages selected="{{selected}}">
-      <!-- Lista de disciplinas para atribuição docente -->
-      <section id="turma">
-        <div id="turmas-container">
-          <template is="dom-repeat" items="{{disciplinas}}" as="disciplina">
-            <paper-card heading="{{disciplina.disciplina}}" class="disciplina"> 
+      <iron-pages selected="{{selected}}">
+        <!-- Lista de disciplinas para atribuição docente -->
+        <section id="turma">
+          <div id="turmas-container">
+            <template is="dom-repeat" items="{{disciplinas}}" as="disciplina">
+              <paper-card heading="{{disciplina.disciplina}}" class="disciplina"> 
+                <div class="card-content">
+                  <div>
+                    <sapiens-distribuicao-input
+                      index="{{index}}"
+                      disciplina="{{disciplina}}"
+                      turma="{{turma}}"
+                      docentes="{{docentes}}">
+                    </sapiens-distribuicao-input>              
+                  </div>            
+                </div>    
+              </paper-card>
+            </template>
+          </div>
+
+          <paper-fab class="fab" icon="add" on-tap="_modal" data-dialog="modal"></paper-fab>
+          
+          <!-- Modal para adição de novas disciplinas para esta turma -->
+          <sapiens-disciplina-adicional 
+            id="displinaAdicional"
+            matriz="{{matriz}}"
+            disciplinas="{{disciplinas}}">
+          </sapiens-disciplina-adicional>       
+        </section>
+
+        <!-- Montagem de horário da turma -->
+        <section id="horario">
+          <template is="dom-repeat" items="{{semana}}" as="diaSemana">
+            <paper-card heading="{{diaSemana}}" class="horario">
               <div class="card-content">
-                <div>
-                  <sapiens-distribuicao-input
-                    index="{{index}}"
-                    disciplina="{{disciplina}}"
-                    turma="{{turma}}"
-                    docentes="{{docentes}}">
-                  </sapiens-distribuicao-input>              
-                </div>            
-              </div>    
-            </paper-card>
+                <template is="dom-repeat" items="{{horaAula}}" as="hora">
+                  <div class="horario-1">
+                    <span><strong>{{hora}}</strong></span>
+                    <paper-dropdown-menu label="Disciplina" no-label-float>
+                      <paper-menu 
+                        class="dropdown-content" 
+                        selected="{{_disciplinaHorario(diaSemana, hora)}}">
+                        <template is="dom-repeat" items="{{matriz}}" as="disciplina">
+                          <paper-item data-dia$="{{diaSemana}}" data-hora$="{{hora}}" on-tap="_disciplinaSelecionada">{{disciplina.codigo}}</paper-item>  
+                        </template>
+                      </paper-menu>
+                    </paper-dropdown-menu>
+                  </div>                 
+                </template>             
+              </div>
+            </paper-card>              
           </template>
-        </div>
-
-        <paper-fab class="fab" icon="add" on-tap="_modal" data-dialog="modal"></paper-fab>
-        
-        <!-- Modal para adição de novas disciplinas para esta turma -->
-        <sapiens-disciplina-adicional 
-          id="displinaAdicional"
-          matriz="{{matriz}}"
-          disciplinas="{{disciplinas}}">
-        </sapiens-disciplina-adicional>       
-      </section>
-
-      <!-- Montagem de horário da turma -->
-      <section id="horario">
-        <template is="dom-repeat" items="{{semana}}" as="diaSemana">
-          <paper-card heading="{{diaSemana}}" class="horario">
-            <div class="card-content">
-              <template is="dom-repeat" items="{{horaAula}}" as="hora">
-                <div class="horario-1">
-                  <span><strong>{{hora}}</strong></span>
-                  <paper-dropdown-menu label="Disciplina" no-label-float>
-                    <paper-menu 
-                      class="dropdown-content" 
-                      selected="{{_disciplinaHorario(diaSemana, hora)}}">
-                      <template is="dom-repeat" items="{{matriz}}" as="disciplina">
-                        <paper-item data-dia$="{{diaSemana}}" data-hora$="{{hora}}" on-tap="_disciplinaSelecionada">{{disciplina.codigo}}</paper-item>  
-                      </template>
-                    </paper-menu>
-                  </paper-dropdown-menu>
-                </div>                 
-              </template>             
-            </div>
-          </paper-card>              
-        </template>
-      </section>
-    </iron-pages>   
-
+        </section>
+      </iron-pages>   
+    </div>
   </template>
   <script>
   (function() {

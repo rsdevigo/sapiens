@@ -62,7 +62,6 @@
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
-
         <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar">
           <span class="paper-font-title">Menu</span>
@@ -74,7 +73,7 @@
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
-
+        
           <template is="dom-if" if="{{active}}">
             <a data-route="disciplinas" href="{{baseUrl}}disciplinas" hidden$="{{!user.docente}}">
               <iron-icon icon="book"></iron-icon>
@@ -90,48 +89,47 @@
               <iron-icon icon="event"></iron-icon>
               <span>Minhas atividades</span>
             </a>
-
-            <paper-submenu hidden$="{{!user.diren}}">
-              <iron-icon icon="home"></iron-icon>
-              <paper-item class="menu-trigger">DIREN</paper-item>
-
-              <paper-menu class="menu-content sublist">
-                <a data-route="" href="/disciplinas/lista">
-                  <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Cadastros</span>
-                </a>
-
-                <a data-route="turmas" href="/diren/turmas">
-                  <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Turmas</span>
-                </a> 
-
-                <a data-route="carga-docente" href="/diren/cargadocente">
-                  <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Carga horária docente</span>
-                </a> 
-
-                <a data-route="" href="/diren/planos">
-                  <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Planos de Ensino</span>
-                </a>               
-              </paper-menu>
-            </paper-submenu>
-
-            <paper-submenu hidden$="{{!user.master}}">
-              <iron-icon icon="home"></iron-icon>
-              <paper-item class="menu-trigger">SAPIENS</paper-item>
-
-              <paper-menu class="menu-content sublist">
-                <a data-route="master" href="/master">
-                  <!-- <iron-icon icon="home"></iron-icon> -->
-                  <span>Entrada de dados</span>
-                </a>          
-              </paper-menu>
-            </paper-submenu>
-
           </template>
         </paper-menu>
+
+        <div hidden$="{{!user.diren}}">
+          <paper-subheader>DIREN</paper-subheader>
+          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" hidden$="{{!user.diren}}">
+            <template is="dom-if" if="{{active}}">
+              <a data-route="turmas" href="/diren/turmas">
+                <iron-icon icon="dashboard"></iron-icon>
+                <span>Turmas</span>
+              </a> 
+
+              <a data-route="carga-docente" href="/diren/cargadocente">
+                <iron-icon icon="trending-up"></iron-icon>
+                <span>Carga horária docente</span>
+              </a> 
+
+              <a data-route="" href="/diren/planos">            
+                <iron-icon icon="description"></iron-icon>
+                <span>Planos de Ensino</span>
+              </a> 
+            </template>  
+          </paper-menu>
+        </div>
+
+        <div hidden$="{{!user.master}}">
+          <paper-subheader>ADMIN</paper-subheader>
+          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
+            <template is="dom-if" if="{{active}}">
+              <a data-route="master" href="/master">
+                <iron-icon icon="assignment"></iron-icon>
+                <span>Entrada de dados</span>
+              </a>          
+              
+              <a data-route="" href="/disciplinas/lista">
+                <iron-icon icon="assignment"></iron-icon>
+                <span>Cadastros</span>
+              </a>
+            </template>
+          </paper-menu>
+        </div>
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
@@ -213,9 +211,7 @@
             attr-for-selected="data-route" 
             selected="{{route}}"
             entry-animation="fade-in-animation" 
-            exit-animation="fade-out-animation">
-
-            
+            exit-animation="fade-out-animation">            
 
             <neon-animatable data-route="master">              
               <sapiens-master class="view" user="{{user}}"></sapiens-master>
@@ -244,6 +240,7 @@
             </neon-animatable>
 
             <!-- DIREN -->
+
             <neon-animatable data-route="turmas">
               <sapiens-turmas class="view" user="{{user}}"></sapiens-turmas>
             </neon-animatable> 

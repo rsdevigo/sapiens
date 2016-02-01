@@ -5,7 +5,7 @@
     <style>
       paper-card{
           @apply(--layout-flex);
-          margin: 16px;   
+          margin-bottom: 16px;  
       }
 
       .title {
@@ -85,8 +85,7 @@
         
         /* Seleciona a primeira aba do plano de ensino */
         this.domHost.$.plano.secao = 0;
-
-        this.set('plano', {});
+        this.plano = {};
 
         this.planos.forEach(function(p){
           if (p.curso === disciplina.curso.key && 
@@ -94,30 +93,36 @@
               p.turma === disciplina.turma.key){     
           
             planoEncontrado = p.clone();
-
+          
             return;
           }
         });
 
-        if(planoEncontrado.isEmpty()){
-          planoEncontrado.topicos = [];
-        }
-
         planoEncontrado.disciplina = disciplina;
 
-        var ementas = planoEncontrado.disciplina.ementa.split(';');
-
-        ementas.forEach(function(topico, index){
-          if(!planoEncontrado.topicos[index]){
-            planoEncontrado.topicos[index] = {};
-          }
+        if(!planoEncontrado.topicos){
+          // plano ainda não existe na base de dados
+          // colocar todos os conteúdos da ementa como tópicos no plano
           
-          planoEncontrado.topicos[index].topico = topico;              
-          planoEncontrado.topicos[index].aulas = planoEncontrado.topicos[index].aulas || 0;              
-          planoEncontrado.topicos[index].tecnicasEnsino = planoEncontrado.topicos[index].tecnicasEnsino || [];              
-          planoEncontrado.topicos[index].recursosEnsino = planoEncontrado.topicos[index].recursosEnsino || [];              
-          planoEncontrado.topicos[index].instrumentosAvaliacao = planoEncontrado.topicos[index].instrumentosAvaliacao || [];
-        });   
+          var ementas = planoEncontrado.disciplina.ementa.split(';');
+          planoEncontrado.topicos = [];         
+
+          ementas.forEach(function(topico, index){
+            if(!planoEncontrado.topicos[index]){
+              planoEncontrado.topicos[index] = {};
+            }
+            
+            planoEncontrado.topicos[index].topico = topico;              
+            planoEncontrado.topicos[index].aulas = planoEncontrado.topicos[index].aulas || 0;             
+           
+          }); 
+        }
+
+        for (var i = 0; i < planoEncontrado.topicos.length; i += 1){
+          planoEncontrado.topicos[i].tecnicasEnsino = planoEncontrado.topicos[i].tecnicasEnsino || [];
+          planoEncontrado.topicos[i].recursosEnsino = planoEncontrado.topicos[i].recursosEnsino || []; 
+          planoEncontrado.topicos[i].instrumentosAvaliacao = planoEncontrado.topicos[i].instrumentosAvaliacao || [];
+        }  
 
         this.set('plano', planoEncontrado);
         this.domHost.proximo();

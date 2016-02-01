@@ -6,64 +6,105 @@
       }
 
       paper-card{
-        margin-bottom: 24px;
-        border-top: solid 3px var(--secondary-text-color);
+        @apply(--layout-flex);
+      }
+
+      #nova-turma{
+        @apply(--layout-vertical);
+      }
+
+      #nova-turma paper-card{
+        @apply(--layout-flex);
+        border-top: solid 2px rgba(0, 0, 0, 0.3);
+      }
+
+      #nova-turma paper-dropdown-menu{
+        @apply(--layout-flex);
+        margin-right: 16px;
+      }
+
+      #nova-turma paper-dropdown-menu:last-of-type{
+        margin-right: 0;
+      }
+
+      #curso-selecionado{
+        @apply(--layout-vertical);
+      }
+
+      #lista-turmas{
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        padding: 0 16px;
+        margin-bottom: 16px;
+      }
+
+      #lista-turmas paper-card{
+        @apply(--layout-justified);
+        margin: 8px;
+        min-width: 250px;
+      }
+
+      .line{
+        @apply(--layout-horizontal);
       }
     </style>
       
-    <section id="curso-selecionado" class="layout horizontal">
+    <section id="curso-selecionado">
       <!-- Criação de novas turmas -->
-      <paper-card heading="Nova turma" class="flex">  
-        <div class="card-content">
+      <div id="nova-turma" class="page">
+        <paper-card heading="Nova turma">  
+          <div class="card-content">
+            <paper-input label="Nome de turma" value="{{turma.nome}}"></paper-input>
+      
+            <div class="line">
+              <paper-dropdown-menu label="Semestre" value="{{turma.semestre}}">
+                <paper-menu class="dropdown-content" id="semestre">
+                  <paper-item>1º Semestre</paper-item>
+                  <paper-item>2º Semestre</paper-item>
+                  <paper-item>3º Semestre</paper-item>
+                  <paper-item>4º Semestre</paper-item>
+                  <paper-item>5º Semestre</paper-item>
+                  <paper-item>6º Semestre</paper-item>
+                  <paper-item>7º Semestre</paper-item>
+                  <paper-item>8º Semestre</paper-item>
+                  <paper-item>9º Semestre</paper-item>
+                  <paper-item>10º Semestre</paper-item>
+                </paper-menu>
+              </paper-dropdown-menu>
 
-          <paper-input label="Nome de turma" value="{{turma.nome}}"></paper-input>
+              <paper-dropdown-menu label="Período" value="{{turma.periodo}}">
+                <paper-menu class="dropdown-content" id="periodo">
+                  <paper-item>Matutino</paper-item>
+                  <paper-item>Vespertino</paper-item>
+                  <paper-item>Noturno</paper-item>
+                </paper-menu>
+              </paper-dropdown-menu>
 
-          <paper-dropdown-menu label="Semestre" value="{{turma.semestre}}">
-            <paper-menu class="dropdown-content" id="semestre">
-              <paper-item>1º Semestre</paper-item>
-              <paper-item>2º Semestre</paper-item>
-              <paper-item>3º Semestre</paper-item>
-              <paper-item>4º Semestre</paper-item>
-              <paper-item>5º Semestre</paper-item>
-              <paper-item>6º Semestre</paper-item>
-              <paper-item>7º Semestre</paper-item>
-              <paper-item>8º Semestre</paper-item>
-              <paper-item>9º Semestre</paper-item>
-              <paper-item>10º Semestre</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
+              <paper-dropdown-menu label="Ano" value="{{turma.ano}}">
+                <paper-menu class="dropdown-content" id="ano">
+                  <paper-item>2016/1</paper-item>
+                  <paper-item>2016/2</paper-item>
+                  <paper-item>2017/1</paper-item>
+                  <paper-item>2017/2</paper-item>
+                  <paper-item>2018/1</paper-item>
+                  <paper-item>2018/2</paper-item>
+                  <paper-item>2019/1</paper-item>
+                  <paper-item>2019/2</paper-item>
+                  <paper-item>2020/1</paper-item>
+                  <paper-item>2020/2</paper-item>
+                </paper-menu>
+              </paper-dropdown-menu>
+            </div>
+          </div> 
 
-          <paper-dropdown-menu label="Período" value="{{turma.periodo}}">
-            <paper-menu class="dropdown-content" id="periodo">
-              <paper-item>Matutino</paper-item>
-              <paper-item>Vespertino</paper-item>
-              <paper-item>Noturno</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
-
-          <paper-dropdown-menu label="Ano" value="{{turma.ano}}">
-            <paper-menu class="dropdown-content" id="ano">
-              <paper-item>2016/1</paper-item>
-              <paper-item>2016/2</paper-item>
-              <paper-item>2017/1</paper-item>
-              <paper-item>2017/2</paper-item>
-              <paper-item>2018/1</paper-item>
-              <paper-item>2018/2</paper-item>
-              <paper-item>2019/1</paper-item>
-              <paper-item>2019/2</paper-item>
-              <paper-item>2020/1</paper-item>
-              <paper-item>2020/2</paper-item>
-            </paper-menu>
-          </paper-dropdown-menu>
-        </div> 
-
-        <div class="card-actions">
-          <paper-button on-tap="criarTurma">Criar</paper-button>
-        </div>      
-      </paper-card>
+          <div class="card-actions">
+            <paper-button on-tap="criarTurma">Criar</paper-button>
+          </div>      
+        </paper-card>
+      </div>
         
       <!-- Lista de turmas criadas -->
-      <div id="lista-cursos" class="flex">
+      <div id="lista-turmas">
         <template is="dom-repeat" items="{{turmas}}" as="turma">
           
           <paper-card heading="{{turma.nome}}"> 

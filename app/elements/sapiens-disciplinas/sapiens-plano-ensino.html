@@ -31,12 +31,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #FF4081;
       }
 
+      /* TABLE STYLE */
+
       table{
         padding: 0px;
         width: 100%;
         border-collapse: collapse;
         font-size: 13px;
         background-color: rgb(255, 255, 255);
+        margin-bottom: 16px;
       }
 
       table thead {
@@ -53,14 +56,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         -webkit-transition-property: background-color;
         transition-property: background-color;
       }
-
-      table tbody tr.is-selected {
-        background-color: #e0e0e0;
-      }
-
-  /*    table tr:nth-child(even){
-        background: #FEFEFE;
-      }*/
 
       table td,
       table th {
@@ -79,23 +74,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       table td {
-        /*position: relative;*/
-        /*vertical-align: top;*/
         height: 48px;
         border-top: 1px solid rgba(0, 0, 0, 0.12);
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        padding-bottom: 12px;
         padding-top: 12px;
         box-sizing: border-box;
-      }
-
-      table td .mdl-data-table__select {
-        /*vertical-align: top;*/
-        position: absolute;
-        left: 24px;
-      }
-
-      table th.mdl-data-table__sort{
-        color: rgba(0, 0, 0, 0.87);
       }
 
       table th {
@@ -111,24 +95,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: 12px;
         padding-bottom: 8px;
         box-sizing: border-box;
-
         width: 40px;
       }
 
-      table th .mdl-data-table__select {
-        position: relative;
-      }
-
-      .mdl-data-table__select {
-        width: 16px;
-      }
-
-      table td.mdl-data-table__cell--non-numeric {
-        text-align: left;
-      }
-
-      table th.mdl-data-table__cell--non-numeric {
-        text-align: left;
+      table tbody tr:hover{
+        background: #EEEEEE;
       }
 
       .numero-aulas{
@@ -150,6 +121,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .header paper-icon-button{
         top: -8px;
         right: -8px;
+      }
+
+      .conteudo{
+        transition: all ease-in-out .2s;
+      }
+
+      .conteudo:hover{
+        cursor: pointer;
+      }
+
+      .conteudo:hover,
+      .selecionada .conteudo{
+        box-shadow: inset 4px 0px rgba(0, 0, 0, 0.4);
+        transition: all ease-in-out .3s;     
+      }
+
+      .selecionada{
+        background: #EEEEEE;
+      }
+
+      #detalhamento-metodologia{
+        margin-top: 16px;
       }
     </style>
 
@@ -322,13 +315,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <h1>Metodologia aplicada</h1>
         <p>A seguir, indique as técnicas, recursos de ensino e instrumentos de avaliação utilizados em cada um dos tópicos de ensino listados. O Sapiens lista para você cada um dos tópicos contidos na ementa da disciplina. Lembre-se que você pode inserir novos tópicos de ensino.</p>
+        <paper-button on-tap="abrirModalSaibaMaisMetodologia" raised>Saiba mais</paper-button>
 
-        <paper-material elevation="1">
+        <paper-material elevation="1" id="detalhamento-metodologia">
           <div class="header layout horizontal">
             <h1 class="table-title">Detalhamento da proposta de trabalho</h1>
             <span class="spacer"></span>
             <div class="controls">
-              <paper-icon-button icon="add"></paper-icon-button>
+              <paper-icon-button id="remove-topico-btn" icon="delete" on-tap="removerTopicoModal" hidden$="{{!conteudoSelecionado}}"></paper-icon-button>
+              <paper-tooltip for="remove-topico-btn" position="bottom">Remover conteúdo selecionado</paper-tooltip>              
+              <paper-icon-button id="novo-topico-btn" icon="add" on-tap="novoTopico"></paper-icon-button>
+              <paper-tooltip for="novo-topico-btn" position="bottom">Adicionar um novo conteúdo</paper-tooltip>
             </div>
           </div>
           <table>
@@ -342,34 +339,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </tr>
             </thead>
             <tbody>
-              <template is="dom-repeat" items="{{ementas}}">
+              <template is="dom-repeat" items="{{plano.topicos}}" as="conteudo">
                 <tr>
-                  <td>{{item}}</td>
+                  <td on-tap="selecionarLinha" data-index$="[[index]]" class="conteudo">{{conteudo.topico}}</td>
                   <td class="numero-aulas">
                     <paper-input 
                       type="number" 
                       min="0"
-                      value="{{qtdAulas(plano.topicos.*, index, 'aulas')}}"
-                      on-input="qtdAulasListener"
-                      data-index$="{{index}}"
-                      data-teste$="teste">
+                      value="{{conteudo.aulas}}">
                     </paper-input>
                   </td>
                   <td>
                     <sapiens-multiple-input 
-                      selected-items="[[metodologia(plano.topicos.*, index, 'tecnicasEnsino')]]" 
+                      selected-items="[[conteudo.tecnicasEnsino]]" 
                       items="{{tecnicasEnsino.tecnicas}}" small>
                     </sapiens-multiple-input>
                   </td>
                   <td>
                     <sapiens-multiple-input 
-                      selected-items="[[metodologia(plano.topicos.*, index, 'recursosEnsino')]]" 
+                      selected-items="[[conteudo.recursosEnsino]]" 
                       items="{{recursosEnsino.recursos}}" small>
                     </sapiens-multiple-input>
                   </td>
                   <td>
                     <sapiens-multiple-input 
-                      selected-items="[[metodologia(plano.topicos.*, index, 'instrumentosAvaliacao')]]" 
+                      selected-items="[[conteudo.instrumentosAvaliacao]]" 
                       items="{{instrumentosAvaliacao.instrumentos}}" small>
                     </sapiens-multiple-input>
                   </td>
@@ -377,7 +371,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </template>
             </tbody>
           </table>
-        </paper-material>                  
+        </paper-material>
+
+        <paper-dialog id="modalNovoTopico" modal>
+          <p>A seguir, você deve descrever o conteúdo que deseja adicionar à lista de conteúdos do detalhamento da proposta de trabalho.</p>
+          <paper-textarea label="Conteúdo" value="{{conteudo}}"></paper-textarea>
+
+          <div class="buttons">
+            <paper-button dialog-dismiss>Cancelar</paper-button>
+            <paper-button dialog-confirm autofocus on-tap="adicionarConteudo">Adicionar</paper-button>
+          </div>
+        </paper-dialog>
+
+        <paper-dialog id="modalRemoverTopico" modal>
+          <p>Deseja remover o tópico <em>{{conteudoSelecionadoObj.conteudo.topico}}</em>?</p>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Não</paper-button>
+            <paper-button dialog-confirm autofocus on-tap="removerConteudo">Sim</paper-button>
+          </div>
+        </paper-dialog>
+
+        <paper-dialog id="modalSaibaMaisMetodologia" modal>
+          <h2>Metodologia</h2>
+          <paper-dialog-scrollable>
+            <p>A metodologia ou estratégias de aprendizagem como alguns autores denominam, esclarecem 
+            "os procedimentos que os professores utilizarão para facilitar o processo de aprendizagem" (GIL, 2012, p.38). É importante destacar quais os recursos, meios, materiais e procedimentos
+            que serão adotados ao longo da disciplina para desenvolvimento das aulas e
+            escolha das estratégias de ensino e de aprendizagem, forma de aula,
+            dinâmicas, etc. Na metodologia deve estar explícito quais as estratégias
+            metodológicas e didáticas serão usadas pelo professor para atingir os objetivos
+            propostos na disciplina. Vasconcellos (1998), Diaz Bordenave e Pereira (1994),
+            Pilleti (1999), Anastasiou e Alves (2009), Gil (2012) apresentam várias
+            estratégias e metodologias tais como aula expositiva-dialogada, mapas
+            conceituais, portfólio, estudo de texto, dramatização, tempestade cerebral,
+            soluções de problemas, phillips 66, pesquisa de campo, estudo de caso,
+            seminário, fórum, oficinas, estudos com pesquisa, estudos dirigidos, visitas
+            orientadas, palestras, seminários, discussão de filmes e de livros, encenação,
+            júri simulado, etc.</p>
+
+            <p><strong>Fonte: </strong><a href="http://goo.gl/5SAqbL" target="_blank">UNIRIO - Elaboração do Plano de Ensino e do Plano de Aula</a></p>
+          </paper-dialog-scrollable>
+          <div class="buttons">
+            <paper-button dialog-confirm>Fechar</paper-button>
+          </div>
+        </paper-dialog>
+
       </section>      
     </neon-animated-pages>    
   </template>
@@ -418,11 +456,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         instrumentosAvaliacao: {
           type: Object,
           notify: true
-        }
-      },
+        },
 
-      _avaliacoesChanged: function(avaliacoes){
-        this.set('plano.avaliacoes', avaliacoes);
+        conteudo: {
+          type: String,
+          notify: true,
+          value: ''
+        },
+
+        conteudoSelecionado: {
+          type: Boolean,
+          value: false
+        },
+
+        conteudoSelecionadoObj: {
+          type: Object,
+          notify: true
+        }
       },
 
       observers: [
@@ -431,12 +481,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_avaliacoesChanged(avaliacoes.*)'
       ],
 
-      metodologia: function(topicos, index, tecnica){
-        return this.plano.topicos[index][tecnica];                 
+      abrirModalSaibaMaisMetodologia: function(){
+        this.$.modalSaibaMaisMetodologia.open();
       },
 
-      qtdAulas: function(topicos, index, aulas){
-        return this.plano.topicos[index][aulas];       
+      novoTopico: function(evt){
+        this.$.modalNovoTopico.open();
+      },
+
+      removerTopicoModal: function(){
+        this.$.modalRemoverTopico.open();
+      },
+
+      adicionarConteudo: function(evt){
+        this.push('plano.topicos', {
+          topico: this.conteudo,
+          aulas: 0,
+          tecnicasEnsino: [],
+          recursosEnsino: [],
+          instrumentosAvaliacao: [],
+        });
+
+        this.set('conteudo', '');
+      },
+
+      removerConteudo: function(evt){
+        this.splice('plano.topicos', this.conteudoSelecionadoObj.index, 1);
+        this.conteudoSelecionado = false;
+        this.set('conteudoSelecionadoObj', {});
+
+        var refPlano = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
+        
+        refPlano
+          .child(this.plano.__firebaseKey__ + '/topicos')
+          .set(this.plano.topicos);
+      },
+
+      selecionarLinha: function(evt){
+        var td = evt.target;
+        var index = td.getAttribute('data-index');
+
+        if(Polymer.dom(td).parentNode.getAttribute('class').indexOf('selecionada') > -1){
+          // linha já está selecionada e deve ser desmarcada
+          this.desmarcarLinha(td);
+          this.conteudoSelecionado = false;
+          this.set('conteudoSelecionadoObj', {});
+        }else{
+          this.marcarLinha(td);
+
+          /* Não permitir que conteúdos da ementa seja removidos */
+          
+          this.conteudoSelecionado = true;
+
+          this.set('conteudoSelecionadoObj', {
+            index: index,
+            conteudo: this.plano.topicos[index]
+          });  
+        }       
+      },
+
+      marcarLinha: function(td){
+         /* Desmarcar última linha selecionada */
+        var lastSelectedEl = document.querySelector('tr.selecionada');       
+
+        if(lastSelectedEl){  
+          lastSelectedEl.className = lastSelectedEl.className.replace('selecionada', '');       
+        }
+
+        /* Marcar nova linha selecionada */
+        var tr = Polymer.dom(td).parentNode;
+        var lastClass = tr.getAttribute('class');
+        
+        tr.setAttribute('class', lastClass.trim() + ' selecionada');
+      },
+
+      desmarcarLinha: function(td){
+        var tr = Polymer.dom(td).parentNode;
+          
+        tr.setAttribute('class', tr.className.replace('selecionada', ''));
+      },
+
+      _avaliacoesChanged: function(avaliacoes){
+        this.set('plano.avaliacoes', avaliacoes);
       },
 
       _aulasPraticasChanged: function(change){
@@ -449,18 +575,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _planoChanged: function(plano){
         if (!plano.isEmpty()){
-          var self = this;
-          
           if(!this.plano.praticas && !this.plano.teoricas){
             plano.praticas = 0;
             plano.teoricas =0
           }
-
-          var ementas = this.plano.disciplina.ementa.split(';');
-          var self = this;
-
-          this.set('ementas', ementas);
-
+         
           this.$.avaliacoes.atualizarNotas();
         }
       },
@@ -495,6 +614,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       view: function(){
         document.querySelector('sapiens-modelo-plano').view();
+      },
+
+      save: function(){
+        var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
+
+        if(!this.plano.createdAt){
+          console.info('creating');
+          this.plano.createdAt = Firebase.ServerValue.TIMESTAMP;
+        }else{
+          console.info('updating');
+          this.plano.updatedAt = Firebase.ServerValue.TIMESTAMP;
+        }
+
+        var plano = this.plano.clone();
+
+        plano.curso = plano.disciplina.curso.key;
+        plano.turma = plano.disciplina.turma.key;
+        plano.disciplina = plano.disciplina.key;
+        plano.aulas = plano.aulas;
+        plano.praticas = plano.praticas;
+        plano.teoricas = plano.teoricas;
+        plano.topicos = plano.topicos;
+        plano.docente = app.user.key;     
+  
+        if (this.plano.__firebaseKey__){
+          var key = plano.__firebaseKey__;
+          delete plano.__firebaseKey__;
+          delete plano.createdAt;
+          refPlanos.child(key).update(plano);
+        }else{
+          var id = refPlanos.push(plano).key();          
+          this.plano.__firebaseKey__ = id;
+        }      
+
+        app.$.toast.text = 'Plano de Ensino salvo!';
+        app.$.toast.show();
       }
     });
   })();

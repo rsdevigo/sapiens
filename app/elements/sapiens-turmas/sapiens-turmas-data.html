@@ -18,6 +18,8 @@
     <firebase-collection
       id="turmasCollection"
       location="https://blazing-inferno-2038.firebaseio.com/turmas"
+      order-by-child="curso"
+      equal-to="{{curso.__firebaseKey__}}"
       data="{{turmas}}">
     </firebase-collection> 
 
