@@ -620,10 +620,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
 
         if(!this.plano.createdAt){
-          console.info('creating');
           this.plano.createdAt = Firebase.ServerValue.TIMESTAMP;
         }else{
-          console.info('updating');
           this.plano.updatedAt = Firebase.ServerValue.TIMESTAMP;
         }
 

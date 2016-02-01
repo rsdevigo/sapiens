@@ -101,13 +101,13 @@ var optimizeHtmlTask = function(src, dest) {
 
 gulp.task('firebase', function(){
   var firebaseUrl = {
-    development: 'https://blazing-inferno-2038.firebaseio.com/',
-    production: 'https://sapiens.firebaseio.com/'
+    development: 'https://blazing-inferno-2038.firebaseio.com',
+    production: 'https://sapiens.firebaseio.com'
   };
 
   return gulp.src([
     'dist/scripts/**/*.js',
-    'dist/elements/elements.html'
+    'dist/elements/*',
   ]).pipe(replace(firebaseUrl.development, firebaseUrl.production))
     .pipe(gulp.dest(function(file){
       return file.base;
