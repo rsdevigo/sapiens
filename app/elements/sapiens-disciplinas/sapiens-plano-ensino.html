@@ -189,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <section id="referencias">
         <paper-card heading="Bibliografia Básica">
           <div class="card-content">
-            <template is="dom-repeat" items="[[_bibliografia(plano.disciplina.bibliografia-basica)]]">
+            <template is="dom-repeat" items="{{bibliografiaBasica}}">
               <div class="item-bibliografia">{{item}}</div>  
             </template>
           </div>
@@ -197,7 +197,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <paper-card heading="Bibliografia Complementar">
           <div class="card-content">
-            <template is="dom-repeat" items="[[_bibliografia(plano.disciplina.bibliografia-complementar)]]">
+            <template is="dom-repeat" items="{{bibliografiaComplementar}}">
               <div class="item-bibliografia">{{item}}</div>   
             </template>
           </div>
@@ -210,7 +210,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="card-content">
               <paper-textarea 
                 label="Objetivo Geral"
-                value="{{plano.objetivo-geral}}"
+                value="{{plano.objetivoGeral}}"
                 no-label-float>
               </paper-textarea>
             </div>
@@ -220,7 +220,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="card-content">
               <paper-textarea 
                 label="Objetivos Específicos"
-                value="{{plano.objetivos-especificos}}"
+                value="{{plano.objetivosEspecificos}}"
                 no-label-float>
               </paper-textarea>
             </div>
@@ -233,10 +233,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <sapiens-composicao-avaliacao 
           id="avaliacoes"
-          avaliacoes-primeiro-bimestre="{{plano.avaliacoes-primeiro-bimestre}}"
-          avaliacoes-segundo-bimestre="{{plano.avaliacoes-segundo-bimestre}}"
-          observacoes-primeiro-bimestre="{{plano.observacoes-primeiro-bimestre}}"
-          observacoes-segundo-bimestre="{{plano.observacoes-segundo-bimestre}}"
+          avaliacoes-primeiro-bimestre="{{plano.avaliacoesPrimeiroBimestre}}"
+          avaliacoes-segundo-bimestre="{{plano.avaliacoesSegundoBimestre}}"
+          observacoes-primeiro-bimestre="{{plano.observacoesPrimeiroBimestre}}"
+          observacoes-segundo-bimestre="{{plano.observacoesSegundoBimestre}}"
           instrumentos="{{instrumentosAvaliacao.instrumentos}}">
         </sapiens-composicao-avaliacao>  
       </section>
@@ -443,6 +443,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         },
 
+        bibliografiaBasica: {
+          type: Array,
+          computed: '_bibliografia(plano.disciplina.bibliografia-basica)'
+        },
+
+        bibliografiaComplementar: {
+          type: Array,
+          computed: '_bibliografia(plano.disciplina.bibliografia-complementar)'
+        },
+
         secao: {
           type: Number,
           value: 0
@@ -480,6 +490,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_aulasTeoricasChanged(plano.teoricas)',
         '_avaliacoesChanged(avaliacoes.*)'
       ],
+
+      _bibliografia: function(bibliografia){
+        if(bibliografia){
+          return bibliografia.split(';');  
+        }        
+      },
 
       abrirModalSaibaMaisMetodologia: function(){
         this.$.modalSaibaMaisMetodologia.open();
@@ -594,12 +610,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.limite = 'limite'
         }else{
           this.limite = 'normal'
-        }
-      },
-
-      _bibliografia: function(bibliografia){
-        if (bibliografia){
-         return bibliografia.split('\n');
         }
       },
 

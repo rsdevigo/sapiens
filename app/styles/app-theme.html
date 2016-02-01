@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     --default-primary-color:    #03A9F4;
     --light-primary-color:      #B3E5FC;
     --accent-color:             #FF4081;
-    --primary-background-color: #B3E5FC;
+    --primary-background-color: #FFFFFF;
     --primary-text-color:       #212121;
     --secondary-text-color:     #727272;
     --disabled-text-color:      #BDBDBD;
@@ -65,6 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   body {
     @apply(--layout-fullbleed);
     @apply(--layout-vertical);
+  }
+
+  paper-toolbar {
+    --paper-toolbar-background: var(--default-primary-color);     
+    --paper-toolbar-color: #FFFFFF; /* changes the foreground color to green */
   }
 
   #drawerToolbar {
@@ -215,6 +220,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     background-color: var(--dark-primary-color);
     color: #fff;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  ::shadow paper-card {        
+    --paper-card: {
+      background-color: #FFFFFF;  
+    }
   }
 
   /* Breakpoints */

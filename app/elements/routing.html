@@ -125,7 +125,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           state: 'normal',
           route: 'carga-docente'
       });
-    });    
+    }); 
+
+    page('/diren/planos', scrollToTop, function() {
+      app.changeView({
+          title: 'Planos de Ensino',
+          state: 'normal',
+          route: 'diren-planos'
+      });
+    });     
    
     // 404
     page('*', function() {

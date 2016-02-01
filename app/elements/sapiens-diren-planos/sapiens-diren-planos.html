@@ -1,0 +1,103 @@
+<link rel="import" href="sapiens-plano-data.html">
+<script src="/scripts/humane.js"></script>
+
+<dom-module id="sapiens-diren-planos">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+
+			iron-list {
+      			padding-bottom: 16px;
+    		}
+
+		    .item {
+			    @apply(--layout-horizontal);
+			    padding: 20px;
+			    background-color: white;
+			    border: 1px solid #ddd;
+			    margin: 16px auto 0 auto;
+		    }
+
+		    .item:focus {
+		     	outline: 0;
+		     	border-color: #333;
+		    }
+		    
+		    .avatar {
+		     	height: 40px;
+		     	width: 40px;
+		     	border-radius: 20px;
+		     	box-sizing: border-box;
+		     	background-color: #DDD;
+		    }
+
+		    .pad {
+		     	padding: 0 16px;
+		     	@apply(--layout-flex);
+		     	@apply(--layout-vertical);
+		    }
+
+		    .primary {
+		    	font-size: 16px;
+		    	font-weight: bold;
+		    }
+
+		    .secondary {
+		    	font-size: 14px;
+		    }
+
+		    .dim {
+		    	color: gray;
+		    }
+
+		    .spacer {
+		    	@apply(--layout-flex);
+		    }
+
+		</style>
+
+		<sapiens-plano-data planos="{{planos}}"></sapiens-plano-data>
+		
+		<div class="page">
+
+			<iron-list items="{{planos}}" as="plano" >
+		        <template>
+		          <div>
+		            <div class="item" tabindex$="[[tabIndex]]">
+		              <img class="avatar" src="[[item.image]]">
+		              <div class="pad">
+		                <div class="primary">[[plano.docente]]</div>
+		                <div class="secondary">Criação: <span>{{_date(plano.createdAt)}}</span></div>
+		                <div class="secondary">Última atualização: <span>{{_date(plano.updatedAt)}}</span></div>
+		                <div class="secondary dim">[[item.longText]]</div>
+		              </div>
+		              <iron-icon icon$="[[iconForItem(item)]]"></iron-icon>
+		            </div>
+		          </div>
+		        </template>
+		    </iron-list>
+
+						
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'sapiens-diren-planos',
+
+			_date: function (date) {
+				if (date){
+					return humaneDate(new Date(date));	
+				}else{
+					return '';
+				}				
+			},
+
+			getClassForItem: function(item, selected) {
+	        	return selected ? 'item expanded' : 'item';
+	        }
+
+		});
+	</script>
+</dom-module>

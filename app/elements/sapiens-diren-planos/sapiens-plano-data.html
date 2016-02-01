@@ -1,0 +1,43 @@
+<dom-module id="sapiens-plano-data">
+	<template>	
+	</template>
+	<script>
+		Polymer({
+			is: 'sapiens-plano-data',
+
+			properties: {
+				planos: {
+					type: Array,
+					notify: true,
+					value: []
+				}
+			},
+
+			ready: function () {
+				var self = this;
+
+				var refPlanos = new Firebase("https://blazing-inferno-2038.firebaseio.com/planos");    
+				var refDocentes = new Firebase("https://blazing-inferno-2038.firebaseio.com/docentes");    
+				var refDisciplinas = new Firebase("https://blazing-inferno-2038.firebaseio.com/disciplinas");    
+				var refTurmas = new Firebase("https://blazing-inferno-2038.firebaseio.com/turmas");    
+				var refUsuarios = new Firebase("https://blazing-inferno-2038.firebaseio.com/users");    
+
+				var planos = [];
+				
+				refPlanos.on('value', function(snapshotPlanos){
+					if(snapshotPlanos.exists()){
+						planos = snapshotPlanos.val().toArray()
+
+						planos.forEach(function(plano, i){
+							refDocentes.child(plano.docente).once('value').then(function(snapshotDocente){
+								// console.log(snapshotDocente.val());
+							})
+						});
+
+						self.set('planos', planos);
+					}					
+				});
+			}
+		});
+	</script>
+</dom-module>

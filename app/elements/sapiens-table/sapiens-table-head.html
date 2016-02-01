@@ -1,0 +1,48 @@
+<dom-module id="sapiens-table-head">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-flex);
+			}
+
+			thead {
+		        padding-bottom: 3px;
+		    }
+
+		    th {
+		        padding: 0 18px 0 18px;
+		        text-align: left;
+		    }
+
+		    th:first-of-type {
+		        padding-left: 26px;
+		    }
+			
+			th:last-of-type {
+			    padding-right: 26px;
+			}
+
+		</style>
+		
+		<thead>
+			<tr>
+				<template is="dom-repeat" items="{{head}}">
+					<th>{{item}}</th>	
+				</template>
+			</tr>
+		</thead>
+	</template>
+	<script>
+		Polymer({
+			is: 'sapiens-table-head',
+
+			properties: {
+				head: {
+					type: Array,
+					notify: true
+				}
+			}
+		});
+	</script>
+</dom-module>
