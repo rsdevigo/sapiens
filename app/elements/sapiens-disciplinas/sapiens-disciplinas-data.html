@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if(snapshotDistribuicao.exists()){
             var distribuicao = snapshotDistribuicao.val().toArray();
             var disciplinasArray = [];
-            var disciplinasDocente = [];          
+            var disciplinasDocente = [];
             
             // verificar distribuicao do docente
             // e armazenas código das disciplinas
@@ -110,11 +110,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       d.turma.key = disciplina.turmaKey;
                       d.key = disciplina.key;                  
 
-                      self.push('disciplinasDocente', d);
+                      disciplinasDocente.push(d);
                     }
                   });
                 });              
               });
+
+              self.set('disciplinasDocente', disciplinasDocente)
             });
           }
         });
