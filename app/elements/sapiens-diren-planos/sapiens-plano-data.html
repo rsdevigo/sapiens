@@ -34,8 +34,8 @@
 								.then(function(snapshotUsuario){
 									var usuario = snapshotUsuario.val();
 
-									planos[i].avatar = usuario.google.profileImageURL;
-									planos[i].docente = usuario.nome;
+									self.set('planos.' + i + '.docente', usuario.nome);
+									self.set('planos.' + i + '.avatar', usuario.google.profileImageURL);
 								});
 
 							refDisciplinas
