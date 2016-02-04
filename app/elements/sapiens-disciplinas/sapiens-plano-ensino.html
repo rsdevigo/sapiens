@@ -144,6 +144,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       #detalhamento-metodologia{
         margin-top: 16px;
       }
+
+      h1.subtitle{
+        border-bottom: solid 1px rgba(0,0,0,0.1);
+        color: rgba(0,0,0,0.4);
+        font-size: 14px;
+        font-weight: 400;
+        padding: 8px;         
+        text-transform: uppercase;
+      }
+
+      h1.subtitle ~ p{
+        padding-left: 32px;
+      }
     </style>
 
     <sapiens-modelo-plano id="plano" plano="{{plano}}"></sapiens-modelo-plano>
@@ -175,13 +188,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div><strong>Semestre: </strong><span>{{plano.disciplina.turma.semestre}}</span>º semestre</div>     
             <div><strong>Período: </strong><span>{{plano.disciplina.turma.periodo}}</span></div>     
           </div>
-        </paper-card>                        
+        </paper-card>
+
+        <paper-card heading="Sugestões para correção" hidden$="{{!plano.correcoes}}">
+          <div class="card-content">
+            <ul>
+              <li hidden$="{{!plano.correcoes.objetivoGeral}}">
+                <strong>Objetivo geral: </strong>
+                <span>{{plano.correcoes.objetivoGeral}}</span>
+              </li>
+              <li hidden$="{{!plano.correcoes.objetivosEspecificos}}">
+                <strong>Objetivos específicos: </strong>
+                <span>{{plano.correcoes.objetivosEspecificos}}</span>
+              </li>
+              <li hidden$="{{!plano.correcoes.avaliacoes}}">
+                <strong>Avaliações: </strong>
+                <span>{{plano.correcoes.avaliacoes}}</span>
+              </li>
+              <li hidden$="{{!plano.correcoes.recuperacao}}">
+                <strong>Recuperação: </strong>
+                <span>{{plano.correcoes.recuperacao}}</span>
+              </li>
+              <li hidden$="{{!plano.correcoes.metodologia}}">
+                <strong>Metodologia: </strong>
+                <span>{{plano.correcoes.metodologia}}</span>
+              </li>
+            </ul>
+          </div>
+        </paper-card>
+
       </section>
 
       <section id="ementa">
         <paper-card heading="Ementa">
           <div class="card-content">
-            <div>{{plano.disciplina.ementa}}</span></div> 
+            <ul>
+              <template is="dom-repeat" items="{{ementas}}" as="ementa">
+                <li>{{ementa}}</li>            
+              </template>            
+            </ul>
           </div>
         </paper-card>        
       </section>
@@ -433,6 +478,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_planoChanged'
         },
 
+        ementas: {
+          type: Array,
+          notify: true,
+          computed: '_ementas(plano.disciplina.ementa)'
+        },
+
         disciplina: {
           type: Object,
           notify: true
@@ -494,6 +545,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _bibliografia: function(bibliografia){
         if(bibliografia){
           return bibliografia.split(';');  
+        }        
+      },
+
+      _ementas: function(ementas){
+        if(ementas){
+          return ementas.split(';');  
         }        
       },
 
@@ -631,6 +688,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         if(!this.plano.createdAt){
           this.plano.createdAt = Firebase.ServerValue.TIMESTAMP;
+          this.plano.status = 'aberto';
         }else{
           this.plano.updatedAt = Firebase.ServerValue.TIMESTAMP;
         }

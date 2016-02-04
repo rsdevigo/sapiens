@@ -36,6 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.editing = false;
   app.visiting = false;
   app.editandoPlanoEnsino = false;
+  app.visitandoPlanoEnsino = false;
 
   Object.defineProperty(Object.prototype, 'clone', {
     value: function() {
@@ -146,7 +147,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     if (!app.user){
       // app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
       // app.$.toast.show(); 
-      app.lastUrl = window.location.pathname;
+      //app.lastUrl = window.location.pathname;
+      app.lastUrl = window.location.hash;
       page.redirect('/login'); 
     }else{
       //save last title and state

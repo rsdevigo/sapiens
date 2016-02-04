@@ -17,8 +17,7 @@
 				var self = this;
 
 				var refPlanos = new Firebase("https://blazing-inferno-2038.firebaseio.com/planos");    
-				var refDocentes = new Firebase("https://blazing-inferno-2038.firebaseio.com/docentes");    
-				var refDisciplinas = new Firebase("https://blazing-inferno-2038.firebaseio.com/disciplinas");    
+				var refDisciplinas = new Firebase("https://blazing-inferno-2038.firebaseio.com/cursos");    
 				var refTurmas = new Firebase("https://blazing-inferno-2038.firebaseio.com/turmas");    
 				var refUsuarios = new Firebase("https://blazing-inferno-2038.firebaseio.com/users");    
 
@@ -27,11 +26,38 @@
 				refPlanos.on('value', function(snapshotPlanos){
 					if(snapshotPlanos.exists()){
 						planos = snapshotPlanos.val().toArray()
-
+						
 						planos.forEach(function(plano, i){
-							refDocentes.child(plano.docente).once('value').then(function(snapshotDocente){
-								// console.log(snapshotDocente.val());
-							})
+							refUsuarios
+								.child(plano.docente)
+								.once('value')
+								.then(function(snapshotUsuario){
+									var usuario = snapshotUsuario.val();
+
+									planos[i].avatar = usuario.google.profileImageURL;
+									planos[i].docente = usuario.nome;
+								});
+
+							refDisciplinas
+								.child(plano.curso)
+								.once('value')
+								.then(function(snapshotDisciplina){
+									planos[i].curso = snapshotDisciplina.val().nome;
+								});
+
+							refDisciplinas
+								.child(plano.curso + '/matriz/' + plano.disciplina)
+								.once('value')
+								.then(function(snapshotDisciplina){
+									planos[i].disciplina = snapshotDisciplina.val();
+								});
+
+							refTurmas
+								.child(plano.turma)
+								.once('value')
+								.then(function(snapshotTurma){
+									planos[i].turma = snapshotTurma.val();
+								});
 						});
 
 						self.set('planos', planos);

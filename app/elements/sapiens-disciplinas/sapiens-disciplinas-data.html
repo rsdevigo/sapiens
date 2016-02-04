@@ -64,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var docente = this.user.key;
         var self = this;
  
-        ref.once('value', function(snapshotDistribuicao){
+        ref.on('value', function(snapshotDistribuicao){
           if(snapshotDistribuicao.exists()){
             var distribuicao = snapshotDistribuicao.val().toArray();
             var disciplinasArray = [];
@@ -96,7 +96,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             // buscar disciplinas na coleção de cursos
             // através do código armazenado
-            refCursos.once('value', function(snapshotCursos){
+            refCursos.on('value', function(snapshotCursos){
               var cursos = snapshotCursos.val().toArray();
 
               cursos.forEach(function(curso){

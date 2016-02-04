@@ -44,9 +44,17 @@
         var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
         var self = this;
 
-        ref.on('value', function(docentes){
-          if (docentes.exists()){
-            self.docentes = docentes.val().toArray();
+        ref.on('value', function(snapshotDocentes){
+          if (snapshotDocentes.exists()){
+            var docentes = snapshotDocentes.val().toArray();
+            
+            docentes.forEach(function(docente, i){
+              if (!docente.carga){
+                docentes[i].carga = 0;
+              }
+            });
+            
+            self.set('docentes', docentes);
           }
         })
 
@@ -69,6 +77,9 @@
             title: 'CH',
             number: true,
             column: 'carga',
+            formatter: function(value){
+              return ~~value;
+            },
             hidden: false
           }
         ];

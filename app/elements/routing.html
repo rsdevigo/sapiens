@@ -133,6 +133,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           state: 'normal',
           route: 'diren-planos'
       });
+
+      document.querySelector('iron-list').fire('iron-resize');
+      document.querySelector('sapiens-diren-planos').set('selecionada', 0);
     });     
    
     // 404
@@ -144,7 +147,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // add #! before urls
     page({
-      // hashbang: true
+      hashbang: true
     });
 
   });
