@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 /*global Firebase*/
 
 (function(document) {
-  'use strict';
+  
 
   // Grab a reference to our auto-binding template
   // and give it some initial binding values

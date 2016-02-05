@@ -178,7 +178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             widths: [ 40, 280, 125],
             body: [
               [ { text: '03', style: 'section' }, { text: 'OBJETIVO GERAL DA UNIDADE CURRICULAR', colSpan: 2, style: 'sectionTitle'}, {} ],
-              [ { text: this.plano['objetivo-geral'] || '', colSpan: 3, alignment: 'justify'}, '', '' ]              
+              [ { text: this.plano.objetivoGeral || '', colSpan: 3, alignment: 'justify'}, '', '' ]              
             ] 
           }
         };
@@ -191,16 +191,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             widths: [ 40, 280, 125],
             body: [
               [ { text: '04', style: 'section' }, { text: 'OBJETIVOS ESPECÍFICOS DA UNIDADE CURRICULAR', colSpan: 2, style: 'sectionTitle'}, {} ],
-              [ { text: this.plano['objetivos-especificos'] || '', colSpan: 3, alignment: 'justify'}, '', '' ]              
+              [ { text: this.plano.objetivosEspecificos || '', colSpan: 3, alignment: 'justify'}, '', '' ]              
             ] 
           }
         };
 
         /* Seção 05 - Avaliação */
-        var avaliacoesPrimeiroBimestre = this.plano['avaliacoes-primeiro-bimestre'] || [];
-        var avaliacoesSegundoBimestre = this.plano['avaliacoes-segundo-bimestre'] || [];
-        var observacoesPrimeiroBimestre = this.plano['observacoes-primeiro-bimestre'];
-        var observacoesSegundoBimestre = this.plano['observacoes-segundo-bimestre'];
+        var avaliacoesPrimeiroBimestre = this.plano.avaliacoesPrimeiroBimestre || [];
+        var avaliacoesSegundoBimestre = this.plano.avaliacoesSegundoBimestre || [];
+        var observacoesPrimeiroBimestre = this.plano.observacoesPrimeiroBimestre;
+        var observacoesSegundoBimestre = this.plano.observacoesSegundoBimestre;
 
         var avaliacoesBody = [
           [
@@ -339,7 +339,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         /* ASSINATURA E APROVAÇÃO */
         this.docDefinition.content[9] = { 
           text: '__________________________________________', 
-          margin: [0, 60, 0, 0],
+          margin: [0, 30, 0, 0],
           alignment: 'center' 
         };
 
@@ -353,7 +353,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.docDefinition.content[11] = {    
           fontSize: 10, 
-          margin: [0, 60, 0, 0], 
+          margin: [0, 30, 0, 0], 
           table: {
             widths: [ 70, 235, 35, 100],
             body: [
