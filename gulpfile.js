@@ -109,6 +109,7 @@ gulp.task('firebase', function(){
     'dist/scripts/**/*.js',
     'dist/elements/*',
   ]).pipe(replace(firebaseUrl.development, firebaseUrl.production))
+    .pipe(replace('"use strict"', ''))
     .pipe(gulp.dest(function(file){
       return file.base;
     })); 
