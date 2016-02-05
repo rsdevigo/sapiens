@@ -65,7 +65,7 @@
 			_handleSubmit: function(evt){
 				evt.preventDefault();
 
-				this.set('entityObj.created-at', new Date().toString());
+				this.set('entityObj.createdAt', new Date().toString());
 
 				if (this.entityObj.index >= 0){ // update
 					var index = this.entityObj.index;
