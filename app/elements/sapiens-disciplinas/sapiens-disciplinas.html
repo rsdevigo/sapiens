@@ -104,6 +104,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.visualizarPlano = viewElement.view;
       },
 
+      copyAction: function(){
+        document.querySelector('sapiens-plano-ensino').copy();
+      },
+
+      pasteAction: function(){
+        document.querySelector('sapiens-plano-ensino').paste();
+      },
+
       saveAction: function(){
         document.querySelector('sapiens-plano-ensino').save();
       },

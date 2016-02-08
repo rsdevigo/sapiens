@@ -1,3 +1,5 @@
+<link rel="import" href="../sapiens-disciplinas/sapiens-modelo-plano.html">
+
 <dom-module id="sapiens-plano-view">
 	<template>
 		<style>
@@ -58,6 +60,8 @@
 				@apply(--layout-vertical);
 			}
 		</style>
+		
+		<sapiens-modelo-plano id="plano-diren" plano="{{planoSelecionado}}"></sapiens-modelo-plano>
 
 		<div class="page">
 			<paper-card heading="Informações básicas">
@@ -72,9 +76,20 @@
 			    			selected="{{planoSelecionado.status}}"
 			    			on-change="statusAlterado">
 				            <paper-radio-button name="enviado">Aberto</paper-radio-button>
+				            <paper-radio-button name="pendente">Pendente</paper-radio-button>
 				            <paper-radio-button name="aprovado">Aprovado</paper-radio-button>	            
 				        </paper-radio-group>	
 			    	</div>		    
+			    </div>
+		    </paper-card>
+
+		    <paper-card heading="Ementas">
+				<div class="card-content">
+			    	<ul>
+		              <template is="dom-repeat" items="{{ementas}}" as="ementa">
+		                <li>{{ementa}}</li>            
+		              </template>            
+		            </ul>	    
 			    </div>
 		    </paper-card>
 
@@ -303,7 +318,17 @@
 					type: Object,
 					notify: true,
 					observer: 'planoSelecionadoChanged'
-				}
+				},
+
+				ementas: {
+		        	type: Array,
+		          	notify: true,
+		          	computed: '_ementas(planoSelecionado.disciplina.ementa)'
+		        }
+		    },
+
+		    view: function(){
+		    	document.querySelector('sapiens-modelo-plano#plano-diren').view();
 		    },
 
 		    planoSelecionadoChanged: function(planoSelecionado){
@@ -387,6 +412,12 @@
 
 		    abrirCorrecaoMetodologia: function(evt){
 		    	this.$.modalMetodologia.open();
+		    },
+
+		    _ementas: function(ementas){
+		        if(ementas){
+		          return ementas.split(';');  
+		        }        
 		    },
 
 		    salvarCorrecoes: function(evt){

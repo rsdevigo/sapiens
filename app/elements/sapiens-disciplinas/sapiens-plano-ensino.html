@@ -544,7 +544,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _bibliografia: function(bibliografia){
         if(bibliografia){
-          return bibliografia.split(';');  
+          return bibliografia.split('\n');  
         }        
       },
 
@@ -700,6 +700,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         app.$.toast.text = 'Plano enviado à chefia imediata';
         app.$.toast.show();
+      },
+
+      copy: function(){
+        var planoCopiado = this.plano.clone();
+
+        app.planoCopiado = {
+          objetivoGeral: planoCopiado.objetivoGeral || '',
+          objetivosEspecificos: planoCopiado.objetivosEspecificos  || '',      
+          observacoesPrimeiroBimestre: planoCopiado.observacoesPrimeiroBimestre || '',
+          observacoesSegundoBimestre: planoCopiado.observacoesSegundoBimestre || '',
+          recuperacao: planoCopiado.recuperacao || '',
+          praticas: planoCopiado.praticas || 0,
+          teoricas: planoCopiado.teoricas || 0
+        }
+
+        if (planoCopiado.topicos){
+          app.planoCopiado.topicos = planoCopiado.topicos;
+        }
+
+        if (planoCopiado.avaliacoesPrimeiroBimestre){
+          app.planoCopiado.avaliacoesPrimeiroBimestre = planoCopiado.avaliacoesPrimeiroBimestre;
+        }
+
+        if (planoCopiado.avaliacoesSegundoBimestre){
+          app.planoCopiado.avaliacoesSegundoBimestre = planoCopiado.avaliacoesSegundoBimestre;
+        }
+        
+        app.$.toast.text = 'Plano copiado para a área de transferência';
+        app.$.toast.show();
+      },
+
+      paste: function(){
+        if (app.planoCopiado){
+          for (var prop in app.planoCopiado) {
+            if (app.planoCopiado.hasOwnProperty(prop)) {
+              this.set('plano.' + prop, app.planoCopiado[prop]);
+            }
+          }
+
+          app.$.toast.text = 'Plano colado com sucesso';
+          app.$.toast.show();
+        }else{
+          app.$.toast.text = 'Nenhum plano foi copiado para a área de transferência';
+          app.$.toast.show(); 
+        }
       },
 
       save: function(){

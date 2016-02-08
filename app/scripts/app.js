@@ -131,13 +131,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (view.viewElement){
         var el = document.querySelector(view.viewElement);
       
-        if (el.saveAction){
-          app.saveAction = el.saveAction;      
-        }  
-
-        if (el.sendAction){
-          app.sendAction = el.sendAction;      
-        } 
+        if (el.saveAction){ app.saveAction = el.saveAction;}  
+        if (el.sendAction){ app.sendAction = el.sendAction;} 
+        if (el.copyAction){ app.copyAction = el.copyAction;} 
+        if (el.pasteAction){ app.pasteAction = el.pasteAction;}       
       }
 
       app.scrollPageToTop(); 
