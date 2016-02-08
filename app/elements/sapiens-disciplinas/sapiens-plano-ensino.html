@@ -683,12 +683,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.querySelector('sapiens-modelo-plano').view();
       },
 
+      send: function(){
+        var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
+
+        if(!this.plano.createdAt){
+          // plano não foi salvo ainda
+          this.save();
+        }
+
+        refPlanos
+          .child(this.plano.__firebaseKey__)
+          .update({
+            status: 'enviado',
+            updatedAt: Firebase.ServerValue.TIMESTAMP
+          });
+
+        app.$.toast.text = 'Plano enviado à chefia imediata';
+        app.$.toast.show();
+      },
+
       save: function(){
         var refPlanos = new Firebase('https://blazing-inferno-2038.firebaseio.com/planos');
 
         if(!this.plano.createdAt){
           this.plano.createdAt = Firebase.ServerValue.TIMESTAMP;
-          this.plano.status = 'aberto';
+          this.plano.status = 'criado';
         }else{
           this.plano.updatedAt = Firebase.ServerValue.TIMESTAMP;
         }

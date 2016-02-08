@@ -99,11 +99,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           route: 'disciplinas'
         });
 
-        app.visualizarPlano = document.querySelector('sapiens-plano-ensino').view;
+        var viewElement = document.querySelector('sapiens-plano-ensino');
+
+        app.visualizarPlano = viewElement.view;
       },
 
       saveAction: function(){
         document.querySelector('sapiens-plano-ensino').save();
+      },
+
+      sendAction: function(){
+        document.querySelector('sapiens-plano-ensino').send();
       }
 
     });

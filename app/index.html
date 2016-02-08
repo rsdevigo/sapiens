@@ -157,7 +157,7 @@
           <span class="space"></span>
 
           <!-- Toolbar icons -->
-          <paper-icon-button hidden="{{!normal}}" icon="search"></paper-icon-button>
+          <!-- <paper-icon-button hidden="{{!normal}}" icon="search"></paper-icon-button> -->
           <paper-icon-button hidden="{{!creating}}" icon="save" on-tap="saveAction"></paper-icon-button>
           <paper-icon-button hidden="{{!editing}}" icon="save" on-tap="saveAction"></paper-icon-button>
           <paper-icon-button hidden="{{!viewing}}" icon="create" on-tap="editAction"></paper-icon-button>
@@ -170,7 +170,7 @@
           <paper-icon-button id="visualizar-plano" hidden="{{!editandoPlanoEnsino}}" icon="open-in-new" on-tap="visualizarPlano"></paper-icon-button>
           <paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
 
-          <paper-icon-button id="enviar-plano" hidden="{{!editandoPlanoEnsino}}" icon="send" on-tap="enviarPlano"></paper-icon-button>
+          <paper-icon-button id="enviar-plano" hidden="{{!editandoPlanoEnsino}}" icon="send" on-tap="sendAction"></paper-icon-button>
           <paper-tooltip for="enviar-plano" position="bottom">Enviar plano à chefia imediata</paper-tooltip>
           
 
@@ -276,8 +276,8 @@
   <!-- build:js scripts/app.js -->
   <script src="bower_components/firebase/firebase.js"></script>  
   <script src="scripts/humane.js"></script>
+  <script src="scripts/helpers.js"></script>
   <script src="scripts/app.js"></script>
-
   <!-- endbuild-->
 </body>
 

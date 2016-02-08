@@ -3,6 +3,7 @@
 		<style>
 			:host {
 				display: block;
+				margin: 0;
 			}
 
 			iron-list {
@@ -64,35 +65,122 @@
 		    .spacer {
 		    	@apply(--layout-flex);
 		    }
-		</style>			
-		
-		<iron-list 
-			id="listaPlanos" 
-			items="{{planos}}" 
-			as="plano" 
-			on-selected-item-changed="selecionarPlano" 
-			selection-enabled>
-	        <template>
-	          <div on-tap="selecionarPlano">
-	            <div class="item" tabindex$="[[tabIndex]]">
-	              <img class="avatar" src="{{plano.avatar}}">
-	              <div class="pad">
-	                <div class="primary">{{plano.disciplina.disciplina}}</div>
-	                <div class="info bold">
-	                	<span>{{plano.curso}}</span> | 
-	                	<span>{{plano.turma.nome}}</span> | 
-	                	<span>{{plano.turma.ano}}</span></div>
-	                <div class="info"><span>{{plano.docente}}</span></div>
-					<div class="info italic">Criado <span>{{_date(plano.createdAt)}}</span></div>
-	                <div class="info italic" hidden$="{{!plano.updatedAt}}">Atualizado <span>{{_date(plano.updatedAt)}}</span></div>
-	                <div class="info italic">Plano está <span>{{plano.status}}</span></div>
-	                <!-- <div class="secondary dim">[[item.longText]]</div> -->
-	              </div>
-	              <iron-icon icon$="[[iconForItem(item)]]"></iron-icon>
-	            </div>
-	          </div>	        
-    		</template>
-		</iron-list>				
+
+		    #filtro{
+		    	-webkit-box-sizing: border-box;
+		    	-moz-box-sizing: border-box;
+		    	box-sizing: border-box;
+		    	width: 300px;
+		    	position: fixed;
+		    	left: auto;
+		    	right: 0;
+		    	height: 100%;
+		    	background: #FFFFFF;	
+		    	border-left: 1px solid rgba(0, 0, 0, 0.1);	    	
+		    }
+
+		    #filtro .content section{
+		    	padding: 8px 24px 32px 24px;
+		    }
+
+		    .content section{
+		    	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		    	margin-bottom: 8px;
+		    	padding-bottom: 48px; 
+		    }
+
+		    .content section:last-of-type{
+				border: none;
+		    }
+
+		    .drawer-title h1{
+		    	border-bottom: 1px solid rgba(0, 0, 0, 0.22);
+		    	color: #727272;		    	
+		    	font-size: 16px;
+		    	font-weight: 400;
+    			line-height: 64px;				
+				padding: 0 24px;
+		    }
+
+		    .section-title h1{
+		    	color: #727272;
+		    	font-size: 14px;
+			    font-weight: 400;
+			    line-height: 20px;
+		    }
+
+		    #lista-planos{
+		    	@apply(--layout-flex);
+		    	margin-left: 16px;
+		    	width: calc(100% - 332px);
+		    }
+
+		    paper-checkbox{
+		    	display: block;
+		    }
+		</style>	
+
+		<div id="filtro">
+			<div class="drawer-title">
+				<h1>Filtrar</h1>
+			</div>
+
+			<div class="content">
+				<section>
+					<div class="section-title">
+						<h1>Categoria</h1>
+					</div>
+
+					<paper-dropdown-menu label="Selecione o status">
+					  	<paper-menu class="dropdown-content" selected="{{filtro}}" attr-for-selected="value" >
+						  	<paper-item value="todos">Todos</paper-item>
+						    <paper-item value="enviado">Enviados</paper-item>
+						    <paper-item value="pendente">Pendentes</paper-item>
+						    <paper-item value="aprovado">Aprovados</paper-item>
+						</paper-menu>
+					</paper-dropdown-menu>					
+				</section>
+
+				<section>
+					<div class="section-title">
+						<h1>Docente</h1>
+						<paper-input 
+							label="Nome do docente"
+							on-keyup="docenteChanged"></paper-input>
+					</div>	
+				</section>		
+			</div>
+		</div>
+
+	  	<div id="lista-planos">
+	    	<iron-list 
+				id="listaPlanos" 
+				items=[[planosComFiltro]]
+				as="plano" 
+				on-selected-item-changed="selecionarPlano" 
+				selection-enabled>
+		        <template>
+		          <div on-tap="selecionarPlano">
+		            <div class="item" tabindex$="[[tabIndex]]">
+		              <img class="avatar" src="{{plano.avatar}}">
+		              <div class="pad">
+		                <div class="primary">{{plano.disciplina.disciplina}}</div>
+		                <div class="info bold">
+		                	<span>{{plano.curso}}</span> | 
+		                	<span>{{plano.turma.nome}}</span> | 
+		                	<span>{{plano.turma.ano}}</span></div>
+		                <div class="info"><span>{{plano.docente}}</span></div>
+						<div class="info italic">Criado <span>{{_date(plano.createdAt)}}</span></div>
+		                <div class="info italic" hidden$="{{!plano.updatedAt}}">Atualizado <span>{{_date(plano.updatedAt)}}</span></div>
+		                <div class="info italic">Plano está <span>{{plano.status}}</span></div>
+		                <!-- <div class="secondary dim">[[item.longText]]</div> -->
+		              </div>
+		              <iron-icon icon$="[[iconForItem(item)]]"></iron-icon>
+		            </div>
+		          </div>	        
+	    		</template>
+			</iron-list>	   
+		</div>
 	</template>
 	<script>
 		Polymer({
@@ -104,23 +192,89 @@
 					notify: true
 				},
 
+				planosComFiltro: {
+					type: Array,
+					notify: true
+				},
+
+				filtro: {
+					type: String,
+					value: 'todos',
+					notify: true
+				},
+
 				planoSelecionado: {
 					type: Object,
+					notify: true
+				},
+
+				checkedAbertos: {
+					type: Boolean,
+					value: true,
+					notify: true
+				},
+
+				checkedPendentes: {
+					type: Boolean,
+					value: true,
+					notify: true
+				},
+
+				checkedAprovados: {
+					type: Boolean,
+					value: true,
 					notify: true
 				}
 			},
 
-		    _date: function (date) {
+			observers: [
+				'planosChanged(planos)',
+				'filtroChanged(filtro)'
+			],
+
+			filtroChanged: function(filtro){
+				this.set('planosComFiltro', this.filtrarPlanos(filtro));
+			},
+
+			planosChanged: function(planos){
+				if(planos){
+					this.set('planosComFiltro', planos);	
+				}				
+			},
+
+		    filtrarPlanos: function (filtro) {
+		    	var planos = this.planos;
+
+		    	if (planos){
+		    		if (filtro === 'todos'){
+		    			return planos;	
+		    		}
+
+		    		return planos.filter(function (plano) {
+			    		return plano.status === filtro;
+			    	});
+			    }
+			},
+
+			docenteChanged: function(evt){
+				if (this.filtro !== 'todos'){
+					this.set('filtro', 'todos');
+				}
+
+				var planosComFiltro = this.planos.filter(function(plano){
+					return plano.docente.toLowerCase().indexOf(evt.target.value) >= 0;
+				});
+
+				this.set('planosComFiltro', planosComFiltro);
+			},
+
+			_date: function (date) {
 				if (date){
 					return humaneDate(new Date(date));	
 				}else{
 					return '';
 				}				
 			},
-
-			getClassForItem: function(item, selected) {
-	        	return selected ? 'item expanded' : 'item';
-	        },
 
 	        selecionarPlano: function(evt){
 	        	var parent = this.domHost;

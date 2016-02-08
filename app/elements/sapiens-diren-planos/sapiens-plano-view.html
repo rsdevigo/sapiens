@@ -53,241 +53,246 @@
 			paper-textarea{
 				margin-bottom: 24px;
 			}
+
+			.page{
+				@apply(--layout-vertical);
+			}
 		</style>
 
-		<paper-card heading="Informações básicas">
-			<div class="card-content">
-		    	<div><strong>Disciplina: </strong><span>{{planoSelecionado.disciplina.disciplina}}</span></div>
-		    	<div><strong>Curso: </strong><span>{{planoSelecionado.curso}}</span></div>
-		    	<div><strong>Turma: </strong><span>{{planoSelecionado.turma.nome}}</span></div>
-		    	<div><strong>Ano: </strong><span>{{planoSelecionado.turma.ano}}</span></div>
-		    	<div><strong>Docente: </strong><span>{{planoSelecionado.docente}}</span></div>
-		    	<div><strong>Situação: </strong>
-		    		<paper-radio-group 
-		    			selected="{{planoSelecionado.status}}"
-		    			on-change="statusAlterado">
-			            <paper-radio-button name="aberto">Aberto</paper-radio-button>
-			            <paper-radio-button name="aprovado">Aprovado</paper-radio-button>	            
-			        </paper-radio-group>	
-		    	</div>		    
-		    </div>
-	    </paper-card>
+		<div class="page">
+			<paper-card heading="Informações básicas">
+				<div class="card-content">
+			    	<div><strong>Disciplina: </strong><span>{{planoSelecionado.disciplina.disciplina}}</span></div>
+			    	<div><strong>Curso: </strong><span>{{planoSelecionado.curso}}</span></div>
+			    	<div><strong>Turma: </strong><span>{{planoSelecionado.turma.nome}}</span></div>
+			    	<div><strong>Ano: </strong><span>{{planoSelecionado.turma.ano}}</span></div>
+			    	<div><strong>Docente: </strong><span>{{planoSelecionado.docente}}</span></div>
+			    	<div><strong>Situação: </strong>
+			    		<paper-radio-group 
+			    			selected="{{planoSelecionado.status}}"
+			    			on-change="statusAlterado">
+				            <paper-radio-button name="enviado">Aberto</paper-radio-button>
+				            <paper-radio-button name="aprovado">Aprovado</paper-radio-button>	            
+				        </paper-radio-group>	
+			    	</div>		    
+			    </div>
+		    </paper-card>
 
-	    <paper-card>
-	    	<div class="card-heading">
-	    		<h1>Objetivo Geral</h1>
-	    		<span class="spacer"></span>
-	    		<paper-icon-button id="icon-correcao-obj-geral" icon="create" on-tap="abrirCorrecaoObjGeral"></paper-icon-button>
-	    		<paper-tooltip
-	    		  for="icon-correcao-obj-geral"
-	    		  position="left"
-	    		  offset="14">Sugegir correção no objetivo geral	    		  
-	    		</paper-tooltip>
-	    	</div>
-			<div class="card-content">
-		    	<div>{{planoSelecionado.objetivoGeral}}</div>
-		    </div>
-	    </paper-card>
+		    <paper-card>
+		    	<div class="card-heading">
+		    		<h1>Objetivo Geral</h1>
+		    		<span class="spacer"></span>
+		    		<paper-icon-button id="icon-correcao-obj-geral" icon="create" on-tap="abrirCorrecaoObjGeral"></paper-icon-button>
+		    		<paper-tooltip
+		    		  for="icon-correcao-obj-geral"
+		    		  position="left"
+		    		  offset="14">Sugegir correção no objetivo geral	    		  
+		    		</paper-tooltip>
+		    	</div>
+				<div class="card-content">
+			    	<div>{{planoSelecionado.objetivoGeral}}</div>
+			    </div>
+		    </paper-card>
 
-	    <paper-dialog id="modalObjGeral" modal>
-	    	<h2>Correção - Objetivo Geral</h2>
-	    	<paper-textarea 
-    			label="Descreva aqui as correções necessárias para o objetivo geral"
-    			value="{{planoSelecionado.correcoes.objetivoGeral}}"
-    			char-counter maxlength="500">
-    		</paper-textarea>
-	    	<div class="buttons">
-	    		<paper-button dialog-dismiss>Cancelar</paper-button>
-	    		<paper-button 
-	    			dialog-confirm 
-	    			hidden$="{{!planoSelecionado.correcoes.objetivoGeral}}"
-	    			data-secao="objetivoGeral" 
-	    			on-tap="correcaoRealizada">Correção realizada</paper-button>
-	        	<paper-button 
-	        		dialog-confirm 
-	        		autofocus 
-	        		data-secao="objetivoGeral" 
-	        		on-tap="salvarCorrecoes">Salvar</paper-button>
-	      	</div>
-	    </paper-dialog>
+		    <paper-dialog id="modalObjGeral" modal>
+		    	<h2>Correção - Objetivo Geral</h2>
+		    	<paper-textarea 
+	    			label="Descreva aqui as correções necessárias para o objetivo geral"
+	    			value="{{planoSelecionado.correcoes.objetivoGeral}}"
+	    			char-counter maxlength="500">
+	    		</paper-textarea>
+		    	<div class="buttons">
+		    		<paper-button dialog-dismiss>Cancelar</paper-button>
+		    		<paper-button 
+		    			dialog-confirm 
+		    			hidden$="{{!planoSelecionado.correcoes.objetivoGeral}}"
+		    			data-secao="objetivoGeral" 
+		    			on-tap="correcaoRealizada">Correção realizada</paper-button>
+		        	<paper-button 
+		        		dialog-confirm 
+		        		autofocus 
+		        		data-secao="objetivoGeral" 
+		        		on-tap="salvarCorrecoes">Salvar</paper-button>
+		      	</div>
+		    </paper-dialog>
 
-	    <paper-card>
-	    	<div class="card-heading">
-	    		<h1>Objetivos Específicos</h1>
-	    		<span class="spacer"></span>
-	    		<paper-icon-button id="icon-correcao-obj-especificos" icon="create"  on-tap="abrirCorrecaoObjEspecificos"></paper-icon-button>
-	    		<paper-tooltip
-	    		  for="icon-correcao-obj-especificos"
-	    		  position="left"
-	    		  offset="14">Sugegir correção nos objetivos específicos	    		  
-	    		</paper-tooltip>
-	    	</div>
-			<div class="card-content">
-		    	<div>{{planoSelecionado.objetivosEspecificos}}</div>
-		    </div>
-	    </paper-card>
+		    <paper-card>
+		    	<div class="card-heading">
+		    		<h1>Objetivos Específicos</h1>
+		    		<span class="spacer"></span>
+		    		<paper-icon-button id="icon-correcao-obj-especificos" icon="create"  on-tap="abrirCorrecaoObjEspecificos"></paper-icon-button>
+		    		<paper-tooltip
+		    		  for="icon-correcao-obj-especificos"
+		    		  position="left"
+		    		  offset="14">Sugegir correção nos objetivos específicos	    		  
+		    		</paper-tooltip>
+		    	</div>
+				<div class="card-content">
+			    	<div>{{planoSelecionado.objetivosEspecificos}}</div>
+			    </div>
+		    </paper-card>
 
-	    <paper-dialog id="modalObjEspecificos" modal>
-	    	<h2>Correção - Objetivos Específicos</h2>
-	    	<paper-textarea 
-    			label="Descreva aqui as correções necessárias para os objetivos específicos"
-    			value="{{planoSelecionado.correcoes.objetivosEspecificos}}"
-    			char-counter maxlength="500">
-    		</paper-textarea>
-	    	<div class="buttons">
-	    		<paper-button dialog-dismiss>Cancelar</paper-button>
-	    		<paper-button 
-	    			dialog-confirm 
-	    			hidden$="{{!planoSelecionado.correcoes.objetivosEspecificos}}"
-	    			data-secao="objetivosEspecificos" 
-	    			on-tap="correcaoRealizada">Correção realizada</paper-button>
-	        	<paper-button 
-	        		dialog-confirm 
-	        		autofocus 
-	        		data-secao="objetivosEspecificos" 
-	        		on-tap="salvarCorrecoes">Salvar</paper-button>
-	      	</div>
-	    </paper-dialog>
+		    <paper-dialog id="modalObjEspecificos" modal>
+		    	<h2>Correção - Objetivos Específicos</h2>
+		    	<paper-textarea 
+	    			label="Descreva aqui as correções necessárias para os objetivos específicos"
+	    			value="{{planoSelecionado.correcoes.objetivosEspecificos}}"
+	    			char-counter maxlength="500">
+	    		</paper-textarea>
+		    	<div class="buttons">
+		    		<paper-button dialog-dismiss>Cancelar</paper-button>
+		    		<paper-button 
+		    			dialog-confirm 
+		    			hidden$="{{!planoSelecionado.correcoes.objetivosEspecificos}}"
+		    			data-secao="objetivosEspecificos" 
+		    			on-tap="correcaoRealizada">Correção realizada</paper-button>
+		        	<paper-button 
+		        		dialog-confirm 
+		        		autofocus 
+		        		data-secao="objetivosEspecificos" 
+		        		on-tap="salvarCorrecoes">Salvar</paper-button>
+		      	</div>
+		    </paper-dialog>
 
-		<paper-card>
-	    	<div class="card-heading">
-	    		<h1>Avaliações</h1>
-	    		<span class="spacer"></span>
-	    		<paper-icon-button id="icon-correcao-avaliacao" icon="create" on-tap="abrirCorrecaoAvaliacoes"></paper-icon-button>
-	    		<paper-tooltip
-	    		  for="icon-correcao-avaliacao"
-	    		  position="left"
-	    		  offset="14">Sugegir correção nas avaliações   		  
-	    		</paper-tooltip>
-	    	</div>
-			<div class="card-content">
-				<div class="avaliacoes-primeiro-bimestre">
-					<h1 class="subtitle">Avaliações do primeiro bimestre</h1>
-					<ul>
-					<template is="dom-repeat" items="{{planoSelecionado.avaliacoesPrimeiroBimestre}}" as="avaliacao">
-						<li><strong>{{avaliacao.sigla}}</strong>: <span>{{avaliacao.instrumento}}</span>, com peso <span>{{avaliacao.peso}}</span>, valendo no máximo <span>{{avaliacao.maximo}}</span></li>
-					</template>	
-						<li hidden$="{{!planoSelecionado.observacoesPrimeiroBimestre}}"><p><strong>Observações: </strong> <span>{{planoSelecionado.observacoesPrimeiroBimestre}}</span></p> </li>	   	
-					</ul>				
-				</div>
+			<paper-card>
+		    	<div class="card-heading">
+		    		<h1>Avaliações</h1>
+		    		<span class="spacer"></span>
+		    		<paper-icon-button id="icon-correcao-avaliacao" icon="create" on-tap="abrirCorrecaoAvaliacoes"></paper-icon-button>
+		    		<paper-tooltip
+		    		  for="icon-correcao-avaliacao"
+		    		  position="left"
+		    		  offset="14">Sugegir correção nas avaliações   		  
+		    		</paper-tooltip>
+		    	</div>
+				<div class="card-content">
+					<div class="avaliacoes-primeiro-bimestre">
+						<h1 class="subtitle">Avaliações do primeiro bimestre</h1>
+						<ul>
+						<template is="dom-repeat" items="{{planoSelecionado.avaliacoesPrimeiroBimestre}}" as="avaliacao">
+							<li><strong>{{avaliacao.sigla}}</strong>: <span>{{avaliacao.instrumento}}</span>, com peso <span>{{avaliacao.peso}}</span>, valendo no máximo <span>{{avaliacao.maximo}}</span></li>
+						</template>	
+							<li hidden$="{{!planoSelecionado.observacoesPrimeiroBimestre}}"><p><strong>Observações: </strong> <span>{{planoSelecionado.observacoesPrimeiroBimestre}}</span></p> </li>	   	
+						</ul>				
+					</div>
 
-				<div class="avaliacoes-segundo-bimestre">
-					<h1 class="subtitle">Avaliações do segundo bimestre</h1>
-					<ul>
-					<template is="dom-repeat" items="{{planoSelecionado.avaliacoesSegundoBimestre}}" as="avaliacao">
-						<li><strong>{{avaliacao.sigla}}</strong>: <span>{{avaliacao.instrumento}}</span>, com peso <span>{{avaliacao.peso}}</span>, valendo no máximo <span>{{avaliacao.maximo}}</span></li>
-					</template>	
-						<li hidden$="{{!planoSelecionado.observacoesSegundoBimestre}}"><p><strong>Observações: </strong> <span>{{planoSelecionado.observacoesSegundoBimestre}}</span></p> </li>	    	
-					</ul>				
-				</div>
-		    </div>
-	    </paper-card>
+					<div class="avaliacoes-segundo-bimestre">
+						<h1 class="subtitle">Avaliações do segundo bimestre</h1>
+						<ul>
+						<template is="dom-repeat" items="{{planoSelecionado.avaliacoesSegundoBimestre}}" as="avaliacao">
+							<li><strong>{{avaliacao.sigla}}</strong>: <span>{{avaliacao.instrumento}}</span>, com peso <span>{{avaliacao.peso}}</span>, valendo no máximo <span>{{avaliacao.maximo}}</span></li>
+						</template>	
+							<li hidden$="{{!planoSelecionado.observacoesSegundoBimestre}}"><p><strong>Observações: </strong> <span>{{planoSelecionado.observacoesSegundoBimestre}}</span></p> </li>	    	
+						</ul>				
+					</div>
+			    </div>
+		    </paper-card>
 
-	    <paper-dialog id="modalAvaliacoes" modal>
-	    	<h2>Correção - Avaliações</h2>
-	    	<paper-textarea 
-    			label="Descreva aqui as correções necessárias para as avaliações"
-    			value="{{planoSelecionado.correcoes.avaliacoes}}"
-    			char-counter maxlength="500">
-    		</paper-textarea>
-	    	<div class="buttons">
-	    		<paper-button dialog-dismiss>Cancelar</paper-button>
-	    		<paper-button 
-	    			dialog-confirm 
-	    			hidden$="{{!planoSelecionado.correcoes.avaliacoes}}"
-	    			data-secao="avaliacoes" 
-	    			on-tap="correcaoRealizada">Correção realizada</paper-button>
-	        	<paper-button 
-	        		dialog-confirm 
-	        		autofocus 
-	        		data-secao="avaliacoes" 
-	        		on-tap="salvarCorrecoes">Salvar</paper-button>
-	      	</div>
-	    </paper-dialog>
+		    <paper-dialog id="modalAvaliacoes" modal>
+		    	<h2>Correção - Avaliações</h2>
+		    	<paper-textarea 
+	    			label="Descreva aqui as correções necessárias para as avaliações"
+	    			value="{{planoSelecionado.correcoes.avaliacoes}}"
+	    			char-counter maxlength="500">
+	    		</paper-textarea>
+		    	<div class="buttons">
+		    		<paper-button dialog-dismiss>Cancelar</paper-button>
+		    		<paper-button 
+		    			dialog-confirm 
+		    			hidden$="{{!planoSelecionado.correcoes.avaliacoes}}"
+		    			data-secao="avaliacoes" 
+		    			on-tap="correcaoRealizada">Correção realizada</paper-button>
+		        	<paper-button 
+		        		dialog-confirm 
+		        		autofocus 
+		        		data-secao="avaliacoes" 
+		        		on-tap="salvarCorrecoes">Salvar</paper-button>
+		      	</div>
+		    </paper-dialog>
 
-	    <paper-card>
-	    	<div class="card-heading">
-	    		<h1>Recuperação</h1>
-	    		<span class="spacer"></span>
-	    		<paper-icon-button id="icon-correcao-recuperacao" icon="create" on-tap="abrirCorrecaoRecuperacao"></paper-icon-button>
-	    		<paper-tooltip
-	    		  for="icon-correcao-recuperacao"
-	    		  position="left"
-	    		  offset="14">Sugegir correção na recuperação		  
-	    		</paper-tooltip>
-	    	</div>
-			<div class="card-content">
-		    	<div>{{planoSelecionado.recuperacao}}</div>
-		    </div>
-	    </paper-card>
+		    <paper-card>
+		    	<div class="card-heading">
+		    		<h1>Recuperação</h1>
+		    		<span class="spacer"></span>
+		    		<paper-icon-button id="icon-correcao-recuperacao" icon="create" on-tap="abrirCorrecaoRecuperacao"></paper-icon-button>
+		    		<paper-tooltip
+		    		  for="icon-correcao-recuperacao"
+		    		  position="left"
+		    		  offset="14">Sugegir correção na recuperação		  
+		    		</paper-tooltip>
+		    	</div>
+				<div class="card-content">
+			    	<div>{{planoSelecionado.recuperacao}}</div>
+			    </div>
+		    </paper-card>
 
-	    <paper-dialog id="modalRecuperacao" modal>
-	    	<h2>Correção - Recuperação</h2>
-	    	<paper-textarea 
-    			label="Descreva aqui as correções necessárias para a recuperação"
-    			value="{{planoSelecionado.correcoes.recuperacao}}"
-    			char-counter maxlength="500">
-    		</paper-textarea>
-	    	<div class="buttons">
-	    		<paper-button dialog-dismiss>Cancelar</paper-button>
-	    		<paper-button 
-	    			dialog-confirm 
-	    			hidden$="{{!planoSelecionado.correcoes.recuperacao}}"
-	    			data-secao="recuperacao" 
-	    			on-tap="correcaoRealizada">Correção realizada</paper-button>
-	        	<paper-button 
-	        		dialog-confirm 
-	        		autofocus 
-	        		data-secao="recuperacao" 
-	        		on-tap="salvarCorrecoes">Salvar</paper-button>
-	      	</div>
-	    </paper-dialog>
+		    <paper-dialog id="modalRecuperacao" modal>
+		    	<h2>Correção - Recuperação</h2>
+		    	<paper-textarea 
+	    			label="Descreva aqui as correções necessárias para a recuperação"
+	    			value="{{planoSelecionado.correcoes.recuperacao}}"
+	    			char-counter maxlength="500">
+	    		</paper-textarea>
+		    	<div class="buttons">
+		    		<paper-button dialog-dismiss>Cancelar</paper-button>
+		    		<paper-button 
+		    			dialog-confirm 
+		    			hidden$="{{!planoSelecionado.correcoes.recuperacao}}"
+		    			data-secao="recuperacao" 
+		    			on-tap="correcaoRealizada">Correção realizada</paper-button>
+		        	<paper-button 
+		        		dialog-confirm 
+		        		autofocus 
+		        		data-secao="recuperacao" 
+		        		on-tap="salvarCorrecoes">Salvar</paper-button>
+		      	</div>
+		    </paper-dialog>
 
-	    <paper-card>
-	    	<div class="card-heading">
-	    		<h1>Metodologia</h1>
-	    		<span class="spacer"></span>
-	    		<paper-icon-button id="icon-correcao-metodologia" icon="create" on-tap="abrirCorrecaoMetodologia"></paper-icon-button>
-	    		<paper-tooltip
-	    		  for="icon-correcao-metodologia"
-	    		  position="left"
-	    		  offset="14"> Sugegir correção na metodologia   		  
-	    		</paper-tooltip>
-	    	</div>
-			<div class="card-content">
-				<div class="conteudos">
-					<simple-material-table 
-						id="conteudos" 
-						title="Conteúdos" 
-						columns="[[colunasConteudos]]" 
-						table-data="[[conteudos]]">
-				    </simple-material-table>
-				</div>
-		    </div>
-	    </paper-card>
+		    <paper-card>
+		    	<div class="card-heading">
+		    		<h1>Metodologia</h1>
+		    		<span class="spacer"></span>
+		    		<paper-icon-button id="icon-correcao-metodologia" icon="create" on-tap="abrirCorrecaoMetodologia"></paper-icon-button>
+		    		<paper-tooltip
+		    		  for="icon-correcao-metodologia"
+		    		  position="left"
+		    		  offset="14"> Sugegir correção na metodologia   		  
+		    		</paper-tooltip>
+		    	</div>
+				<div class="card-content">
+					<div class="conteudos">
+						<simple-material-table 
+							id="conteudos" 
+							title="Conteúdos" 
+							columns="[[colunasConteudos]]" 
+							table-data="[[conteudos]]">
+					    </simple-material-table>
+					</div>
+			    </div>
+		    </paper-card>
 
-	    <paper-dialog id="modalMetodologia" modal>
-	    	<h2>Correção - Metodologia</h2>
-	    	<paper-textarea 
-    			label="Descreva aqui as correções necessárias para a metodologia"
-    			value="{{planoSelecionado.correcoes.metodologia}}"
-    			char-counter maxlength="500">
-    		</paper-textarea>
-	    	<div class="buttons">
-	    		<paper-button dialog-dismiss>Cancelar</paper-button>
-	    		<paper-button 
-	    			dialog-confirm 
-	    			hidden$="{{!planoSelecionado.correcoes.metodologia}}"
-	    			data-secao="metodologia" 
-	    			on-tap="correcaoRealizada">Correção realizada</paper-button>
-	        	<paper-button 
-	        		dialog-confirm 
-	        		autofocus 
-	        		data-secao="metodologia" 
-	        		on-tap="salvarCorrecoes">Salvar</paper-button>
-	      	</div>
-	    </paper-dialog>
-
+		    <paper-dialog id="modalMetodologia" modal>
+		    	<h2>Correção - Metodologia</h2>
+		    	<paper-textarea 
+	    			label="Descreva aqui as correções necessárias para a metodologia"
+	    			value="{{planoSelecionado.correcoes.metodologia}}"
+	    			char-counter maxlength="500">
+	    		</paper-textarea>
+		    	<div class="buttons">
+		    		<paper-button dialog-dismiss>Cancelar</paper-button>
+		    		<paper-button 
+		    			dialog-confirm 
+		    			hidden$="{{!planoSelecionado.correcoes.metodologia}}"
+		    			data-secao="metodologia" 
+		    			on-tap="correcaoRealizada">Correção realizada</paper-button>
+		        	<paper-button 
+		        		dialog-confirm 
+		        		autofocus 
+		        		data-secao="metodologia" 
+		        		on-tap="salvarCorrecoes">Salvar</paper-button>
+		      	</div>
+		    </paper-dialog>
+		</div>
 	</template>
 	<script>
 		Polymer({
