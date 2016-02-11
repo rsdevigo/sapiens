@@ -376,8 +376,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       view: function(){
         this.prepare();
-
         this.$.pdf.open();   
+      },
+
+      print: function(){
+        this.prepare();
+        this.$.pdf.print();
       }
     });
   })();

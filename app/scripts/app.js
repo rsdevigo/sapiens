@@ -37,6 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.visiting = false;
   app.editandoPlanoEnsino = false;
   app.visitandoPlanoEnsino = false;
+  app.direnPlanoEnsino = false;
 
   
   if (window.location.port === '') {  // if production
@@ -125,16 +126,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app[view.state] = true; //new state 
         app[app.state] = false; // last state
         app.state = view.state; // update state  
-      }    
+      }
+
+      /* Configurar ações caso houver um sapiens-toolbar-actions */
+
+      var el = document.querySelector(view.viewElement);
+
+      if (el){
+        var toolbarActions = el.querySelector('sapiens-toolbar-actions');
+
+        if (toolbarActions){
+          toolbarActions.prepare();
+        }
+      }
+      
 
       /* Sempre que houver um viewElement, haverá um saveAction*/
       if (view.viewElement){
         var el = document.querySelector(view.viewElement);
+        var toolbarActions = el.querySelector('sapiens-toolbar-actions');
       
         if (el.saveAction){ app.saveAction = el.saveAction;}  
         if (el.sendAction){ app.sendAction = el.sendAction;} 
         if (el.copyAction){ app.copyAction = el.copyAction;} 
-        if (el.pasteAction){ app.pasteAction = el.pasteAction;}       
+        if (el.pasteAction){ app.pasteAction = el.pasteAction;}
+        if (el.previewAction){ app.previewAction = el.previewAction;} 
+        if (el.printAction){ app.printAction = el.printAction;}       
       }
 
       app.scrollPageToTop(); 

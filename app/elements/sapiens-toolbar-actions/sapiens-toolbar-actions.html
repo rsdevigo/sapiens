@@ -1,0 +1,34 @@
+/**
+ * Este elemento é utilizado como um container de botões de ação que 
+ * aparecem em um paper-toolbar
+ * @group my-element-set
+ * @element sapiens-toolbar-action
+ * @demo demo/index.html
+ */
+<dom-module id="sapiens-toolbar-actions">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+
+		<content></content>		
+	</template>
+	<script>
+		Polymer({
+			is: 'sapiens-toolbar-actions',
+
+			prepare: function () {
+				var actionButtons = Polymer.dom(this).querySelectorAll('paper-icon-button');
+				window.app.actions = [];
+				var self = Polymer.dom(this);
+
+				actionButtons.forEach(function(el){
+					document.querySelector('#actionButtonsContainer').appendChild(el);
+					self.removeChild(el);
+				});
+			}
+		});
+	</script>
+</dom-module>

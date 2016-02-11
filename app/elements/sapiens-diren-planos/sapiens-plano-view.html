@@ -61,7 +61,21 @@
 			}
 		</style>
 		
-		<sapiens-modelo-plano id="plano-diren" plano="{{planoSelecionado}}"></sapiens-modelo-plano>
+		<sapiens-toolbar-actions>
+			<paper-icon-button 
+				id="visualizar-plano"
+				icon="open-in-new" 
+				on-tap="viewAction"></paper-icon-button>
+          	<paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
+
+          	<paper-icon-button 
+          		id="imprimir-plano-diren" 
+          		icon="print" 
+          		on-tap="printAction"></paper-icon-button>
+          	<paper-tooltip for="imprimir-plano-diren" position="bottom">Imprimir plano</paper-tooltip>
+		</sapiens-toolbar-actions>
+
+		<sapiens-modelo-plano id="modeloPlano"></sapiens-modelo-plano>
 
 		<div class="page">
 			<paper-card heading="Informações básicas">
@@ -327,8 +341,42 @@
 		        }
 		    },
 
-		    view: function(){
-		    	document.querySelector('sapiens-modelo-plano#plano-diren').view();
+		    copyAction: function(evt){
+				alert('Copying');
+			},
+
+			_prepararPlano: function(action){
+				var refCursos = new Firebase('https://blazing-inferno-2038.firebaseio.com/cursos');
+		    	var plano = this.planoSelecionado.clone();
+		    	var viewPlano = this.$.modeloPlano;
+
+		    	refCursos
+		    		.orderByChild('nome')
+		    		.equalTo(plano.curso)
+		    		.on('value', function(snapshotCurso){
+		    			plano.disciplina.curso = snapshotCurso.val().toArray()[0];
+		    			plano.disciplina.turma = plano.turma;
+
+		    			delete plano.turma;
+
+		    			viewPlano.plano = plano;
+
+		    			if (action === 'view'){
+		    				viewPlano.view();
+		    			}else{
+		    				if(action === 'print'){
+		    					viewPlano.print();	
+		    				}
+		    			}
+		    		});	
+			},
+
+		    viewAction: function(){
+		    	this._prepararPlano('view'); 			    	
+		    },
+
+		    printAction: function(){
+		    	this._prepararPlano('print');
 		    },
 
 		    planoSelecionadoChanged: function(planoSelecionado){
