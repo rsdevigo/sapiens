@@ -62,17 +62,22 @@
 		</style>
 		
 		<sapiens-toolbar-actions>
-			<paper-icon-button 
-				id="visualizar-plano"
-				icon="open-in-new" 
-				on-tap="viewAction"></paper-icon-button>
-          	<paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
+			<div class="left">
+		        <paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button> 
+		    </div>
+			<div class="right">
+				<paper-icon-button 
+					id="visualizar-plano"
+					icon="open-in-new" 
+					on-tap="viewAction"></paper-icon-button>
+	          	<paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
 
-          	<paper-icon-button 
-          		id="imprimir-plano-diren" 
-          		icon="print" 
-          		on-tap="printAction"></paper-icon-button>
-          	<paper-tooltip for="imprimir-plano-diren" position="bottom">Imprimir plano</paper-tooltip>
+	          	<paper-icon-button 
+	          		id="imprimir-plano-diren" 
+	          		icon="print" 
+	          		on-tap="printAction"></paper-icon-button>
+	          	<paper-tooltip for="imprimir-plano-diren" position="bottom">Imprimir plano</paper-tooltip>
+	        </div>
 		</sapiens-toolbar-actions>
 
 		<sapiens-modelo-plano id="modeloPlano"></sapiens-modelo-plano>
@@ -289,6 +294,8 @@
 		    		</paper-tooltip>
 		    	</div>
 				<div class="card-content">
+					<p>O docente atribuiu [[plano.aulasDistribuidas]] de [[plano.maximoAulas]] conforme segue: </p>
+					
 					<div class="conteudos">
 						<simple-material-table 
 							id="conteudos" 
@@ -338,6 +345,11 @@
 		        	type: Array,
 		          	notify: true,
 		          	computed: '_ementas(planoSelecionado.disciplina.ementa)'
+		        },
+
+		        semanas: {
+		          type: Number,
+		          value: 20
 		        }
 		    },
 
@@ -466,6 +478,20 @@
 		        if(ementas){
 		          return ementas.split(';');  
 		        }        
+		    },
+
+		    back: function() {
+		        var parent = this.domHost;
+
+		        parent.entryAnimation = 'slide-from-left-animation';
+		        parent.exitAnimation = 'slide-right-animation';
+		        parent.set('selecionada', parseInt(parent.selecionada - 1));
+
+		        app.changeView({
+			        title: 'Planos de Ensino',
+			        state: 'normal',
+			        route: 'diren-planos'
+			    });
 		    },
 
 		    salvarCorrecoes: function(evt){

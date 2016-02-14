@@ -47,14 +47,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }); 
 
-    // page('/*', function(ctx, next) {
-    //   if (!app.active){
-    //     // app.route = 'master'
-    //   }else{
-    //     next();
-    //   }
-    // });
-
     page('/', function() {
       if(app.user){
         app.changeView({
@@ -85,8 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.changeView({
           title: 'Minhas disciplinas',
           state: 'normal',
-          route: 'disciplinas',
-          viewElement: 'sapiens-disciplinas' // saveAction
+          route: 'disciplinas'
       });
 
       document.querySelector('sapiens-disciplinas').selecionada = 0;

@@ -59,11 +59,17 @@
       }
 
     </style>
-
+  
     <firebase-document
       location="https://blazing-inferno-2038.firebaseio.com/turmas/{{turma.__firebaseKey__}}/disciplinas"
       data="{{disciplinas}}">
     </firebase-document>
+
+    <sapiens-toolbar-actions>
+      <div class="left">
+        <paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button> 
+      </div>
+    </sapiens-toolbar-actions>
 
     <paper-tabs selected="{{selected}}" noink>
       <paper-tab>Distribuição</paper-tab>
@@ -137,20 +143,12 @@
     'use strict';
 
     Polymer({
-      _t: function(t){
-        console.log(t);
-      },
-
       is: 'sapiens-turma',
 
       properties: {
         selected: {
           type: Number,
           value: 0
-        },
-
-        t:{
-          observer: '_t'
         },
 
         turma: {
@@ -185,6 +183,21 @@
             'Sábado': {}
           }
         }
+      },
+
+      back: function() {
+        var parent = this.domHost;
+
+        parent.entryAnimation = 'slide-from-left-animation';
+        parent.exitAnimation = 'slide-right-animation';
+        parent.set('selecionada', parseInt(parent.selecionada - 1));
+
+        app.changeView({
+          title: this.curso.nome,
+          state: 'normal',
+          route: 'turmas',
+          viewElement: 'sapiens-curso'
+        });
       },
 
       _disciplinaSelecionada: function(evt){

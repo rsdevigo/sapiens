@@ -32,7 +32,7 @@
           tableData.push({
             nome: docente['nome-completo'],
             area: docente.area,
-            carga: docente.carga
+            carga: Math.ceil(docente.carga)
           });
         });
 

@@ -115,7 +115,7 @@
                 // atualizar carga horária docente
                 var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com');
                 var cargaDocenteAtual = docente.carga || 0;
-                var novaCarga = cargaDocenteAtual + parseInt(self.disciplina.aulas);
+                var novaCarga = cargaDocenteAtual + parseFloat(self.disciplina.aulas.replace(',', '.'));
                 var docenteKey = docente.__firebaseKey__;
 
                 refDocentes.child('docentes').child(docenteKey).update({
@@ -142,8 +142,9 @@
             // atualizar a carga horária semanal docente
             refDocente.once('value', function(snapshot){
               if(snapshot.exists){
-                var cargaDocente = snapshot.val().carga;
-                var cargaDisciplina = self.disciplina.aulas;
+
+                var cargaDocente = ~~snapshot.val().carga;
+                var cargaDisciplina = ~~self.disciplina.aulas;
 
                 self.docente = {};
 

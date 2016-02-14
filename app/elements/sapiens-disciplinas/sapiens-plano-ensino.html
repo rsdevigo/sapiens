@@ -157,7 +157,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       h1.subtitle ~ p{
         padding-left: 32px;
       }
+
+      #toastWarning {
+        --paper-toast-background-color: orange;
+        --paper-toast-color: white;
+      }
+      
+      #toastError {
+        --paper-toast-background-color: red;
+        --paper-toast-color: white;
+      }
     </style>
+
+    <sapiens-toolbar-actions>
+      <div class="left">
+        <paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button> 
+      </div>
+      <div class="right">
+        <paper-icon-button id="copiar-plano" icon="content-copy" on-tap="copy"></paper-icon-button>
+        <paper-tooltip for="copiar-plano" position="bottom">Copiar dados deste plano</paper-tooltip>
+
+        <paper-icon-button id="colar-plano" icon="content-paste" on-tap="paste"></paper-icon-button>
+        <paper-tooltip for="colar-plano" position="bottom">Colar dados de outro plano</paper-tooltip>
+
+        <paper-icon-button id="visualizar-plano" icon="open-in-new" on-tap="view"></paper-icon-button>
+        <paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
+
+        <paper-icon-button id="salvar-plano" icon="save" on-tap="save"></paper-icon-button>
+        <paper-tooltip for="salvar-plano" position="bottom">Salvar plano</paper-tooltip>          
+
+        <paper-icon-button id="enviar-plano" icon="send" on-tap="send"></paper-icon-button>
+        <paper-tooltip for="enviar-plano" position="bottom">Enviar plano à chefia imediata</paper-tooltip>
+      </div>
+    </sapiens-toolbar-actions>
 
     <sapiens-modelo-plano id="plano" plano="{{plano}}"></sapiens-modelo-plano>
 
@@ -182,6 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>{{plano.aulas}}/
               <span>{{cargaTotal(plano.disciplina.aulas)}}</span>
             </div> 
+            <div><strong>Quantidade de aulas atribuídas na metodologia: </strong> [[aulasAtribuidas]] de [[maximoAulas]]</div>   
             <div><strong>Número de Semanas: </strong><span>{{semanas}}</span></div>   
             <div><strong>Turma: </strong><span>{{plano.disciplina.turma.nome}}</span></div>   
             <div><strong>Ano: </strong><span>{{plano.disciplina.turma.ano}}</span></div> 
@@ -391,7 +424,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-input 
                       type="number" 
                       min="0"
-                      value="{{conteudo.aulas}}">
+                      value="{{conteudo.aulas}}"
+                      on-change="_aulasConteudosChanged">
                     </paper-input>
                   </td>
                   <td>
@@ -462,7 +496,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-dialog>
 
       </section>      
-    </neon-animated-pages>    
+    </neon-animated-pages>
+
+    <paper-toast id="toastWarning">
+      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
+    </paper-toast>
+
+    <paper-toast id="toastError">
+      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
+    </paper-toast>
   </template>
   <script>
   (function() {
@@ -513,6 +555,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 20
         }, 
+
+        aulasAtribuidas: {
+          type: Number,
+          value: 0
+        }, 
+
+        maximoAulas: {
+          type: Number,
+          value: 0
+        },
 
         instrumentosAvaliacao: {
           type: Object,
@@ -646,14 +698,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.set('plano.aulas', (~~this.plano.praticas + ~~this.plano.teoricas));
       },
 
+      _aulasConteudosChanged: function(evt){
+        var aulas = 0;
+
+        this.plano.topicos.forEach(function(topico){
+          aulas += ~~topico.aulas;
+        });
+
+        if (aulas == this.maximoAulas){
+          this.$.toastWarning.text = 'Atenção: você acaba de atribuir o número máximo de aulas';
+          this.$.toastWarning.show();
+        }else{
+          if (aulas > this.maximoAulas){
+            this.$.toastError.text = 'Atenção: você excedeu o número máximo de aulas permitidas para esta disciplina';
+            this.$.toastError.show();
+          }else{
+            app.$.toast.text = 'Você já atribuiu ' + aulas + ' aulas de ' + this.maximoAulas;
+            app.$.toast.show();
+          }
+        }
+
+        this.set('aulasAtribuidas', aulas);        
+      },
+
       _planoChanged: function(plano){
         if (!plano.isEmpty()){
           if(!this.plano.praticas && !this.plano.teoricas){
             plano.praticas = 0;
             plano.teoricas =0
+            this.aulasAtribuidas = 0;
+            this.maximoAulas = parseFloat(plano.disciplina.aulas.replace(',','.')) * this.semanas;  
           }
-         
-          this.$.avaliacoes.atualizarNotas();
         }
       },
 
@@ -671,12 +746,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       cargaTotal: function(carga){
-        return ~~carga * this.semanas;
+        if(carga){
+          return parseFloat(carga.replace(',', '.')) * this.semanas;  
+        }
+
+        return 0;        
       },
 
       qtdAulasListener: function(e){
         var index = Polymer.dom(e.target).node.domHost['data-index'];        
         this.set('plano.topicos.' + index + '.aulas', e.target.value);
+      },
+
+      back: function() {
+        var parent = this.domHost;
+
+        parent.entryAnimation = 'slide-from-left-animation';
+        parent.exitAnimation = 'slide-right-animation';
+        parent.set('selecionada', parseInt(parent.selecionada - 1));
+
+        app.changeView({
+          title: 'Minhas disciplinas',
+          state: 'normal',
+          route: 'disciplinas'
+        });
       },
 
       view: function(){

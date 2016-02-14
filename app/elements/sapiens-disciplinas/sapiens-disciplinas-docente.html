@@ -3,6 +3,10 @@
 <dom-module id="sapiens-disciplinas-docente">
   <template>
     <style>
+      .disciplinas-conteiner{
+        @apply(--layout-vertical);
+      }
+
       paper-card{
           @apply(--layout-flex);
           margin-bottom: 16px;  
@@ -24,24 +28,26 @@
       }
     </style>
 
-    <template is="dom-repeat" items="[[disciplinasDocente]]" as="disciplina">
-      <paper-card>
-        <div class="card-content">
-          <div class="title">
-              <div class="medium">{{disciplina.disciplina}}</div>
-              <div class="smal">{{disciplina.curso.nome}} - <span>{{disciplina.turma.nome}}</span></div>
-          </div>                  
-        </div>
-        <div class="card-content">
-          <p><strong>Carga horária semanal: </strong> <span>{{disciplina.aulas}}</span></p>
-          <p><strong>Ementa: </strong> <span>{{disciplina.ementa}}</span></p>
-        </div>
+    <div class="disciplinas-container">
+      <template is="dom-repeat" items="[[disciplinasDocente]]" as="distribuicao">
+        <paper-card>
+          <div class="card-content">
+            <div class="title">
+                <div class="medium">{{distribuicao.disciplina.disciplina}}</div>
+                <div class="smal">{{distribuicao.curso}} - <span>{{distribuicao.disciplina.turma.nome}}</span></div>
+            </div>                  
+          </div>
+          <div class="card-content">
+            <p><strong>Carga horária semanal: </strong> <span>{{distribuicao.disciplina.aulas}}</span></p>
+            <p><strong>Ementa: </strong> <span>{{distribuicao.disciplina.ementa}}</span></p>
+          </div>
 
-        <div class="card-actions">
-          <paper-button on-tap="selecionarPlano">Plano de Ensino</paper-button>
-        </div>
-      </paper-card>
-    </template>
+          <div class="card-actions">
+            <paper-button on-tap="selecionarPlano">Plano de Ensino</paper-button>
+          </div>
+        </paper-card>
+      </template>
+    </div>
   </template>
 
   <script>
@@ -80,7 +86,7 @@
       },
 
       selecionarPlano: function(evt){
-        var disciplina = evt.model.get('disciplina');
+        var disciplina = evt.model.get('distribuicao.disciplina');
         var planoEncontrado = {};
         
         /* Seleciona a primeira aba do plano de ensino */

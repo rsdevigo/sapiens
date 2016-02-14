@@ -17,7 +17,11 @@
 
         --paper-card-header: {
           background-color: var(--dark-primary-color);
-        }
+        };
+
+        --paper-card-content: { 
+          padding: 52px 16px; 
+        };
 
         --paper-card-header-color: #FFFFFF;
       }
@@ -82,19 +86,15 @@
                     sigla="{{avaliacao.sigla}}"
                     instrumento="{{avaliacao.instrumento}}"
                     peso="{{avaliacao.peso}}"
-                    maximo="{{avaliacao.maximo}}"
                     bimestre="{{avaliacao.bimestre}}"
                     index="{{index}}"
                     lancar-modificacoes="[[lancarModificacoes1Bim]]">
                   </sapiens-linha-nota>
                 </template>
-
-                <div id="media1Bimestre" class="media">Valor da Média Bimestral: <span>{{notaMaxima1Bimestre}}</span> </div>
-                </div>
-                
-                <paper-fab id="add-1-bim" title="add" icon="add" on-tap="_adicionarAvaliacao1Bim"></paper-fab>
-                <paper-tooltip for="add-1-bim" position="left">Adicionar avaliação</paper-tooltip>     
               </div>
+                
+              <paper-fab id="add-1-bim" title="add" icon="add" on-tap="_adicionarAvaliacao1Bim"></paper-fab>
+              <paper-tooltip for="add-1-bim" position="left">Adicionar avaliação</paper-tooltip>     
             </section>
 
             <section>
@@ -104,9 +104,7 @@
                   value="{{observacoesPrimeiroBimestre}}"></paper-textarea>
               </div>
             </section>
-            </iron-pages>
-          </div>
-         
+          </iron-pages>         
         </iron-collapse>    
       </paper-card>      
 
@@ -139,19 +137,16 @@
                     sigla="{{avaliacao.sigla}}"
                     instrumento="{{avaliacao.instrumento}}"
                     peso="{{avaliacao.peso}}"
-                    maximo="{{avaliacao.maximo}}"
                     bimestre="{{avaliacao.bimestre}}"
                     index="{{index}}"
                     lancar-modificacoes="[[lancarModificacoes1Bim]]">
                   </sapiens-linha-nota>
                 </template>
                  
-                <div id="media2Bimestre" class="media">Valor da Média Bimestral: <span>{{notaMaxima2Bimestre}}</span> </div>
-                </div>
-                
-                <paper-fab id="add-2-bim" title="add" icon="add" on-tap="_adicionarAvaliacao2Bim"></paper-fab>
-                <paper-tooltip for="add-2-bim" position="left">Adicionar avaliação</paper-tooltip>     
               </div>
+                
+              <paper-fab id="add-2-bim" title="add" icon="add" on-tap="_adicionarAvaliacao2Bim"></paper-fab>
+              <paper-tooltip for="add-2-bim" position="left">Adicionar avaliação</paper-tooltip>               
             </section>
 
             <section>
@@ -161,14 +156,10 @@
                   value="{{observacoesSegundoBimestre}}"></paper-textarea>
               </div>
             </section>
-            </iron-pages>
-          </div>
-         
+          </iron-pages>         
         </iron-collapse>    
       </paper-card>  
-
     </section>
-
   </template>
   <script>
   (function() {
@@ -201,16 +192,6 @@
         instrumentos: {
           type: Array,
           notify: true
-        },
-
-        notaMaxima1Bimestre: {
-          type: Number,
-          value: 0
-        }, 
-
-        notaMaxima2Bimestre: {
-          type: Number,
-          value: 0
         },
 
         selecionado1Bim: {
@@ -253,8 +234,7 @@
 
         this.push('avaliacoesPrimeiroBimestre', {
           bimestre: 1,
-          peso: 0,
-          maximo: 0
+          peso: 0
         });
       },
 
@@ -267,29 +247,8 @@
 
         this.push('avaliacoesSegundoBimestre', {
           bimestre: 2,
-          peso: 0,
-          maximo: 0
+          peso: 0
         });
-      },
-
-      atualizarNotas: function(avaliacoes){
-        var nota1Bim = 0;
-        var nota2Bim = 0;
-
-        if (this.avaliacoesPrimeiroBimestre){
-          this.avaliacoesPrimeiroBimestre.forEach(function(avaliacao){
-            nota1Bim += (avaliacao.peso / 10) * avaliacao.maximo;
-          });
-        }
-
-        if (this.avaliacoesSegundoBimestre){
-          this.avaliacoesSegundoBimestre.forEach(function(avaliacao){
-            nota2Bim += (avaliacao.peso / 10) * avaliacao.maximo;
-          });
-        }
-
-        this.set('notaMaxima1Bimestre', nota1Bim);
-        this.set('notaMaxima2Bimestre', nota2Bim);
       }
 
     });

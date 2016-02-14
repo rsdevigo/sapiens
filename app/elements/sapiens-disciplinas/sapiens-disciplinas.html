@@ -73,19 +73,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }       
       },
 
-      backAction: function() {
-        var _this = document.querySelector('sapiens-disciplinas');
-
-        _this.entryAnimation = 'slide-from-left-animation';
-        _this.exitAnimation = 'slide-right-animation';
-
-        _this.set('selecionada', parseInt(_this.selecionada - 1));
-
-        if (_this.selecionada == 0){
-          app.visiting = false;
-        }
-      },
-
       proximo: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
@@ -96,30 +83,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.changeView({
           title: disciplina,
           state: 'editandoPlanoEnsino',
-          route: 'disciplinas'
+          route: 'disciplinas',
+          viewElement: 'sapiens-plano-ensino' // actions
         });
 
         var viewElement = document.querySelector('sapiens-plano-ensino');
 
         app.visualizarPlano = viewElement.view;
-      },
-
-      copyAction: function(){
-        document.querySelector('sapiens-plano-ensino').copy();
-      },
-
-      pasteAction: function(){
-        document.querySelector('sapiens-plano-ensino').paste();
-      },
-
-      saveAction: function(){
-        document.querySelector('sapiens-plano-ensino').save();
-      },
-
-      sendAction: function(){
-        document.querySelector('sapiens-plano-ensino').send();
       }
-
     });
   })();
   </script>

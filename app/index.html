@@ -139,55 +139,10 @@
         <paper-toolbar id="mainToolbar">
           <paper-icon-button id="paperToggle" icon="menu" hidden="{{viewing}}" paper-drawer-toggle></paper-icon-button>
 
-          <paper-icon-button hidden="{{!visiting}}" icon="arrow-back" on-tap="back">
-          </paper-icon-button> 
-
-          <paper-icon-button hidden="{{!editing}}" icon="arrow-back" on-tap="back">
-          </paper-icon-button> 
-
-          <paper-icon-button hidden="{{!creating}}" icon="arrow-back" on-tap="back">
-          </paper-icon-button> 
-
-          <paper-icon-button hidden="{{!editandoPlanoEnsino}}" icon="arrow-back" on-tap="back">
-          </paper-icon-button> 
-
-          <paper-icon-button hidden="{{!visitandoPlanoEnsino}}" icon="arrow-back" on-tap="back">
-          </paper-icon-button> 
-
-          <span class="space"></span>
-        
-          <!-- Toolbar actions container -->
+          <!-- Toolbar actions containers -->
+          <div id="leftButtonsContainer"></div>
+          <span class="space"></span>         
           <div id="actionButtonsContainer"></div>
-          
-          <!-- <paper-icon-button hidden="{{!normal}}" icon="search"></paper-icon-button> -->
-          <paper-icon-button hidden="{{!creating}}" icon="save" on-tap="saveAction"></paper-icon-button>
-          <paper-icon-button hidden="{{!editing}}" icon="save" on-tap="saveAction"></paper-icon-button>
-          <paper-icon-button hidden="{{!viewing}}" icon="create" on-tap="editAction"></paper-icon-button>
-          <paper-icon-button hidden="{{!viewing}}" icon="delete" on-tap="deleteAction"></paper-icon-button>
-
-          <!-- Action: Plano de Ensino -->
-          <paper-icon-button id="copiar-plano" hidden="{{!editandoPlanoEnsino}}" icon="content-copy" on-tap="copyAction"></paper-icon-button>
-          <paper-tooltip for="copiar-plano" position="bottom">Copiar dados deste plano</paper-tooltip>
-
-          <paper-icon-button id="colar-plano" hidden="{{!editandoPlanoEnsino}}" icon="content-paste" on-tap="pasteAction"></paper-icon-button>
-          <paper-tooltip for="colar-plano" position="bottom">Colar dados de outro plano</paper-tooltip>
-
-          <paper-icon-button id="visualizar-plano" hidden="{{!editandoPlanoEnsino}}" icon="open-in-new" on-tap="visualizarPlano"></paper-icon-button>
-          <paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
-
-          <paper-icon-button id="salvar-plano" hidden="{{!editandoPlanoEnsino}}" icon="save" on-tap="saveAction"></paper-icon-button>
-          <paper-tooltip for="salvar-plano" position="bottom">Salvar plano</paper-tooltip>          
-
-          <paper-icon-button id="enviar-plano" hidden="{{!editandoPlanoEnsino}}" icon="send" on-tap="sendAction"></paper-icon-button>
-          <paper-tooltip for="enviar-plano" position="bottom">Enviar plano à chefia imediata</paper-tooltip>   
-
-          <!-- Action: Plano de Ensino -->
-          <!-- <paper-icon-button id="visualizar-plano" hidden="{{!direnPlanoEnsino}}" icon="open-in-new" on-tap="previewAction"></paper-icon-button>
-          <paper-tooltip for="visualizar-plano" position="bottom">Visualizar plano de ensino</paper-tooltip>
-
-          <paper-icon-button id="imprimir-plano-diren" hidden="{{!direnPlanoEnsino}}" icon="print" on-tap="printAction"></paper-icon-button>
-          <paper-tooltip for="imprimir-plano-diren" position="bottom">Imprimir plano</paper-tooltip> -->
-
           <!-- END Toolbar icons -->
 
           <paper-menu-button horizontal-align="right">

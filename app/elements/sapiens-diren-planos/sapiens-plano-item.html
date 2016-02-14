@@ -1,0 +1,92 @@
+/**
+ * A comment describing this element...
+ * @group my-element-set
+ * @element sapiens-plano-item
+ * @demo demo/index.html
+ */
+<dom-module id="sapiens-plano-item">
+	<template>
+		<style>
+			:host { display: block;	}
+
+			.item {
+			    @apply(--layout-horizontal);
+			    cursor: pointer;
+			    padding: 20px;
+			    background-color: white;
+			    border: 1px solid #ddd;
+			    margin: 16px auto 0 auto;
+			    -webkit-transition: all ease-int-out .3s;
+			    -o-transition: all ease-int-out .3s;
+			    transition: all ease-int-out .3s;
+		    }
+
+		    .item:focus {
+		     	outline: 0;
+		     	box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+		    }
+		    
+		    .avatar {
+		     	height: 40px;
+		     	width: 40px;
+		     	border-radius: 20px;
+		     	box-sizing: border-box;
+		     	background-color: #DDD;
+		    }
+
+		    .pad {
+		     	padding: 0 16px;
+		     	@apply(--layout-flex);
+		     	@apply(--layout-vertical);
+		    }
+
+		    .primary {
+		    	font-size: 16px;	
+		    	font-weight: bold;	    	
+		    }
+
+		    .info{ font-size: 14px; }
+			.bold{ font-weight: bold; }
+			.italic{ font-style: italic; }
+
+		</style>
+
+		<div>
+            <div class="item" tabindex$="[[tabIndex]]">
+              <img class="avatar" src="{{plano.avatar}}">
+              <div class="pad">
+                <div class="primary">{{plano.disciplina.disciplina}}</div>
+                <div class="info bold">
+                	<span>{{plano.curso}}</span> | 
+                	<span>{{plano.turma.nome}}</span> | 
+                	<span>{{plano.turma.ano}}</span></div>
+                <div class="info"><span>{{plano.docente}}</span></div>
+				<div class="info italic">Criado <span>{{_date(plano.createdAt)}}</span></div>
+                <div class="info italic" hidden$="{{!plano.updatedAt}}">Atualizado <span>{{_date(plano.updatedAt)}}</span></div>
+                <div class="info italic">Plano está <span>{{plano.status}}</span></div>
+              </div>
+            </div>
+        </div>	
+		
+	</template>
+	<script>
+		Polymer({
+			is: 'sapiens-plano-item',
+
+			properties: {
+				plano: {
+					type: Object,
+					notify: true
+				}
+			},
+
+			_date: function (date) {
+				if (date){
+					return humaneDate(new Date(date));	
+				}else{
+					return '';
+				}				
+			},
+		});
+	</script>
+</dom-module>

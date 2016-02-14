@@ -41,7 +41,6 @@
         </paper-menu>
       </paper-dropdown-menu>
       <paper-input value="{{peso}}" label="Peso" type="number" min="1" max="10" class="flex"></paper-input>
-      <paper-input value="{{maximo}}" label="Valor" type="number" min="1" max="10" class="flex"></paper-input>
       <paper-icon-button icon="delete" title="delete" on-click="_remove" class="delete"></paper-icon-button>
     </div>
           
@@ -56,14 +55,7 @@
       properties: {
         peso: {
           type: Number,
-          notify: true,
-          observer: '_pesoMudou'
-        },
-
-        maximo: {
-          type: Number,
-          notify: true,
-          observer: '_maximoMudou'
+          notify: true
         },
 
         instrumento: {
@@ -81,45 +73,11 @@
           notify: true
         },
 
-        nota: {
-          computed: 'notaCalculada(peso, maximo)'
-        },
-
-        avaliacao: {
-          computed: 'computarAvaliacao(sigla, instrumento, peso, maximo, bimestre)'
-        },
-
         instrumentos: {
           type: Array,
           value: [],
           notify: true
         },
-      },
-
-      _pesoMudou: function(n, o){
-        if (this.maximo && this.domHost){
-          this.domHost.atualizarNotas();
-        }
-      },
-
-      _maximoMudou: function(n, o){
-        if (this.peso && this.domHost){
-          this.domHost.atualizarNotas();
-        }
-      },
-
-      notaCalculada: function(peso, maximo){
-        return (peso / 10) * maximo;
-      },
-
-      computarAvaliacao: function(sigla, instrumento, peso, maximo, bimestre){
-        return {
-          sigla: sigla,
-          instrumento: instrumento,
-          peso: ~~peso,
-          maximo: ~~maximo,
-          bimestre: bimestre
-        }
       },
 
       _remove: function(e){  
@@ -136,7 +94,6 @@
         var index = this.index;
 
         this.domHost.splice(el, index, 1);
-        this.domHost.atualizarNotas();
       }
 
     });

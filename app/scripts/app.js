@@ -1,12 +1,3 @@
-/*
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
-
 /*global Firebase*/
 
 (function(document) {
@@ -25,21 +16,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.master = false;
   app.docente = false;
   app.activeTitle = 'Sapiens'; 
-  app.lastTitle = [];
-  app.lastState = [];
-  app.state = 'normal'; 
   app.loading = true;
-  
-  app.normal = true;
-  app.viewing = false;
-  app.creating = false;
-  app.editing = false;
-  app.visiting = false;
-  app.editandoPlanoEnsino = false;
-  app.visitandoPlanoEnsino = false;
-  app.direnPlanoEnsino = false;
 
-  
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
     // set app.baseURL to '/your-pathname/' if running from folder in production
@@ -83,49 +61,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // imports are loaded and elements have been registered
   });
 
-  app.back = function(){
-    // change title back
-    app.activeTitle = app.lastTitle.pop();
-    
-    // change state back
-    app[app.state] = false;
-    app.state = app.lastState.pop();
-    app[app.state] = true;
-
-    if (typeof app.backAction === 'function'){
-      app.backAction();
+  app.removeChildrenFrom = function(el){
+    var actionButtonsContainer = document.querySelector(el);
+        
+    while (actionButtonsContainer.firstChild) {
+      actionButtonsContainer.removeChild(actionButtonsContainer.firstChild);
     }
-
-    app.scrollPageToTop();
   }
 
   app.changeView = function(view){
     app.showLoading();
 
     if (!app.user){
-      // app.$.toast.text = 'Usuário não autorizado! Entre em contato com o administrador do Sistema';
-      // app.$.toast.show(); 
       //app.lastUrl = window.location.pathname;
       app.lastUrl = window.location.hash;
       page.redirect('/login'); 
     }else{
-      //save last title and state
-      app.lastTitle.push(app.activeTitle);
-      app.lastState.push(app.state);
-
       this.activeTitle = view.title;    
-      this.activeViewElement = view.activeViewElement;
-
+      
       var parent = document.querySelector('[data-route="' + view.route + '"]');
       var viewNode = Polymer.dom(parent).querySelector('.view');
 
-      app.set('route', view.route);    
-      app.set('backAction', viewNode.backAction);
-
-      if (!app[view.state]===app[app.state]){
-        app[view.state] = true; //new state 
-        app[app.state] = false; // last state
-        app.state = view.state; // update state  
+      if(view.route){
+        app.route = view.route;    
       }
 
       /* Configurar ações caso houver um sapiens-toolbar-actions */
@@ -134,24 +92,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       if (el){
         var toolbarActions = el.querySelector('sapiens-toolbar-actions');
-
-        if (toolbarActions){
-          toolbarActions.prepare();
+        
+        if (toolbarActions){ // adicionar actions à toolbar          
+          toolbarActions.prepare(el);
         }
-      }
-      
-
-      /* Sempre que houver um viewElement, haverá um saveAction*/
-      if (view.viewElement){
-        var el = document.querySelector(view.viewElement);
-        var toolbarActions = el.querySelector('sapiens-toolbar-actions');
-      
-        if (el.saveAction){ app.saveAction = el.saveAction;}  
-        if (el.sendAction){ app.sendAction = el.sendAction;} 
-        if (el.copyAction){ app.copyAction = el.copyAction;} 
-        if (el.pasteAction){ app.pasteAction = el.pasteAction;}
-        if (el.previewAction){ app.previewAction = el.previewAction;} 
-        if (el.printAction){ app.printAction = el.printAction;}       
+      }else{ // remover conteúdo da sapiens-toolbar-actions
+        document.querySelector('sapiens-toolbar-actions').clear();
       }
 
       app.scrollPageToTop(); 

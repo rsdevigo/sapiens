@@ -48,6 +48,12 @@
         @apply(--layout-horizontal);
       }
     </style>
+
+    <sapiens-toolbar-actions>
+      <div class="left">
+        <paper-icon-button icon="arrow-back" on-tap="back"></paper-icon-button> 
+      </div>
+    </sapiens-toolbar-actions>
       
     <section id="curso-selecionado">
       <!-- Criação de novas turmas -->
@@ -138,13 +144,22 @@
         turma:  {
           type: Object,
           value: {},
-          notify: true,
-          observer: '_turmaChanged'
+          notify: true
         }
       },
 
-      _turmaChanged: function(turma){
-        
+      back: function() {
+        var parent = this.domHost;
+
+        parent.entryAnimation = 'slide-from-left-animation';
+        parent.exitAnimation = 'slide-right-animation';
+        parent.set('selecionada', parseInt(parent.selecionada - 1));
+
+        app.changeView({
+          title: 'Turmas',
+          state: 'normal',
+          route: 'turmas'
+        });
       },
 
       criarTurma: function(evt){
@@ -193,8 +208,8 @@
 
                 ref.child('docentes').child(docente).once('value', function(snapshotDocente){
                   if(snapshotDocente.exists()){                    
-                    var cargaDocente = snapshotDocente.val().carga;
-                    var cargaDisciplina = disciplina.aulas;
+                    var cargaDocente = snapshotDocente.val().carga || 0;
+                    var cargaDisciplina = disciplina.aulas || 0;
 
                     snapshotDocente.ref().update({
                       carga: cargaDocente - cargaDisciplina
@@ -220,7 +235,8 @@
         app.changeView({
           title: this.turma.nome,
           state: 'visiting',
-          route: 'turmas'
+          route: 'turmas',
+          viewElement: 'sapiens-turma'
         });
       }
     });
