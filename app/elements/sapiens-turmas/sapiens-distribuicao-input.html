@@ -75,31 +75,59 @@
       },
 
       _docenteChanged: function(docente){
-        // verificar se um docente foi passado como responsável
-        // isso acontece em _turmaChanged
-
         var urlBase = 'https://blazing-inferno-2038.firebaseio.com/distribuicao/';
         var ref = new Firebase(urlBase + this.turma.__firebaseKey__);
         var distKey = this.disciplina.key;
         var self = this;
 
+        function aumentarCargaHoraria(docente, disciplina){          
+          // atualizar carga horária docente
+          var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+
+          refDocentes.child(docente).once('value').then(function(snapshotDocente){
+            var docente = snapshotDocente.val();
+            var cargaDocenteAtual = docente.carga || 0;
+            var novaCarga = cargaDocenteAtual + parseFloat(disciplina.aulas.replace(',', '.'));
+
+            docente.carga = novaCarga;
+            snapshotDocente.ref().set(docente);
+          });
+        }
+
+        function diminuirCargaHoraria(docente, disciplina){          
+          // atualizar carga horária docente
+          var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+
+          refDocentes.child(docente).once('value').then(function(snapshotDocente){
+            var docente = snapshotDocente.val();
+            var cargaDocenteAtual = docente.carga || 0;
+            var novaCarga = cargaDocenteAtual - parseFloat(disciplina.aulas.replace(',', '.'));
+
+            docente.carga = novaCarga;
+            snapshotDocente.ref().set(docente);
+          });
+        }
+
         if (!this.docente.isEmpty()){
-          ref.orderByChild('disciplina').equalTo(distKey).on('value', function(d){
+          ref.orderByChild('disciplina').equalTo(distKey).once('value', function(d){
             if(d.exists()){
               var distribuicao = d.val().toArray()[0];
 
-              ref.child(distribuicao.key).on('value', function(snapshot){
+              ref.child(distribuicao.key).once('value', function(snapshot){
                 if(snapshot.exists() && !docente.isEmpty()){ // update docente
                   var dist = snapshot.val();
 
                   // troca de docente responsável por uma disciplina    
                   if (!(dist.docente === docente.key)){
                     var key = snapshot.key();
-                    
-                    var docenteKey = distribuicao.docente.__firebaseKey__;
-                    distribuicao.docente = docenteKey;
 
+                    diminuirCargaHoraria(distribuicao.docente, self.disciplina);
+
+                    // troca de docentes
+                    distribuicao.docente = docente.__firebaseKey__;
                     ref.child(key).update(distribuicao);  
+
+                    aumentarCargaHoraria(distribuicao.docente, self.disciplina);
                   }            
                 }                
               });
@@ -107,20 +135,27 @@
               // disciplina sem docente responsável
               if(!self.docente.isEmpty()){
 
-                ref.push().set({
-                  docente: docente.__firebaseKey__,
-                  disciplina: self.disciplina.key
-                });
+                ref.once('value').then(function(snapshotDistribuicao){
+                  if(!self.turma.isEmpty()){
+                    var distrib = snapshotDistribuicao.val();
+                    var newRef = snapshotDistribuicao.ref().push();
+                    var key = newRef.key();  
 
-                // atualizar carga horária docente
-                var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com');
-                var cargaDocenteAtual = docente.carga || 0;
-                var novaCarga = cargaDocenteAtual + parseFloat(self.disciplina.aulas.replace(',', '.'));
-                var docenteKey = docente.__firebaseKey__;
+                    if (!distrib){                      
+                      distrib = {};
+                    }          
 
-                refDocentes.child('docentes').child(docenteKey).update({
-                  carga: novaCarga
-                });     
+                  
+                    distrib[key] = {
+                      docente: docente.__firebaseKey__,
+                      disciplina: self.disciplina.key
+                    }
+                    snapshotDistribuicao.ref().set(distrib);
+
+                    // atualizar carga horária docente
+                    aumentarCargaHoraria(docente.__firebaseKey__, self.disciplina);              
+                  }                           
+                });                     
               }
             }
           });           
@@ -143,8 +178,8 @@
             refDocente.once('value', function(snapshot){
               if(snapshot.exists){
 
-                var cargaDocente = ~~snapshot.val().carga;
-                var cargaDisciplina = ~~self.disciplina.aulas;
+                var cargaDocente = parseFloat(snapshot.val().carga) || 0;
+                var cargaDisciplina = ~~parseFloat(self.disciplina.aulas.replace(',', '.'));
 
                 self.docente = {};
 

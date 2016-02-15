@@ -47,22 +47,12 @@
       },
 
       _cursoChanged: function(curso){
-        this.matriz = curso.matriz.toArray();
-
-        if(curso.duracao.indexOf('semestre') >= 0){ // curso semestral
-          var semestres = parseInt(curso.duracao.split(' ')[0]);
-          this.curso.semestres = [];
-          
-          for (var i = 1; i <= semestres; i+=1){
-            this.curso.semestres.push(i);
-          }          
-        }        
+        // chamado quando o curso é selecionado
+        this.matriz = curso.matriz.toArray();      
       },
 
       listar: function(evt){
         this.curso = evt.model.__data__.curso;
-        var paginas = document.querySelector('#paginas');
-
         this.domHost.proximo();
 
         app.changeView({

@@ -9,13 +9,6 @@
     </firebase-collection>
 
     <firebase-collection
-      id="matrizCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/cursos/{{curso.__firebaseKey__}}/matriz"
-      order-by-child="semestre"
-      data="{{matriz}}">
-    </firebase-collection>
-
-    <firebase-collection
       id="turmasCollection"
       location="https://blazing-inferno-2038.firebaseio.com/turmas"
       order-by-child="curso"
@@ -47,11 +40,6 @@
           type: Array,
           notify: true
         }, 
-
-        cursos: {
-          type: Object,
-          notify: true
-        },
 
         matriz: {
           type: Array,
