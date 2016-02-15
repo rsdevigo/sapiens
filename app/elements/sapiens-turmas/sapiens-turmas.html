@@ -73,19 +73,6 @@
         }
       },
 
-      backAction: function() {
-        var _this = document.querySelector('sapiens-turmas');
-
-        _this.entryAnimation = 'slide-from-left-animation';
-        _this.exitAnimation = 'slide-right-animation';
-
-        _this.set('selecionada', parseInt(_this.selecionada - 1));
-
-        if (_this.selecionada == 0){
-          app.visiting = false;
-        }
-      },
-
       proximo: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
