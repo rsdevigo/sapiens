@@ -74,39 +74,39 @@
         }
       },
 
+      aumentarCargaHoraria: function (docente, disciplina){          
+        // atualizar carga horária docente
+        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+
+        refDocentes.child(docente).once('value').then(function(snapshotDocente){
+          var docente = snapshotDocente.val();
+          var cargaDocenteAtual = docente.carga || 0;
+          var novaCarga = cargaDocenteAtual + parseFloat(disciplina.aulas.replace(',', '.'));
+
+          docente.carga = novaCarga;
+          snapshotDocente.ref().set(docente);
+        });
+      },
+
+      diminuirCargaHoraria: function (docente, disciplina) {          
+        // atualizar carga horária docente
+        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+
+        refDocentes.child(docente).once('value').then(function(snapshotDocente){
+          var docente = snapshotDocente.val();
+          var cargaDocenteAtual = docente.carga || 0;
+          var novaCarga = cargaDocenteAtual - parseFloat(disciplina.aulas.replace(',', '.'));
+
+          docente.carga = novaCarga;
+          snapshotDocente.ref().set(docente);
+        });
+      },
+
       _docenteChanged: function(docente){
         var urlBase = 'https://blazing-inferno-2038.firebaseio.com/distribuicao/';
         var ref = new Firebase(urlBase + this.turma.__firebaseKey__);
         var distKey = this.disciplina.key;
         var self = this;
-
-        function aumentarCargaHoraria(docente, disciplina){          
-          // atualizar carga horária docente
-          var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
-
-          refDocentes.child(docente).once('value').then(function(snapshotDocente){
-            var docente = snapshotDocente.val();
-            var cargaDocenteAtual = docente.carga || 0;
-            var novaCarga = cargaDocenteAtual + parseFloat(disciplina.aulas.replace(',', '.'));
-
-            docente.carga = novaCarga;
-            snapshotDocente.ref().set(docente);
-          });
-        }
-
-        function diminuirCargaHoraria(docente, disciplina){          
-          // atualizar carga horária docente
-          var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
-
-          refDocentes.child(docente).once('value').then(function(snapshotDocente){
-            var docente = snapshotDocente.val();
-            var cargaDocenteAtual = docente.carga || 0;
-            var novaCarga = cargaDocenteAtual - parseFloat(disciplina.aulas.replace(',', '.'));
-
-            docente.carga = novaCarga;
-            snapshotDocente.ref().set(docente);
-          });
-        }
 
         if (!this.docente.isEmpty()){
           ref.orderByChild('disciplina').equalTo(distKey).once('value', function(d){
@@ -121,13 +121,13 @@
                   if (!(dist.docente === docente.key)){
                     var key = snapshot.key();
 
-                    diminuirCargaHoraria(distribuicao.docente, self.disciplina);
+                    self.diminuirCargaHoraria(distribuicao.docente, self.disciplina);
 
                     // troca de docentes
                     distribuicao.docente = docente.__firebaseKey__;
                     ref.child(key).update(distribuicao);  
 
-                    aumentarCargaHoraria(distribuicao.docente, self.disciplina);
+                    self.aumentarCargaHoraria(distribuicao.docente, self.disciplina);
                   }            
                 }                
               });
@@ -153,7 +153,7 @@
                     snapshotDistribuicao.ref().set(distrib);
 
                     // atualizar carga horária docente
-                    aumentarCargaHoraria(docente.__firebaseKey__, self.disciplina);              
+                    self.aumentarCargaHoraria(docente.__firebaseKey__, self.disciplina);              
                   }                           
                 });                     
               }
@@ -183,9 +183,8 @@
 
                 self.docente = {};
 
-                refDocente.update({
-                  carga: cargaDocente - cargaDisciplina
-                });
+                var docente = snapshot.val();
+                self.diminuirCargaHoraria(docente.__firebaseKey__, self.disciplina);                
 
                 // remover a distribuição da coleção de distribuições de aula
                 refTurma.remove();  

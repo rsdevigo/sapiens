@@ -18,21 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <sapiens-home-data
+      planos="{{planos}}"
+      docente="{{user.key}}"></sapiens-home-data>
+
     <paper-material elevation="1" class="page">
       <h1>Seja bem vindo</h1>
       
       <p>Olá, <span>{{user.google.displayName}}</span>. Seja bem vindo ao Sapiens.</p>
-      <p>Até o presente momento, podemos lhe oferecer os seguinte módulos: </p>
-    
-      <ul>
-        <li><strong>Minhas disciplinas</strong>: este módulo o possibilita conhecer e explorar as disciplinas que lhe foram atrubuídas, bem como manter os seus <strong>planos de ensino</strong>;</li>
-      </ul>
-
-      <p>Em breve, mais dois módulos serão disponibilizados para auxiliá-lo em suas atividades pedagógicas:</p>
-      <ul>
-        <li><strong>Projetos:</strong> permite a criação e manutenção de <strong>projetos de ensino, pesquisa e extensão</strong>;</li>
-        <li><strong>Minhas atividades:</strong> você poderá manter um <strong>plano de atividades</strong>  semestral de acordo com suas disciplinas, projetos e demais atividades planejadas.</li>
-      </ul>
     </paper-material>
 
     <paper-material elevation="1" class="page">  
@@ -52,7 +45,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     'use strict';
 
     Polymer({
-      is: 'sapiens-home'
+      is: 'sapiens-home',
+
+      properties: {
+        planos: {
+          type: Array,
+          value: ['a', 'b', 'c']
+        }
+      }
     });
   })();
   </script>
