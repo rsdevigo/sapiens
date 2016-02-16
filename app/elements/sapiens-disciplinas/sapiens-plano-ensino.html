@@ -214,7 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>{{plano.aulas}}/
               <span>{{cargaTotal(plano.disciplina.aulas)}}</span>
             </div> 
-            <div><strong>Quantidade de aulas atribuídas na metodologia: </strong> [[aulasAtribuidas]] de [[maximoAulas]]</div>   
+            <div><strong>Quantidade de aulas atribuídas na metodologia: </strong> [[plano.aulasAtribuidas]] de [[plano.maximoAulas]]</div>   
             <div><strong>Número de Semanas: </strong><span>{{semanas}}</span></div>   
             <div><strong>Turma: </strong><span>{{plano.disciplina.turma.nome}}</span></div>   
             <div><strong>Ano: </strong><span>{{plano.disciplina.turma.ano}}</span></div> 
@@ -859,7 +859,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         plano.praticas = plano.praticas;
         plano.teoricas = plano.teoricas;
         plano.topicos = plano.topicos;
-        plano.docente = app.user.key;     
+        plano.docente = app.user.key;
+        plano.maximoAulas = this.maximoAulas;
+        plano.aulasAtribuidas = this.aulasAtribuidas;     
   
         if (this.plano.__firebaseKey__){
           var key = plano.__firebaseKey__;

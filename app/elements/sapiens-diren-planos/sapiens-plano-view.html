@@ -294,7 +294,7 @@
 		    		</paper-tooltip>
 		    	</div>
 				<div class="card-content">
-					<p>O docente atribuiu [[plano.aulasDistribuidas]] de [[plano.maximoAulas]] conforme segue: </p>
+					<p>O docente atribuiu [[planoSelecionado.aulasAtribuidas]] aula(s) de [[planoSelecionado.maximoAulas]], conforme segue: </p>
 					
 					<div class="conteudos">
 						<simple-material-table 
@@ -444,7 +444,7 @@
 				        {
 				          title: 'Avaliação',
 				          number: false,
-				          column: 'instrumentosEnsino',
+				          column: 'instrumentosAvaliacao',
 				          formatter: function(value){
 				            return formatarArray(value, '; ')
 				          },
