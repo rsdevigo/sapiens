@@ -38,7 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         imagens: {
-          type: Object
+          type: Object,
+          notify: true
         }
       },
 
@@ -164,7 +165,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               [ { text:'UNIDADE CURRICULAR: ' + this.plano.disciplina.disciplina, colSpan: 2}, '', 'CÓD: ' + this.plano.disciplina.codigo],
               [{ text: 'CURSO: ' + this.plano.disciplina.curso.modalidade + ' em ' + this.plano.disciplina.curso.nome, colSpan: 2}, '', {text: 'TURMA: ' + this.plano.disciplina.turma.nome + ' / ' + this.plano.disciplina.turma.periodo}],
               [{ text: 'CARGA HORÁRIA TOTAL: ' + (~~this.plano.disciplina.aulas * this.domHost.semanas) + '\n' + 'NÚMERO DE SEMANAS: ' + this.domHost.semanas, colSpan: 2}, '', {text: 'AULAS PRÁTICAS: ' + this.plano.praticas + '\n' + 'AULAS TEÓRICAS: ' + this.plano.teoricas}],              
-              [{text: 'DOCENTE: ' + app.user['nome'], colSpan: 3}, '', '']
+              [{text: 'DOCENTE: ' + this.plano.docente, colSpan: 3}, '', '']
               
             ] 
           }
@@ -345,7 +346,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.docDefinition.content[10] = { 
           text: [ 
-            {text: app.user['nome']},
+            {text: this.plano.docente},
             {text: '\nDocente do Ensino Básico, Técnico e Tecnológico\n', fontSize: 10 }
           ], 
           alignment: 'center' 
