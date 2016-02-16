@@ -184,7 +184,8 @@
                 self.docente = {};
 
                 var docente = snapshot.val();
-                self.diminuirCargaHoraria(docente.__firebaseKey__, self.disciplina);                
+
+                self.diminuirCargaHoraria(docente.key, self.disciplina);                
 
                 // remover a distribuição da coleção de distribuições de aula
                 refTurma.remove();  
