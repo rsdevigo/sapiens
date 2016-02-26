@@ -76,21 +76,24 @@
 
       aumentarCargaHoraria: function (docente, disciplina){          
         // atualizar carga horária docente
-        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/servidores');
 
-        refDocentes.child(docente).once('value').then(function(snapshotDocente){
-          var docente = snapshotDocente.val();
-          var cargaDocenteAtual = docente.carga || 0;
-          var novaCarga = cargaDocenteAtual + parseFloat(disciplina.aulas.replace(',', '.'));
+        refDocentes
+          .child(docente)
+          .once('value')
+          .then(function(snapshotDocente){
+            var docente = snapshotDocente.val();
+            var cargaDocenteAtual = docente.carga || 0;
+            var novaCarga = cargaDocenteAtual + parseFloat(disciplina.aulas.replace(',', '.'));
 
-          docente.carga = novaCarga;
-          snapshotDocente.ref().set(docente);
+            docente.carga = novaCarga;
+            snapshotDocente.ref().set(docente);
         });
       },
 
       diminuirCargaHoraria: function (docente, disciplina) {          
         // atualizar carga horária docente
-        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+        var refDocentes = new Firebase('https://blazing-inferno-2038.firebaseio.com/servidores');
 
         refDocentes.child(docente).once('value').then(function(snapshotDocente){
           var docente = snapshotDocente.val();
@@ -169,7 +172,7 @@
         this._emptyCallback = function(){
           var baseUrl = 'https://blazing-inferno-2038.firebaseio.com';
           var docente = self.docente.__firebaseKey__;
-          var refDocente = new Firebase(baseUrl + '/docentes/' + docente);
+          var refDocente = new Firebase(baseUrl + '/servidores/' + docente);
           var refTurma = new Firebase(baseUrl + '/distribuicao/' + self.turma.__firebaseKey__ + '/' + self.distribuicao.key); 
 
           if(!self.docente.isEmpty()){

@@ -18,8 +18,9 @@
 
     <firebase-collection
       id="docentesCollection"
-      location="https://blazing-inferno-2038.firebaseio.com/docentes"
-      order-by-child="nome"
+      location="https://blazing-inferno-2038.firebaseio.com/servidores"
+      order-by-child="docente"
+      equal-to="true"
       data="{{docentes}}">
     </firebase-collection>
   </template>

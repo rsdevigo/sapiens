@@ -30,7 +30,7 @@
 
         this.docentes.forEach(function(docente){
           tableData.push({
-            nome: docente['nome-completo'],
+            nome: docente.nomecompleto,
             area: docente.area,
             carga: Math.ceil(docente.carga)
           });
@@ -41,21 +41,24 @@
 
       ready: function(){
         
-        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/docentes');
+        var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/servidores');
         var self = this;
 
-        ref.on('value', function(snapshotDocentes){
-          if (snapshotDocentes.exists()){
-            var docentes = snapshotDocentes.val().toArray();
-            
-            docentes.forEach(function(docente, i){
-              if (!docente.carga){
-                docentes[i].carga = 0;
-              }
-            });
-            
-            self.set('docentes', docentes);
-          }
+        ref
+          .orderByChild('docente')
+          .equalTo(true)
+          .on('value', function(snapshotDocentes){
+            if (snapshotDocentes.exists()){
+              var docentes = snapshotDocentes.val().toArray();
+              
+              docentes.forEach(function(docente, i){
+                if (!docente.carga){
+                  docentes[i].carga = 0;
+                }
+              });
+              
+              self.set('docentes', docentes);
+            }
         })
 
         this.columns = [

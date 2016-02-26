@@ -171,6 +171,7 @@
   app.atualizarUsuario = function(auth){
     // usuário foi cadastrado
     // atualizar objeto app.user
+    var ref = new Firebase('https://blazing-inferno-2038.firebaseio.com/');
 
     if (!app.usuario){
       app.set('usuario', {});
@@ -182,18 +183,29 @@
       }
     }
 
-    app.set('user', app.usuario);
+    ref
+      .child('servidores')
+      .orderByChild('email')
+      .equalTo(app.usuario.google.email)
+      .on('value', function(snapshotServidores) {
+        if (snapshotServidores.exists()){
+          app.usuario.servidor = snapshotServidores.val().toArray()[0];
+          app.set('user', app.usuario);
 
-    if(app.active){
-      // app.set('route', 'home');
-      if(app.lastUrl){
-        page.redirect(app.lastUrl);
-      }else{
-        page.redirect(window.location.hash);
-      }      
+          if(app.active){
+            // app.set('route', 'home');
+            if(app.lastUrl){
+              page.redirect(app.lastUrl);
+            }else{
+              page.redirect(window.location.hash);
+            }      
 
-      app.hideLoading();
-    }
+            app.hideLoading();
+          }
+        }
+      }); 
+
+    
   }
 
   app.loginHandler = function(auth) {
@@ -216,16 +228,16 @@
             app.set('user.master', true);
           }
 
-          ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshotDocentes) {
+          ref.child('servidores').orderByChild('email').equalTo(userEmail).on('value', function(snapshotServidores) {
             var key = userEmail.split('@')[0].replace('.', '-');
 
-            if (snapshotDocentes.exists()){              
-              var docente = snapshotDocentes.val()[key];              
+            if (snapshotServidores.exists()){              
+              var servidor = snapshotServidores.val()[key];              
 
-              app.set('usuario.diren', docente.diren || false);
+              app.set('usuario.diren', servidor.diren || false);
               app.set('usuario.docente', true); 
               app.set('usuario.key', key);
-              app.set('usuario.nome', docente['nome-completo']);
+              app.set('usuario.nome', servidor.nomecompleto);
 
               app.atualizarUsuario(auth, app.usuario);              
             }else{
@@ -244,7 +256,7 @@
       app.set('usuario', snapshotUsers.val());
       app.atualizarUsuario(auth, app.usuario);
 
-      ref.child('docentes').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
+      ref.child('servidores').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
         if (!snapshot.exists()) {
           if(!app.user.master){
             app.$.firebaseLogin.logout();

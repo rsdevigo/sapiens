@@ -75,7 +75,7 @@
           </a>
         
           <template is="dom-if" if="{{active}}">
-            <a data-route="disciplinas" href="{{baseUrl}}disciplinas" hidden$="{{!user.docente}}">
+            <a data-route="disciplinas" href="{{baseUrl}}disciplinas" hidden$="{{!user.servidor.docente}}">
               <iron-icon icon="book"></iron-icon>
               <span>Minhas disciplinas</span>
             </a>
@@ -92,9 +92,21 @@
           </template>
         </paper-menu>
 
-        <div hidden$="{{!user.diren}}">
+        <div hidden$="{{!user.servidor.pedag}}">
+          <paper-subheader>PEDAG</paper-subheader>
+          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" hidden$="{{!user.servidor.pedag}}">
+            <template is="dom-if" if="{{active}}">
+              <a data-route="diren-planos" href="/diren/planos">            
+                <iron-icon icon="description"></iron-icon>
+                <span>Planos de Ensino</span>
+              </a> 
+            </template>  
+          </paper-menu>
+        </div>
+
+        <div hidden$="{{!user.servidor.diren}}">
           <paper-subheader>DIREN</paper-subheader>
-          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" hidden$="{{!user.diren}}">
+          <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" hidden$="{{!user.servidor.diren}}">
             <template is="dom-if" if="{{active}}">
               <a data-route="turmas" href="/diren/turmas">
                 <iron-icon icon="dashboard"></iron-icon>

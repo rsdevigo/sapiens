@@ -42,8 +42,8 @@
           <google-sheets 
             key="{{sheetId}}" 
             tab-id="1" 
-            rows="{{rowsDocentes}}" 
-            tab="{{tabDocentes}}" 
+            rows="{{rowsServidores}}" 
+            tab="{{tabServidores}}" 
             published>
           </google-sheets>
 
@@ -95,7 +95,7 @@
             published>
           </google-sheets>
 
-          <div>Docentes: <span>{{rowsDocentes.length}}</span> registros</div>
+          <div>Servidores: <span>{{rowsServidores.length}}</span> registros</div>
           <div>Áreas: <span>{{rowsAreas.length}}</span> registros</div>
           <div>Modalidades: <span>{{rowsModalidades.length}}</span> registros</div>
           <div>Cursos: <span>{{rowsCursos.length}}</span> registros</div>
@@ -107,12 +107,26 @@
       </paper-material>
 
       <paper-material class="page">
-        <h1>2. Definições de resposabilidades e funções</h1>
+        <h1>Funções identificadas</h1>
 
-        <p>Agora você deve selecionar o Diretor de Ensino, Pesquisa e Extensão do Câmpus. Ele terá permissão de acesso à interface administrativa do Sapiens. </p>
+        <p>Verifique as funções atribuída antes de finalizar a configuração de dados do Sapiens. Caso houver alguma inconsistência, verifique a planilha de dados utilizada e corrija o que for necessário. </p>
 
-        <paper-input-autocomplete label="Selecione o DIREN" value="{{diren}}" source="{{docentes}}" suggestions-in-overlay="true" search-property="nome-completo" class="flex" required></paper-input-autocomplete>
-
+        <ul>
+          <li><strong>Direção Geral - DIRGE: </strong> [[dirge.nomecompleto]]</li>
+          <li><strong>Direção de Ensino - DIREN: </strong> [[diren.nomecompleto]]</li>
+          <li><strong>Coordenação do Eixo de Informação e Comunicação - COINFO: </strong> [[coinfo.nomecompleto]]</li>
+          <li><strong>Coordenação de Pesquisa e Inovação - COPEI: </strong> [[copei.nomecompleto]]</li>
+          <li><strong>Coordenação de Extensão e Relações Interinstitucionais - COERI: </strong> [[coeri.nomecompleto]]</li>
+          <li><strong>Coordenador de Educação à Distância - COEAD: </strong> [[coead.nomecompleto]]</li>
+          <li>
+            <strong>Pedagogos(as): </strong>
+            <ul>
+            <template is="dom-repeat" items="{{pedagogas}}">
+              <li>[[item.nomecompleto]]</li>
+            </template>
+            </ul>
+          </li>
+        </ul>
       </paper-material>
         
       <paper-button raised class="colorful" on-tap="save"><iron-icon icon="save"></iron-icon>Salvar</paper-button>
@@ -133,7 +147,7 @@
           notify: true  
         },
 
-        rowsDocentes: { observer: '_rowsDocentesCompleted' },
+        rowsServidores: { observer: '_rowsServidoresCompleted' },
         rowsAreas: { observer: '_rowsAreasCompleted' },
         rowsModalidades: { observer: '_rowsModalidadesCompleted' },
         rowsCursos: { observer: '_rowsCursosCompleted' },
@@ -147,28 +161,46 @@
           notify: true
         },
 
-        docentes: {
+        servidores: {
           type: Array,
           value: [],
           notify: true
         },
 
-        diren: {
-          type: String
+        pedagogas: {
+          type: Array,
+          value: [],
+          notify: true
         }
       },
 
-      _rowsDocentesCompleted: function(n){
-        this.data.docentes = app.slugify(SapiensOpensheet.parse(n), 'email', function(email){
+      _rowsServidoresCompleted: function(n){
+        this.data.servidores = app.slugify(SapiensOpensheet.parse(n), 'email', function(email){
           return email.split('@')[0].replace('.', '-');
         });
 
-        var docentes = this.data.docentes;
+        var servidores = this.data.servidores;
+        var self = this;
 
-        this.docentes = Object.keys(docentes).map(function (key) {
-          docentes[key].key = key;
+        this.servidores = Object.keys(servidores).map(function (key) {
+          servidores[key].key = key;
 
-          return docentes[key];
+          servidores[key][servidores[key].funcao.toLowerCase()] = true;
+
+
+          if (servidores[key].funcao !== 'DOCENTE' && servidores[key].funcao !== 'PEDAG'){
+            self[servidores[key].funcao.toLowerCase()] = servidores[key];
+          }
+
+          if(servidores[key].funcao === 'PEDAG'){
+            self.push('pedagogas',servidores[key]);
+          }
+
+          if(servidores[key].funcao !== 'PEDAG'){
+            servidores[key].docente = true;
+          }
+
+          return servidores[key];
         });
       },
 
@@ -253,8 +285,6 @@
 
       save: function(){
         /* Configurar DIREN */
-        this.data.docentes[this.diren.key].diren = true;
-
         this.db.update(this.data);
         this.data = [];
       }
