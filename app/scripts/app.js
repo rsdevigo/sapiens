@@ -223,6 +223,7 @@
       if (!snapshotUsers.exists()){ // usuário não existe na base de dados
         // verificar se usuário é administrador
         ref.child('administradores').orderByChild('email').equalTo(userEmail).once('value', function(snapshotAdministradores){
+            
           if(snapshotAdministradores.exists()){
             app.set('usuario.master', true);
             app.set('user.master', true);
@@ -234,21 +235,13 @@
             if (snapshotServidores.exists()){              
               var servidor = snapshotServidores.val()[key];              
 
-              app.set('usuario.diren', servidor.diren || false);
-              app.set('usuario.docente', true); 
               app.set('usuario.key', key);
               app.set('usuario.nome', servidor.nomecompleto);
 
               app.atualizarUsuario(auth, app.usuario);              
-            }else{
-              app.set('usuario.docente', false); 
-              app.set('usuario.diren', false); 
             }
 
             ref.child('users').child(key).set(app.usuario);
-
-            app.set('user.docente', app.usuario.docente);
-            app.set('user.diren', app.usuario.diren); 
           });
         });             
       }
@@ -256,24 +249,26 @@
       app.set('usuario', snapshotUsers.val());
       app.atualizarUsuario(auth, app.usuario);
 
-      ref.child('servidores').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
-        if (!snapshot.exists()) {
-          if(!app.user.master){
-            app.$.firebaseLogin.logout();
+     if (userEmail){
+        ref.child('servidores').orderByChild('email').equalTo(userEmail).on('value', function(snapshot) {
+          if (!snapshot.exists()) {
+            if(!app.user.master){
+              app.$.firebaseLogin.logout();
 
-            // app.$.toast.text = 'Usuário não autorizado. Entre em contato com o administrador do Sapiens';
-            // app.$.toast.show();
-            page.redirect(app.baseUrl);
-            app.hideLoading();
-          }else{
-            app.changeView({
-              title: 'Sapiens',
-              state: 'normal',
-              route: 'master',
-            });
+              // app.$.toast.text = 'Usuário não autorizado. Entre em contato com o administrador do Sapiens';
+              // app.$.toast.show();
+              page.redirect(app.baseUrl);
+              app.hideLoading();
+            }else{
+              app.changeView({
+                title: 'Sapiens',
+                state: 'normal',
+                route: 'master',
+              });
+            }
           }
-        }
-      });
+        });
+      }      
     });  
          
   };
