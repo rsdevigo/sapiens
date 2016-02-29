@@ -28,7 +28,7 @@ var crypto = require('crypto');
 var ensureFiles = require('./tasks/ensure-files.js');
 
 
-// var ghPages = require('gulp-gh-pages');
+var ghPages = require('gulp-gh-pages');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -340,11 +340,17 @@ gulp.task('deploy-gh-pages', function() {
   return gulp.src(dist('**/*'))
     // Check if running task from Travis CI, if so run using GH_TOKEN
     // otherwise run using ghPages defaults.
-    .pipe($.if(process.env.TRAVIS === 'true', $.ghPages({
-      remoteUrl: 'https://$GH_TOKEN@github.com/polymerelements/polymer-starter-kit.git',
-      silent: true,
-      branch: 'gh-pages'
-    }), $.ghPages()));
+    // .pipe($.if(process.env.TRAVIS === 'true', $.ghPages({
+    //   remoteUrl: 'https://$GH_TOKEN@github.com/evandrofalleiros/sapiens.git',
+    //   silent: true,
+    //   branch: 'gh-pages'
+    // }), $.ghPages()));
+
+    return gulp.src('./dist/**/*')
+      .pipe(ghPages({
+      remoteUrl: 'https://github.com/evandrofalleiros/sapiens.git',
+      branch: 'master'
+    }));
 });
 
 // Load tasks for web-component-tester
